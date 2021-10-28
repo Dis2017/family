@@ -2,3 +2,7 @@
 	url  = https://gitee.com/disstudio/family
 	path = Sever
 
+[submodule "Android"]
+	url  = https://gitee.com/disstudio/family
+	path = Android
+
