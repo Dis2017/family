@@ -1,0 +1,4 @@
+[submodule "Sever"]
+	url  = https://gitee.com/disstudio/family
+	path = Sever
+
