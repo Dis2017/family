@@ -53,6 +53,16 @@
 # 需求分析
 
 ## 账户
-| user_name | String | 用户名 |
-|-----------|--------|-----|
+用户名 密码 编号 性别 出生日期 籍贯 归属家庭编号 邮箱
+| 字段        | 类型     | 描述   |
+|-----------|--------|------|
+| user_id   | Long   | 用户编号 |
+| user_name | String | 用户名称 |
+| password  | String | 密码    |
+| sex       | Short  | 性别    |
+| birthday  | LocalDate | 出生日期 |
+| area      | String    | 地区 |
+| family_id | Long | 归属家庭编号 |
+| email | String | 邮箱 |
+
 
