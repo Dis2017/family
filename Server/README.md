@@ -66,8 +66,25 @@
 | email | String | 邮箱 |
 
 ### 家庭
-名称 编号 公告
 | 字段          | 类型     | 描述   |
 |-------------|--------|------|
 | family_id   | Long   | 家庭编号 |
 | family_name | String | 家庭名称 |
+
+### 日程
+| 字段          | 类型                | 描述     |
+|-------------|-------------------|--------|
+| schedule_id | Long              | 日程编号   |
+| user_id     | Long              | 所属用户编号 |
+| plan_id     | Long              | 所属计划编号 |
+| start_time  | LocalTime         | 起始时间   |
+| duration    | Long              | 持续秒数   |
+| description | String            | 描述     |
+| contents    | ScheduleContent[] | 日程内容   |
+
+### 日程内容
+描述 是否完成| 字段          | 类型      | 描述  |
+|-------------|---------|-----|
+| description | String  | 描述  |
+| completed   | boolean | 已完成 |
+
