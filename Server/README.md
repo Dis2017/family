@@ -83,7 +83,7 @@
 | contents    | ScheduleContent[] | 日程内容   |
 
 ### 日程内容
-描述 是否完成| 字段          | 类型      | 描述  |
+| 字段          | 类型      | 描述  |
 |-------------|---------|-----|
 | description | String  | 描述  |
 | completed   | boolean | 已完成 |
