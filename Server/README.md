@@ -53,7 +53,7 @@
 
 ## 需求分析
 
-### 账户
+### 账户（User）
 | 字段        | 类型     | 描述   |
 |-----------|--------|------|
 | user_id   | Long   | 用户编号 |
@@ -65,13 +65,13 @@
 | family_id | Long | 归属家庭编号 |
 | email | String | 邮箱 |
 
-### 家庭
+### 家庭（Family）
 | 字段          | 类型     | 描述   |
 |-------------|--------|------|
 | family_id   | Long   | 家庭编号 |
 | family_name | String | 家庭名称 |
 
-### 日程
+### 日程（Schedule）
 | 字段          | 类型                | 描述     |
 |-------------|-------------------|--------|
 | schedule_id | Long              | 日程编号   |
@@ -82,7 +82,7 @@
 | description | String            | 描述     |
 | contents    | ScheduleContent[] | 日程内容   |
 
-### 日程内容
+### 日程内容（ScheduleContent）
 | 字段          | 类型      | 描述  |
 |-------------|---------|-----|
 | description | String  | 描述  |
