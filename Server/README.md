@@ -101,4 +101,31 @@
 | contents      | PlanContent[] | 计划内容   |
 | interruptable | Boolean       | 可中断的   |
 
+### 计划内容（PlanContent）
+| 字段                    | 类型           | 描述          |
+|-----------------------|--------------|-------------|
+| repeat                | Integer      | 重复次数        |
+| description           | String       | 描述          |
+| schedule_content_name | String       | 日程内容名称（全类名） |
+| execute_cycle         | ExecuteCycle | 执行周期        |
+| execute_point         | ExecutePoint | 执行时间点       |
+
+### 执行周期（ExecuteCycle）
+| 名称    | 描述            |
+|-------|---------------|
+| Day   | 按天重复时间段       |
+| Month | 按月重复指定天、时间段   |
+| Year  | 按年重复指定月、天、时间段 |
+
+
+### 执行时间点（ExecutePoint）
+| 字段         | 类型      | 描述                                                 |
+|------------|---------|----------------------------------------------------|
+| start_time | Short   | 起始时间（个位十位存储秒数、百位千位存储分钟，万位十万位存储小时（24小时制），秒和分钟存储前导0） |
+| duration   | Long    | 持续时间                                               |
+| year       | Integer | 指定年份                                               |
+| months     | Integer | 指定月份（按位指定，共用低12位，0表示不使用，1表示使用）   |
+| days       | Integer | 指定天（按位指定，共用低31位，0表示不使用，1表示使用）     |
+
+
 
