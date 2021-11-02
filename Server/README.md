@@ -56,8 +56,8 @@
 ### 账户（User）
 | 字段        | 类型     | 描述   |
 |-----------|--------|------|
-| user_id   | Long   | 用户编号 |
-| user_name | String | 用户名称 |
+| id        | Long   | 用户编号 |
+| name      | String | 用户名称 |
 | password  | String | 密码    |
 | sex       | Short  | 性别    |
 | birthday  | LocalDate | 出生日期 |
@@ -68,13 +68,14 @@
 ### 家庭（Family）
 | 字段          | 类型     | 描述   |
 |-------------|--------|------|
-| family_id   | Long   | 家庭编号 |
-| family_name | String | 家庭名称 |
+| id          | Long   | 家庭编号 |
+| name        | String | 家庭名称 |
 
 ### 日程（Schedule）
 | 字段          | 类型                | 描述     |
 |-------------|-------------------|--------|
-| schedule_id | Long              | 日程编号   |
+| id          | Long              | 日程编号   |
+| name        | String            | 日程名称   |
 | user_id     | Long              | 所属用户编号 |
 | plan_id     | Long              | 所属计划编号 |
 | start_time  | LocalTime         | 起始时间   |
@@ -87,4 +88,17 @@
 |-------------|---------|-----|
 | description | String  | 描述  |
 | completed   | boolean | 已完成 |
+
+### 计划（Plan）
+| 字段            | 类型            | 描述     |
+|---------------|---------------|--------|
+| id            | Long          | 编号     |
+| name          | String        | 名称     |
+| description   | String        | 描述     |
+| goal_id       | Long          | 所属目标编号 |
+| start_time    | LocalTime     | 起始时间   |
+| duration      | Long          | 持续时长   |
+| contents      | PlanContent[] | 计划内容   |
+| interruptable | Boolean       | 可中断的   |
+
 
