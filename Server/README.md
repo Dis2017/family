@@ -92,6 +92,7 @@
 ### 任务状态（TaskState）
 | 名称        | 描述  |
 |-----------|-----|
+| Waiting   | 等待中 |
 | Running   | 进行中 |
 | Completed | 完成  |
 | Failed    | 失败  |
