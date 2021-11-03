@@ -99,7 +99,6 @@
 | start_time    | LocalTime     | 起始时间   |
 | duration      | Long          | 持续时长   |
 | contents      | PlanContent[] | 计划内容   |
-| interruptable | Boolean       | 可中断的   |
 
 ### 计划内容（PlanContent）
 | 字段                    | 类型           | 描述          |
@@ -107,6 +106,7 @@
 | repeat                | Integer      | 重复次数        |
 | description           | String       | 描述          |
 | schedule_content_name | String       | 日程内容名称（全类名） |
+| interruptable | Boolean       | 可中断的   |
 | execute_cycle         | ExecuteCycle | 执行周期        |
 | execute_point         | ExecutePoint | 执行时间点       |
 
