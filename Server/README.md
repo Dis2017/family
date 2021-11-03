@@ -83,7 +83,7 @@
 | description | String            | 描述     |
 | contents    | ScheduleContent[] | 日程内容   |
 
-### 日程内容（ScheduleContent）  _<abstract>_ 
+### 日程内容（ScheduleContent）  _abstract_ 
 | 字段          | 类型      | 描述  |
 |-------------|---------|-----|
 | description | String  | 描述  |
@@ -100,7 +100,7 @@
 | duration      | Long          | 持续时长   |
 | contents      | PlanContent[] | 计划内容   |
 
-### 计划内容（PlanContent）  _<abstract>_ 
+### 计划内容（PlanContent）  _abstract_ 
 | 字段                  | 类型      | 描述  |
 |-----------------------|---------|--------|
 | description           | String  | 描述  |
