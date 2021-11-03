@@ -107,7 +107,7 @@
 | completed             | boolean | 已完成 |
 | schedule_content_name | String  | 日程内容名称（全类名） |
 
-#### 计次计划内容（AccumulatedPlanContent）  _extend_   **PlanContent** 
+#### 计次计划内容（AccumulatedPlanContent）  _extend PlanContent_ 
 | 字段                    | 类型           | 描述          |
 |-----------------------|--------------|-------------|
 | repeat                | Integer      | 重复次数        |
@@ -115,7 +115,7 @@
 | execute_cycle         | ExecuteCycle | 执行周期        |
 | execute_point         | ExecutePoint | 执行时间点       |
 
-#### 计值计划内容（NumericPlanContent）  _extend_   **PlanContent** 
+#### 计值计划内容（NumericPlanContent）  _extend PlanContent_  
 | 字段                    | 类型           | 描述          |
 |-----------------------|--------------|-------------|
 | target_value          | Integer      | 目标值         |
