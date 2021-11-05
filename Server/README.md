@@ -108,6 +108,7 @@
 | start_time    | LocalTime     | 起始时间   |
 | duration      | Long          | 持续时长   |
 | contents      | PlanContent[] | 计划内容   |
+| state         | TaskState     | 状态      |
 
 ### 计划内容（PlanContent）  _abstract_ 
 | 字段                  | 类型       | 描述  |
