@@ -120,6 +120,7 @@
 | 字段                    | 类型           | 描述          |
 |-----------------------|--------------|-------------|
 | repeat                | Integer      | 重复次数        |
+| counter               | Integer      | 已重复次数      |
 | interruptable         | Boolean      | 可中断的   |
 | execute_cycle         | ExecuteCycle | 执行周期        |
 | execute_point         | ExecutePoint | 执行时间点       |
@@ -128,6 +129,7 @@
 | 字段                    | 类型           | 描述          |
 |-----------------------|--------------|-------------|
 | target_value          | Integer      | 目标值         |
+| counter               | Integer      | 累计值         |
 | execute_cycle         | ExecuteCycle | 执行周期        |
 
 ### 执行周期（ExecuteCycle）
