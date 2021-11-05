@@ -111,11 +111,12 @@
 | state         | TaskState     | 状态      |
 
 ### 计划内容（PlanContent）  _abstract_ 
-| 字段                  | 类型       | 描述  |
-|-----------------------|-----------|--------|
-| description           | String    | 描述  |
-| state                 | TaskState | 状态  |
-| schedule_content_name | String  | 日程内容名称（全类名） |
+| 字段                   | 类型       | 描述  |
+|------------------------|-----------|--------|
+| name                   | String    | 名称  |
+| description            | String    | 描述  |
+| state                  | TaskState | 状态  |
+| schedule_content_names | String[]  | 日程内容名称（全类名） |
 
 #### 计次计划内容（AccumulatedPlanContent）  _extend PlanContent_ 
 | 字段                    | 类型           | 描述          |
@@ -152,11 +153,14 @@
 
 
 ### 目标（Goal）
-| 字段               | 类型      | 描述                              |
-|-------------------|-----------|-----------------------------------|
-| id                | Long      | 编号                              |
-| start_time        | LocalTime | 起始时间                          |
-| duration          | Long      | 持续时长                          |
-| description       | String    | 描述                              |
-|                   |           |                                   |
-|                   |           |                                   |
+| 字段               | 类型         | 描述                              |
+|-------------------|---------------|-----------------------------------|
+| id                | Long          | 编号                              |
+| start_time        | LocalTime     | 起始时间                          |
+| duration          | Long          | 持续时长                          |
+| description       | String        | 描述                              |
+| state             | TaskState     | 状态                              |
+| goal_contents     | GoalContent[] | 目标内容                           |
+
+### 目标内容（GoalCotent）
+
