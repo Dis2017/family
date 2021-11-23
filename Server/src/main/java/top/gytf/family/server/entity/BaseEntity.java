@@ -2,6 +2,8 @@ package top.gytf.family.server.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,6 +20,7 @@ import java.time.LocalDateTime;
  * @author user
  * @version V1.0
  */
+@Data
 public class BaseEntity implements Serializable {
     private final static String TAG = BaseEntity.class.getName();
 
@@ -25,6 +28,8 @@ public class BaseEntity implements Serializable {
     public final static String CREATE_TIME_FIELD_NAME = "createTime";
     public final static String MODIFY_TIME_NAME = "modify_time";
     public final static String MODIFY_TIME_FIELD_NAME = "modifyTime";
+    public final static String DELETE_FLAG_NAME = "delete_flag";
+    public final static String DELETE_FLAG_FIELD_NAME = "deleteFlag";
 
     /**
      * 创建时间
@@ -43,4 +48,14 @@ public class BaseEntity implements Serializable {
             fill = FieldFill.INSERT_UPDATE
     )
     private LocalDateTime modifyTime;
+
+    /**
+     * 删除标记
+     */
+    @TableField(
+            value = DELETE_FLAG_NAME,
+            fill = FieldFill.INSERT
+    )
+    @TableLogic
+    private Boolean deleteFlag;
 }
