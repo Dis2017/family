@@ -1,6 +1,7 @@
-package top.gytf.family.server.config;
+package top.gytf.family.server.config.mybatisplus;
 
 import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -18,5 +19,8 @@ import org.springframework.context.annotation.Configuration;
 public class MyBatisPlusConfig {
     private final static String TAG = MyBatisPlusConfig.class.getName();
 
-
+    @Bean
+    public FillBaseFieldHandler fillBaseFieldHandler() {
+        return new FillBaseFieldHandler();
+    }
 }

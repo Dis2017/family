@@ -16,6 +16,7 @@ class ServerApplicationTests {
     void contextLoads() {
         User userDao = User.builder()
                 .name("Test")
+                .password("cnmd")
                 .build();
         userMapper.insert(userDao);
     }

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -17,28 +18,29 @@ import java.time.LocalDateTime;
  * @author user
  * @version V1.0
  */
-public abstract class BaseEntity {
+public class BaseEntity implements Serializable {
     private final static String TAG = BaseEntity.class.getName();
+
+    public final static String CREATE_TIME_NAME = "create_time";
+    public final static String CREATE_TIME_FIELD_NAME = "createTime";
+    public final static String MODIFY_TIME_NAME = "modify_time";
+    public final static String MODIFY_TIME_FIELD_NAME = "modifyTime";
 
     /**
      * 创建时间
      */
     @TableField(
-            value = "create_time",
+            value = CREATE_TIME_NAME,
             fill = FieldFill.INSERT
     )
-    @Getter
-    @Setter
     private LocalDateTime createTime;
 
     /**
      * 修改时间
      */
     @TableField(
-            value = "modify_time",
-            fill = FieldFill.UPDATE
+            value = MODIFY_TIME_NAME,
+            fill = FieldFill.INSERT_UPDATE
     )
-    @Getter
-    @Setter
     private LocalDateTime modifyTime;
 }
