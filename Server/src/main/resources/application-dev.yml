@@ -12,7 +12,10 @@ spring:
 
 logging:
   level:
-    top.gytf.famliy.server.mapper: debug
+    top.gytf.family.server.*: debug
+
+  pattern:
+    console: "%d{yyyy/MM/dd-HH:mm:ss} [%thread] %-5level %logger- %n%msg%n"
 
 server:
   # 运行端口

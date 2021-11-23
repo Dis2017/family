@@ -23,6 +23,7 @@ public class FillBaseFieldHandler implements MetaObjectHandler {
     public void insertFill(MetaObject metaObject) {
         strictInsertFill(metaObject, BaseEntity.CREATE_TIME_FIELD_NAME, LocalDateTime.class, LocalDateTime.now());
         strictInsertFill(metaObject, BaseEntity.MODIFY_TIME_FIELD_NAME, LocalDateTime.class, LocalDateTime.now());
+        strictInsertFill(metaObject, BaseEntity.DELETE_FLAG_FIELD_NAME, Boolean.class, false);
     }
 
     @Override
