@@ -61,7 +61,7 @@
 | password  | String | 密码    |
 | sex       | Short  | 性别    |
 | birthday  | LocalDate | 出生日期 |
-| area      | String    | 地区 |
+| area      | Integer   | 地区 |
 | family_id | Long | 归属家庭编号 |
 | email | String | 邮箱 |
 
