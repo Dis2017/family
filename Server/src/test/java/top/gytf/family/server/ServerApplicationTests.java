@@ -3,7 +3,7 @@ package top.gytf.family.server;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import top.gytf.family.server.dao.UserDao;
+import top.gytf.family.server.entity.User;
 import top.gytf.family.server.mapper.UserMapper;
 
 @SpringBootTest
@@ -14,7 +14,7 @@ class ServerApplicationTests {
 
     @Test
     void contextLoads() {
-        UserDao userDao = UserDao.builder()
+        User userDao = User.builder()
                 .name("Test")
                 .build();
         userMapper.insert(userDao);

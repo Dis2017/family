@@ -1,4 +1,4 @@
-package top.gytf.family.server.dao;
+package top.gytf.family.server.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -9,16 +9,16 @@ import java.time.LocalDateTime;
 
 /**
  * Project:     IntelliJ IDEA
- * ClassName:   BaseDao
- * Description: Dao基类
+ * ClassName:   BaseEntity
+ * Description: 实体基类
  * CreateDate:  2021/11/22 15:56
  * ------------------------------------------------------------------------------------------
  *
  * @author user
  * @version V1.0
  */
-public abstract class BaseDao {
-    private final static String TAG = BaseDao.class.getName();
+public abstract class BaseEntity {
+    private final static String TAG = BaseEntity.class.getName();
 
     /**
      * 创建时间

@@ -2,7 +2,7 @@ package top.gytf.family.server.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
-import top.gytf.family.server.dao.UserDao;
+import top.gytf.family.server.entity.User;
 
 /**
  * Project:     IntelliJ IDEA
@@ -15,5 +15,5 @@ import top.gytf.family.server.dao.UserDao;
  * @version V1.0
  */
 @Mapper
-public interface UserMapper extends BaseMapper<UserDao> {
+public interface UserMapper extends BaseMapper<User> {
 }

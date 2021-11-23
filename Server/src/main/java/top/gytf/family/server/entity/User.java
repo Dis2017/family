@@ -1,4 +1,4 @@
-package top.gytf.family.server.dao;
+package top.gytf.family.server.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -12,8 +12,8 @@ import java.time.LocalDate;
 
 /**
  * Project:     IntelliJ IDEA
- * ClassName:   UserDAO
- * Description: 用户DAO
+ * ClassName:   User
+ * Description: 用户
  * CreateDate:  2021/11/22 15:49
  * ------------------------------------------------------------------------------------------
  *
@@ -24,8 +24,8 @@ import java.time.LocalDate;
 @Data
 @Builder
 @TableName("User")
-public class UserDao extends BaseDao {
-    private final static String TAG = UserDao.class.getName();
+public class User extends BaseEntity {
+    private final static String TAG = User.class.getName();
 
     /**
      * 用户编号
