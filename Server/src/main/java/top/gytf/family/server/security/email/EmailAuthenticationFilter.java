@@ -28,6 +28,8 @@ import java.io.IOException;
 public class EmailAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
     private final static String TAG = EmailAuthenticationFilter.class.getName();
 
+    public static final String KEY_AUTH_EMAIL = "email";
+
     /**
      * 是否只接受Post请求
      */
@@ -36,19 +38,9 @@ public class EmailAuthenticationFilter extends AbstractAuthenticationProcessingF
     private boolean postOnly = true;
 
     /**
-     * @param defaultFilterProcessesUrl the default value for <tt>filterProcessesUrl</tt>.
-     */
-    public EmailAuthenticationFilter(String defaultFilterProcessesUrl) {
-        super(defaultFilterProcessesUrl);
-    }
-
-    /**
      * Creates a new instance
-     *
-     * @param requiresAuthenticationRequestMatcher the {@link RequestMatcher} used to
-     *                                             determine if authentication is required. Cannot be null.
      */
-    public EmailAuthenticationFilter(RequestMatcher requiresAuthenticationRequestMatcher) {
+    public EmailAuthenticationFilter() {
         super(new AntPathRequestMatcher("/auth/login/email", "POST"));
     }
 
@@ -101,7 +93,7 @@ public class EmailAuthenticationFilter extends AbstractAuthenticationProcessingF
      * @return 电子邮箱地址
      */
     private String getEmail(HttpServletRequest request) {
-        Object email = request.getSession().getAttribute(SessionConstant.KEY_AUTH_EMAIL);
+        Object email = request.getParameter(KEY_AUTH_EMAIL);
         return !(email instanceof String) ? "" : (String) email;
     }
 }

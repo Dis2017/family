@@ -20,7 +20,7 @@ public class EmailAuthenticationToken extends AbstractAuthenticationToken {
     private final static String TAG = EmailAuthenticationToken.class.getName();
 
     @Setter
-    private String email;
+    private Object principal;
 
     /**
      * Creates a token with the supplied array of authorities.
@@ -28,11 +28,11 @@ public class EmailAuthenticationToken extends AbstractAuthenticationToken {
      * @param authorities the collection of <tt>GrantedAuthority</tt>s for the principal
      *                    represented by this authentication object.
      *
-     * @param email the principal of token
+     * @param principal the principal of token
      */
-    public EmailAuthenticationToken(String email, Collection<? extends GrantedAuthority> authorities) {
+    public EmailAuthenticationToken(Object principal, Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
-        this.email = email == null ? "" : email;
+        this.principal = principal;
         super.setAuthenticated(true);
     }
 
@@ -79,6 +79,6 @@ public class EmailAuthenticationToken extends AbstractAuthenticationToken {
      */
     @Override
     public Object getPrincipal() {
-        return email;
+        return principal;
     }
 }

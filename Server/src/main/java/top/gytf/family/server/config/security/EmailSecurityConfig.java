@@ -1,9 +1,15 @@
 package top.gytf.family.server.config.security;
 
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.DefaultSecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Component;
+import top.gytf.family.server.security.email.EmailAuthenticationFilter;
+import top.gytf.family.server.security.email.EmailAuthenticationProvider;
 
 /**
  * Project:     IntelliJ IDEA
@@ -18,4 +24,29 @@ import org.springframework.stereotype.Component;
 @Component
 public class EmailSecurityConfig extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
     private final static String TAG = EmailSecurityConfig.class.getName();
+
+    private final EmailAuthenticationProvider emailAuthenticationProvider;
+//    private final AuthenticationSuccessHandler successHandler;
+//    private final AuthenticationFailureHandler failureHandler;
+
+    public EmailSecurityConfig(EmailAuthenticationProvider emailAuthenticationProvider) {
+        this.emailAuthenticationProvider = emailAuthenticationProvider;
+    }
+
+    @Override
+    public void configure(HttpSecurity builder) throws Exception {
+        super.configure(builder);
+
+        builder
+                .authenticationProvider(emailAuthenticationProvider)
+                .addFilterAfter(getEmailAuthenticationFilter(builder), UsernamePasswordAuthenticationFilter.class);
+    }
+
+    public EmailAuthenticationFilter getEmailAuthenticationFilter(HttpSecurity httpSecurity) {
+        EmailAuthenticationFilter emailAuthenticationFilter = new EmailAuthenticationFilter();
+        emailAuthenticationFilter.setAuthenticationManager(httpSecurity.getSharedObject(AuthenticationManager.class));
+//        emailAuthenticationFilter.setAuthenticationSuccessHandler(successHandler);
+//        emailAuthenticationFilter.setAuthenticationFailureHandler(failureHandler);
+        return emailAuthenticationFilter;
+    }
 }

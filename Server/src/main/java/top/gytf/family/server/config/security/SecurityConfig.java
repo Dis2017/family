@@ -1,7 +1,6 @@
 package top.gytf.family.server.config.security;
 
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -21,8 +20,24 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final static String TAG = SecurityConfig.class.getName();
 
+    private final EmailSecurityConfig emailSecurityConfig;
+
+    public SecurityConfig(EmailSecurityConfig emailSecurityConfig) {
+        this.emailSecurityConfig = emailSecurityConfig;
+    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        super.configure(http);
+        http
+                .formLogin()
+                .and()
+                .logout()
+                .and()
+                .authorizeRequests()
+                    .antMatchers("/auth/*").permitAll()
+                    .anyRequest().authenticated()
+                .and()
+                .csrf().disable()
+                .apply(emailSecurityConfig);
     }
 }
