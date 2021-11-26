@@ -4,12 +4,12 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.DefaultSecurityFilterChain;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Component;
 import top.gytf.family.server.security.email.EmailAuthenticationFilter;
 import top.gytf.family.server.security.email.EmailAuthenticationProvider;
+import top.gytf.family.server.security.email.EmailAuthenticationSuccessHandler;
+import top.gytf.family.server.security.email.EmailSecurityCodeHandler;
 
 /**
  * Project:     IntelliJ IDEA
@@ -25,12 +25,15 @@ import top.gytf.family.server.security.email.EmailAuthenticationProvider;
 public class EmailSecurityConfig extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
     private final static String TAG = EmailSecurityConfig.class.getName();
 
+    private final EmailSecurityCodeHandler emailSecurityCodeHandler;
     private final EmailAuthenticationProvider emailAuthenticationProvider;
-//    private final AuthenticationSuccessHandler successHandler;
+    private final EmailAuthenticationSuccessHandler successHandler;
 //    private final AuthenticationFailureHandler failureHandler;
 
-    public EmailSecurityConfig(EmailAuthenticationProvider emailAuthenticationProvider) {
+    public EmailSecurityConfig(EmailSecurityCodeHandler emailSecurityCodeHandler, EmailAuthenticationProvider emailAuthenticationProvider, EmailAuthenticationSuccessHandler successHandler) {
+        this.emailSecurityCodeHandler = emailSecurityCodeHandler;
         this.emailAuthenticationProvider = emailAuthenticationProvider;
+        this.successHandler = successHandler;
     }
 
     @Override
@@ -43,9 +46,9 @@ public class EmailSecurityConfig extends SecurityConfigurerAdapter<DefaultSecuri
     }
 
     public EmailAuthenticationFilter getEmailAuthenticationFilter(HttpSecurity httpSecurity) {
-        EmailAuthenticationFilter emailAuthenticationFilter = new EmailAuthenticationFilter();
+        EmailAuthenticationFilter emailAuthenticationFilter = new EmailAuthenticationFilter(emailSecurityCodeHandler);
         emailAuthenticationFilter.setAuthenticationManager(httpSecurity.getSharedObject(AuthenticationManager.class));
-//        emailAuthenticationFilter.setAuthenticationSuccessHandler(successHandler);
+        emailAuthenticationFilter.setAuthenticationSuccessHandler(successHandler);
 //        emailAuthenticationFilter.setAuthenticationFailureHandler(failureHandler);
         return emailAuthenticationFilter;
     }
