@@ -1,6 +1,7 @@
-package top.gytf.family.server.security;
+package top.gytf.family.server.security.email;
 
 import lombok.Data;
+import top.gytf.family.server.security.SecurityCode;
 
 import java.time.LocalDateTime;
 
@@ -15,17 +16,18 @@ import java.time.LocalDateTime;
  * @version V1.0
  */
 @Data
-public class NumberSecurityCode implements SecurityCode {
-    private final static String TAG = NumberSecurityCode.class.getName();
+public class EmailSecurityCode implements SecurityCode<String> {
+    private final static String TAG = EmailSecurityCode.class.getName();
 
     private final LocalDateTime expiredTime;
     private final String code;
+    private final String email;
 
-    public NumberSecurityCode(String code, int survivalTime) {
-        this.expiredTime = LocalDateTime.now().plusSeconds(survivalTime);
+    public EmailSecurityCode(LocalDateTime expiredTime, String code, String email) {
+        this.expiredTime = expiredTime;
         this.code = code;
+        this.email = email;
     }
-
 
     /**
      * 是否过期
@@ -45,5 +47,15 @@ public class NumberSecurityCode implements SecurityCode {
     @Override
     public String getCode() {
         return code;
+    }
+
+    /**
+     * 获取描述
+     *
+     * @return 描述
+     */
+    @Override
+    public String getDesc() {
+        return email;
     }
 }

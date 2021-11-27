@@ -8,7 +8,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import top.gytf.family.server.constants.PathConstant;
-import top.gytf.family.server.security.SecurityCodeException;
+import top.gytf.family.server.exceptions.SecurityCodeException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -75,13 +75,13 @@ public class EmailAuthenticationFilter extends AbstractAuthenticationProcessingF
             throw new AuthenticationServiceException("不接受非POST请求");
         }
 
+        String email = getEmail(request).trim();
         try {
-            emailSecurityCodeHandler.verify(request.getSession(), getCode(request));
+            emailSecurityCodeHandler.verify(request.getSession(), email, getCode(request));
         } catch (SecurityCodeException e) {
             throw new AuthenticationServiceException(e.getMessage());
         }
 
-        String email = getEmail(request).trim();
         EmailAuthenticationToken token = new EmailAuthenticationToken(email);
         copyDetails(token, request);
 

@@ -10,7 +10,7 @@ package top.gytf.family.server.security;
  * @author user
  * @version V1.0
  */
-public interface SecurityCode {
+public interface SecurityCode<D> {
     /**
      * 是否过期
      * @return 是否过期
@@ -22,4 +22,10 @@ public interface SecurityCode {
      * @return 验证码
      */
     String getCode();
+
+    /**
+     * 获取描述
+     * @return 描述
+     */
+    D getDesc();
 }

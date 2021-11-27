@@ -1,17 +1,17 @@
-package top.gytf.family.server.security;
+package top.gytf.family.server.exceptions;
 
 /**
  * Project:     IntelliJ IDEA
- * ClassName:   NullSecurityCodeException
- * Description: 验证码不存在错误
- * CreateDate:  2021/11/26 23:16
+ * ClassName:   SecurityCodeNotMatchException
+ * Description: 验证码不匹配错误
+ * CreateDate:  2021/11/26 23:22
  * ------------------------------------------------------------------------------------------
  *
  * @author user
  * @version V1.0
  */
-public class NullSecurityCodeException extends SecurityCodeException {
-    private final static String TAG = NullSecurityCodeException.class.getName();
+public class SecurityCodeNotMatchException extends SecurityCodeException{
+    private final static String TAG = SecurityCodeNotMatchException.class.getName();
 
     /**
      * Constructs a new exception with the specified detail message.  The
@@ -21,7 +21,7 @@ public class NullSecurityCodeException extends SecurityCodeException {
      * @param message the detail message. The detail message is saved for
      *                later retrieval by the {@link #getMessage()} method.
      */
-    public NullSecurityCodeException(String message) {
+    public SecurityCodeNotMatchException(String message) {
         super(message);
     }
 }

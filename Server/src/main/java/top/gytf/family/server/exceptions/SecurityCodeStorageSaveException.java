@@ -1,17 +1,16 @@
-package top.gytf.family.server.security;
+package top.gytf.family.server.exceptions;
 
 /**
- * Project:     IntelliJ IDEA
- * ClassName:   SecurityCodeNotMatchException
- * Description: 验证码不匹配错误
- * CreateDate:  2021/11/26 23:22
+ * Project:     IntelliJ IDEA<br>
+ * Description: 验证码存储保存错误<br>
+ * CreateDate:  2021/11/27 23:06 <br>
  * ------------------------------------------------------------------------------------------
  *
  * @author user
  * @version V1.0
  */
-public class SecurityCodeNotMatchException extends SecurityCodeException{
-    private final static String TAG = SecurityCodeNotMatchException.class.getName();
+public class SecurityCodeStorageSaveException extends SecurityCodeSendException {
+    private final static String TAG = SecurityCodeStorageSaveException.class.getName();
 
     /**
      * Constructs a new exception with the specified detail message.  The
@@ -21,7 +20,7 @@ public class SecurityCodeNotMatchException extends SecurityCodeException{
      * @param message the detail message. The detail message is saved for
      *                later retrieval by the {@link #getMessage()} method.
      */
-    public SecurityCodeNotMatchException(String message) {
+    public SecurityCodeStorageSaveException(String message) {
         super(message);
     }
 }

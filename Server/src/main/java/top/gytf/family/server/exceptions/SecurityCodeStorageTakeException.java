@@ -1,19 +1,16 @@
-package top.gytf.family.server.security.email;
-
-import top.gytf.family.server.security.SecurityCodeException;
+package top.gytf.family.server.exceptions;
 
 /**
- * Project:     IntelliJ IDEA
- * ClassName:   SecurityCodeExpiredException
- * Description: 验证码过期错误
- * CreateDate:  2021/11/26 23:19
+ * Project:     IntelliJ IDEA<br>
+ * Description: 验证码从存储器中取出错误<br>
+ * CreateDate:  2021/11/27 23:03 <br>
  * ------------------------------------------------------------------------------------------
  *
  * @author user
  * @version V1.0
  */
-public class SecurityCodeExpiredException extends SecurityCodeException {
-    private final static String TAG = SecurityCodeExpiredException.class.getName();
+public class SecurityCodeStorageTakeException extends SecurityCodeSendException {
+    private final static String TAG = SecurityCodeStorageTakeException.class.getName();
 
     /**
      * Constructs a new exception with the specified detail message.  The
@@ -23,7 +20,7 @@ public class SecurityCodeExpiredException extends SecurityCodeException {
      * @param message the detail message. The detail message is saved for
      *                later retrieval by the {@link #getMessage()} method.
      */
-    public SecurityCodeExpiredException(String message) {
+    public SecurityCodeStorageTakeException(String message) {
         super(message);
     }
 }

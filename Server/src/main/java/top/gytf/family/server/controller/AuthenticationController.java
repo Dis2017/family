@@ -1,7 +1,8 @@
 package top.gytf.family.server.controller;
 
 import org.springframework.web.bind.annotation.*;
-import top.gytf.family.server.security.NumberSecurityCode;
+import top.gytf.family.server.exceptions.SecurityCodeException;
+import top.gytf.family.server.security.email.EmailSecurityCode;
 import top.gytf.family.server.security.email.EmailSecurityCodeHandler;
 
 import javax.servlet.http.HttpSession;
@@ -27,9 +28,10 @@ public class AuthenticationController {
         this.emailSecurityCodeHandler = emailSecurityCodeHandler;
     }
 
-    @GetMapping("/security_code/email")
-    public String generateEmailSecurityCode(HttpSession session, @RequestParam("email") String email) {
-        NumberSecurityCode code = emailSecurityCodeHandler.generate(session);
+    @GetMapping("/security-code/email")
+    public String generateEmailSecurityCode(HttpSession session, @RequestParam("email") String email)
+            throws SecurityCodeException {
+        EmailSecurityCode code = emailSecurityCodeHandler.generate(session, email, email);
         return code.getCode();
     }
 }

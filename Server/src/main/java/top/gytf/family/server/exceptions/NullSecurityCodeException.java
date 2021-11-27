@@ -1,17 +1,17 @@
-package top.gytf.family.server.security;
+package top.gytf.family.server.exceptions;
 
 /**
  * Project:     IntelliJ IDEA
- * ClassName:   SecurityCodeException
- * Description: 验证码错误
- * CreateDate:  2021/11/26 22:35
+ * ClassName:   NullSecurityCodeException
+ * Description: 验证码不存在错误
+ * CreateDate:  2021/11/26 23:16
  * ------------------------------------------------------------------------------------------
  *
  * @author user
  * @version V1.0
  */
-public class SecurityCodeException extends Exception {
-    private final static String TAG = SecurityCodeException.class.getName();
+public class NullSecurityCodeException extends SecurityCodeException {
+    private final static String TAG = NullSecurityCodeException.class.getName();
 
     /**
      * Constructs a new exception with the specified detail message.  The
@@ -21,7 +21,7 @@ public class SecurityCodeException extends Exception {
      * @param message the detail message. The detail message is saved for
      *                later retrieval by the {@link #getMessage()} method.
      */
-    public SecurityCodeException(String message) {
+    public NullSecurityCodeException(String message) {
         super(message);
     }
 }
