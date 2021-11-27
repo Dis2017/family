@@ -54,7 +54,12 @@ public interface SecurityCodeHandler<C_D, C extends SecurityCode<C_D>, R, S_D> {
         if (code == null || code.isExpired()) {
             code = getGenerator().generate(codeDesc);
             getStorage().save(repos, code);
-            getSender().send(sendDesc, code);
+            try {
+                getSender().send(sendDesc, code);
+            } catch (Exception e) {
+                getStorage().remove(repos, codeDesc);
+                throw new SecurityCodeException(e.getMessage());
+            }
         }
         return code;
     }

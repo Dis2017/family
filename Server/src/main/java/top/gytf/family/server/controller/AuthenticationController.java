@@ -1,5 +1,7 @@
 package top.gytf.family.server.controller;
 
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import top.gytf.family.server.exceptions.SecurityCodeException;
 import top.gytf.family.server.security.email.EmailSecurityCode;
@@ -33,5 +35,10 @@ public class AuthenticationController {
             throws SecurityCodeException {
         EmailSecurityCode code = emailSecurityCodeHandler.generate(session, email, email);
         return code.getCode();
+    }
+
+    @GetMapping("/current")
+    public Object getCurrentUser() {
+        return SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 }
