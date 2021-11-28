@@ -12,6 +12,7 @@ import top.gytf.family.server.security.email.EmailSecurityCodeHandler;
 import top.gytf.family.server.security.image.ImageSecurityCode;
 import top.gytf.family.server.security.image.ImageSecurityCodeHandler;
 
+import javax.annotation.security.PermitAll;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -39,6 +40,7 @@ public class AuthenticationController {
     }
 
     @GetMapping( PathConstant.Auth.PATH_SECURITY_CODE_EMAIL)
+    @PermitAll
     public String generateEmailSecurityCode(HttpSession session, @RequestParam("email") String email)
             throws SecurityCodeException {
         EmailSecurityCode code = emailSecurityCodeHandler.generate(session, email);
@@ -46,6 +48,7 @@ public class AuthenticationController {
     }
 
     @GetMapping(PathConstant.Auth.PATH_SECURITY_CODE_IMAGE)
+    @PermitAll
     public void generateImageSecurityCode(HttpSession session, ServletResponse response)
             throws SecurityCodeException  {
         imageSecurityCodeHandler.getStorage().remove(session, response);

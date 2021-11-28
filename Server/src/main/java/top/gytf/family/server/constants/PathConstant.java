@@ -34,6 +34,11 @@ public class PathConstant {
         public static final String  PATH_CURRENT = "/current";
 
         /**
+         * 登出的路径
+         */
+        public static final String PATH_LOGOUT = "/logout";
+
+        /**
          * 邮箱登录的路径
          */
         public static final String PATH_EMAIL_LOGIN = "/login/email";
