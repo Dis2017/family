@@ -2,6 +2,7 @@ package top.gytf.family.server.security.image;
 
 import com.baomidou.mybatisplus.extension.api.R;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import top.gytf.family.server.exceptions.SecurityCodeSendException;
 import top.gytf.family.server.security.SecurityCodeSender;
@@ -52,6 +53,7 @@ public class ImageSecurityCodeSender implements SecurityCodeSender<ImageSecurity
     public void send(ImageSecurityCode code) throws SecurityCodeSendException {
         log.debug(code.toString());
         try {
+            code.getDesc().setContentType(MediaType.IMAGE_JPEG_VALUE);
             ImageIO.write(generateImage(code.getCode()), "JPEG", code.getDesc().getOutputStream());
         } catch (IOException e) {
             throw new SecurityCodeSendException(e.getMessage());

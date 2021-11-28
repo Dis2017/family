@@ -1,5 +1,7 @@
 package top.gytf.family.server.exceptions;
 
+import org.springframework.security.authentication.AuthenticationServiceException;
+
 /**
  * Project:     IntelliJ IDEA
  * ClassName:   SecurityCodeException
@@ -10,7 +12,7 @@ package top.gytf.family.server.exceptions;
  * @author user
  * @version V1.0
  */
-public class SecurityCodeException extends Exception {
+public class SecurityCodeException extends AuthenticationServiceException {
     private final static String TAG = SecurityCodeException.class.getName();
 
     /**

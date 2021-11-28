@@ -1,10 +1,12 @@
 package top.gytf.family.server.security.image;
 
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 import top.gytf.family.server.constants.PathConstant;
 import top.gytf.family.server.exceptions.SecurityCodeException;
+import top.gytf.family.server.security.LoginHandler;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -29,8 +31,10 @@ public class ImageSecurityCodeVerifyFilter extends OncePerRequestFilter {
 
     private final AntPathMatcher matcher;
     private final ImageSecurityCodeHandler imageSecurityCodeHandler;
+    private final LoginHandler loginHandler;
 
-    public ImageSecurityCodeVerifyFilter(ImageSecurityCodeHandler imageSecurityCodeHandler) {
+    public ImageSecurityCodeVerifyFilter(ImageSecurityCodeHandler imageSecurityCodeHandler, LoginHandler loginHandler) {
+        this.loginHandler = loginHandler;
         matcher = new AntPathMatcher();
         this.imageSecurityCodeHandler = imageSecurityCodeHandler;
     }
@@ -64,7 +68,9 @@ public class ImageSecurityCodeVerifyFilter extends OncePerRequestFilter {
             try {
                 imageSecurityCodeHandler.verify(request.getSession(), null, code);
             } catch (SecurityCodeException e) {
-                throw new IOException(e.getMessage());
+                e.printStackTrace();
+                loginHandler.onAuthenticationFailure(request, response,e);
+                return;
             }
         }
 

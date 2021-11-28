@@ -52,6 +52,7 @@ public class LoginHandler implements AuthenticationSuccessHandler, Authenticatio
 //            return;
 //        }
         ResponseUtil.setToJson(response,
-                objectMapper.writeValueAsString(new Response<>(StateCode.FAIL, exception.getMessage())));
+                objectMapper.writeValueAsString(new Response<>(StateCode.FAIL, exception.getMessage()))
+        );
     }
 }
