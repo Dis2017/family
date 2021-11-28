@@ -29,7 +29,7 @@ public class EmailAuthenticationFilter extends AbstractAuthenticationProcessingF
     private final static String TAG = EmailAuthenticationFilter.class.getName();
 
     public static final String KEY_AUTH_EMAIL = "email";
-    public static final String KEY_SECURITY_CODE = "code";
+    public static final String KEY_SECURITY_CODE = "email_code";
 
     /**
      * 是否只接受Post请求
@@ -45,7 +45,7 @@ public class EmailAuthenticationFilter extends AbstractAuthenticationProcessingF
      * @param emailSecurityCodeHandler
      */
     public EmailAuthenticationFilter(EmailSecurityCodeHandler emailSecurityCodeHandler) {
-        super(new AntPathRequestMatcher(PathConstant.PATH_EMAIL_LOGIN, "POST"));
+        super(new AntPathRequestMatcher(PathConstant.Auth.AUTH_PREFIX + PathConstant.Auth.PATH_EMAIL_LOGIN, "POST"));
         this.emailSecurityCodeHandler = emailSecurityCodeHandler;
     }
 

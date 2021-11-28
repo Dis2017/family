@@ -11,12 +11,11 @@ import top.gytf.family.server.exceptions.SecurityCodeSendException;
  * @author user
  * @version V1.0
  */
-public interface SecurityCodeSender<D, C extends SecurityCode<?>> {
+public interface SecurityCodeSender<C extends SecurityCode<?>> {
     /**
      * 发送验证码
-     * @param desc 接收方描述
      * @param code 验证码
      * @exception SecurityCodeSendException 发送错误
      */
-    void send(D desc, C code) throws SecurityCodeSendException;
+    void send(C code) throws SecurityCodeSendException;
 }

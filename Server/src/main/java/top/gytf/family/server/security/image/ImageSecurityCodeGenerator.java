@@ -1,25 +1,28 @@
-package top.gytf.family.server.security.email;
+package top.gytf.family.server.security.image;
 
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
 import top.gytf.family.server.exceptions.SecurityCodeGenerateException;
 import top.gytf.family.server.security.SecurityCodeGenerator;
+import top.gytf.family.server.security.email.EmailSecurityCode;
 
+import javax.servlet.ServletResponse;
 import java.time.LocalDateTime;
 import java.util.Random;
 
 /**
  * Project:     IntelliJ IDEA<br>
- * Description: 数字验证码生成器<br>
- * CreateDate:  2021/11/27 22:29 <br>
+ * Description: 图片验证码生成器<br>
+ * CreateDate:  2021/11/28 17:50 <br>
  * ------------------------------------------------------------------------------------------
  *
  * @author user
  * @version V1.0
  */
-public class EmailSecurityCodeGenerator implements SecurityCodeGenerator<String, EmailSecurityCode> {
-    private final static String TAG = EmailSecurityCodeGenerator.class.getName();
+@Component
+public class ImageSecurityCodeGenerator implements SecurityCodeGenerator<ServletResponse, ImageSecurityCode> {
+    private final static String TAG = ImageSecurityCodeGenerator.class.getName();
 
     /**
      * 验证码位数
@@ -37,7 +40,7 @@ public class EmailSecurityCodeGenerator implements SecurityCodeGenerator<String,
 
     private final Random random;
 
-    public EmailSecurityCodeGenerator() {
+    public ImageSecurityCodeGenerator() {
         this.random = new Random(System.currentTimeMillis());
     }
 
@@ -49,11 +52,11 @@ public class EmailSecurityCodeGenerator implements SecurityCodeGenerator<String,
      * @throws SecurityCodeGenerateException 验证码生成错误
      */
     @Override
-    public EmailSecurityCode generate(String desc) throws SecurityCodeGenerateException {
+    public ImageSecurityCode generate(ServletResponse desc) throws SecurityCodeGenerateException {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < size; i++) {
             builder.append(random.nextInt(10));
         }
-        return new EmailSecurityCode(LocalDateTime.now().plusSeconds(survivalTime), builder.toString(), desc);
+        return new ImageSecurityCode(LocalDateTime.now().plusSeconds(survivalTime), builder.toString(), desc);
     }
 }

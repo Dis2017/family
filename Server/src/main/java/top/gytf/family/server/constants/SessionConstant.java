@@ -19,4 +19,16 @@ public class SessionConstant {
      */
     public static final String KEY_AUTH_EMAIL = "KEY_AUTH_EMAIL";
 
+    /**
+     * Session键值<br>
+     * 电子邮箱验证码
+     */
+    public static final String KEY_EMAIL_SECURITY_CODE = "KEY_EMAIL_SECURITY_CODE";
+
+    /**
+     * Session键值<br>
+     * 图片验证码
+     */
+    public static final String KEY_IMAGE_SECURITY_CODE = "KEY_IMAGE_SECURITY_CODE";
+
 }

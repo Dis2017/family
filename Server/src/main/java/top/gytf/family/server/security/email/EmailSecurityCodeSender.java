@@ -19,7 +19,7 @@ import top.gytf.family.server.security.SecurityCodeSender;
  */
 @Component
 @Slf4j
-public class EmailSecurityCodeSender implements SecurityCodeSender<String, EmailSecurityCode> {
+public class EmailSecurityCodeSender implements SecurityCodeSender<EmailSecurityCode> {
     private final static String TAG = EmailSecurityCodeSender.class.getName();
 
     private final JavaMailSender sender;
@@ -31,16 +31,15 @@ public class EmailSecurityCodeSender implements SecurityCodeSender<String, Email
     /**
      * 发送验证码
      *
-     * @param desc 接收方描述
      * @param code 验证码
      * @throws SecurityCodeSendException 发送错误
      */
     @Override
-    public void send(String desc, EmailSecurityCode code) throws SecurityCodeSendException {
+    public void send(EmailSecurityCode code) throws SecurityCodeSendException {
         log.debug(code.toString());
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setFrom("2632699773@qq.com");
-        mailMessage.setTo(desc);
+        mailMessage.setTo(code.getDesc());
         mailMessage.setSubject("【Family】邮箱验证");
         mailMessage.setText("您正在使用DisStudio服务。\n【Family】的验证码为：" + code.getCode() + "，若非本人操作请忽略。");
         try {

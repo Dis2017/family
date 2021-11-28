@@ -19,10 +19,28 @@ public abstract class SessionSecurityCodeStorage<D, C extends SecurityCode<D>> i
     private final static String TAG = SessionSecurityCodeStorage.class.getName();
 
     /**
-     * Session键值<br>
-     * 电子邮箱验证码
+     * 是否只存储一例</br>
+     * 为<code>true</code>只用{@link top.gytf.family.server.security.SessionSecurityCodeStorage#getKeyPrefix()}作为key值<br>
+     * 为<code>false</code>则用{@link top.gytf.family.server.security.SessionSecurityCodeStorage#getKeyPrefix()} +
+     * {@link top.gytf.family.server.security.SecurityCode#getDesc()}作为key值
+     * @return 是否为单例
      */
-    public static final String KEY_EMAIL_SECURITY_CODE = "KEY_EMAIL_SECURITY_CODE";
+    public abstract boolean isSingle();
+
+    /**
+     * 获取Key前缀
+     * @return 前缀
+     */
+    public abstract String getKeyPrefix();
+
+    /**
+     * 获取key值
+     * @param desc code的描述
+     * @return 键值
+     */
+    private String getKey(D desc) {
+        return getKeyPrefix() + (isSingle() ? "" : desc);
+    }
 
     /**
      * 取出验证码
@@ -34,7 +52,7 @@ public abstract class SessionSecurityCodeStorage<D, C extends SecurityCode<D>> i
      */
     @Override
     public C take(HttpSession repos, D desc) throws SecurityCodeStorageTakeException {
-        Object obj = repos.getAttribute(KEY_EMAIL_SECURITY_CODE + desc);
+        Object obj = repos.getAttribute(getKey(desc));
         C code = null;
         if (obj != null) code = convert(obj);
         return code;
@@ -51,7 +69,7 @@ public abstract class SessionSecurityCodeStorage<D, C extends SecurityCode<D>> i
      */
     @Override
     public void save(HttpSession repos, C code) throws SecurityCodeStorageSaveException {
-        repos.setAttribute(KEY_EMAIL_SECURITY_CODE + code.getDesc(), code);
+        repos.setAttribute(getKey(code.getDesc()), code);
     }
 
     /**
@@ -64,6 +82,6 @@ public abstract class SessionSecurityCodeStorage<D, C extends SecurityCode<D>> i
      */
     @Override
     public void remove(HttpSession repos, D desc) throws SecurityCodeStorageRemoveException {
-        repos.removeAttribute(KEY_EMAIL_SECURITY_CODE + desc);
+        repos.removeAttribute(getKey(desc));
     }
 }
