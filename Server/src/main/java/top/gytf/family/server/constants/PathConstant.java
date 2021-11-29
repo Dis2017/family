@@ -53,12 +53,25 @@ public class PathConstant {
          */
         public static final String PATH_SECURITY_CODE_IMAGE = "/security-code/image";
 
+        /**
+         * 需要图片验证码的请求路径
+         */
+        public static final String[] PATHS_IMAGE_VERIFY = {
+                AUTH_PREFIX + PATH_SECURITY_CODE_EMAIL
+        };
+
+        /**
+         * 需要邮箱验证码的请求路径
+         */
+        public static final String[] PATHS_EMAIL_VERIFY = {
+                AUTH_PREFIX + PATH_EMAIL_LOGIN
+        };
     }
 
     /**
-     * 需要图片验证码的请求路径
+     * 用户
      */
-    public static final String[] PATHS_IMAGE_VERIFY = {
-        Auth.AUTH_PREFIX + Auth.PATH_SECURITY_CODE_EMAIL
-    };
+    public static class User {
+        public static final String USER_PREFIX = "/user";
+    }
 }

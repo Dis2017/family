@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import top.gytf.family.server.constants.PathConstant;
+import top.gytf.family.server.constants.RequestParamConstant;
 import top.gytf.family.server.exceptions.SecurityCodeException;
 import top.gytf.family.server.security.email.EmailSecurityCode;
 import top.gytf.family.server.security.email.EmailSecurityCodeHandler;
@@ -15,6 +16,7 @@ import top.gytf.family.server.security.image.ImageSecurityCodeHandler;
 import javax.annotation.security.PermitAll;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpSession;
+import java.time.LocalDateTime;
 
 /**
  * Project:     IntelliJ IDEA
@@ -39,14 +41,33 @@ public class AuthenticationController {
         this.imageSecurityCodeHandler = imageSecurityCodeHandler;
     }
 
+    /**
+     * 生成邮箱验证码
+     * @param session 会话
+     * @param email 邮箱地址
+     * @throws SecurityCodeException 验证码错误
+     */
     @GetMapping( PathConstant.Auth.PATH_SECURITY_CODE_EMAIL)
     @PermitAll
-    public String generateEmailSecurityCode(HttpSession session, @RequestParam("email") String email)
+    public String generateEmailSecurityCode(HttpSession session, @RequestParam(RequestParamConstant.KEY_EMAIL) String email)
             throws SecurityCodeException {
-        EmailSecurityCode code = emailSecurityCodeHandler.generate(session, email);
+        EmailSecurityCode code = emailSecurityCodeHandler.getStorage().take(session, email);
+        if (code != null && code.getIssueDate().plusSeconds(60).isBefore(LocalDateTime.now())) {
+            emailSecurityCodeHandler.getStorage().remove(session, email);
+            code = null;
+        }
+
+        if (code == null) code = emailSecurityCodeHandler.generate(session, email);
+
         return code.getCode();
     }
 
+    /**
+     * 生成图片验证码
+     * @param session 会话
+     * @param response 响应
+     * @throws SecurityCodeException 验证码错误
+     */
     @GetMapping(PathConstant.Auth.PATH_SECURITY_CODE_IMAGE)
     @PermitAll
     public void generateImageSecurityCode(HttpSession session, ServletResponse response)
@@ -56,6 +77,7 @@ public class AuthenticationController {
     }
 
     @GetMapping(PathConstant.Auth.PATH_CURRENT)
+    @PermitAll
     public Object getCurrentUser() {
         return SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }

@@ -2,7 +2,6 @@ package top.gytf.family.server.security.email;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.stereotype.Component;
 import top.gytf.family.server.exceptions.SecurityCodeGenerateException;
 import top.gytf.family.server.security.SecurityCodeGenerator;
 
@@ -54,6 +53,6 @@ public class EmailSecurityCodeGenerator implements SecurityCodeGenerator<String,
         for (int i = 0; i < size; i++) {
             builder.append(random.nextInt(10));
         }
-        return new EmailSecurityCode(LocalDateTime.now().plusSeconds(survivalTime), builder.toString(), desc);
+        return new EmailSecurityCode(survivalTime, builder.toString(), desc);
     }
 }

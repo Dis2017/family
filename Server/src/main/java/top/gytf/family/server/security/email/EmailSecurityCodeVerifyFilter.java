@@ -1,8 +1,7 @@
-package top.gytf.family.server.security.image;
+package top.gytf.family.server.security.email;
 
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
-import org.springframework.util.AntPathMatcher;
 import top.gytf.family.server.constants.PathConstant;
 import top.gytf.family.server.constants.RequestParamConstant;
 import top.gytf.family.server.security.AbstractSecurityCodeVerifyFilter;
@@ -10,29 +9,28 @@ import top.gytf.family.server.security.LoginHandler;
 import top.gytf.family.server.security.SecurityCode;
 import top.gytf.family.server.security.SecurityCodeHandler;
 
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 /**
  * Project:     IntelliJ IDEA<br>
- * Description: 图片验证码认证过滤器<br>
- * CreateDate:  2021/11/28 18:33 <br>
+ * Description: 邮箱验证码验证过滤器<br>
+ * CreateDate:  2021/11/29 23:20 <br>
  * ------------------------------------------------------------------------------------------
  *
  * @author user
  * @version V1.0
  */
 @Component
-public class ImageSecurityCodeVerifyFilter extends AbstractSecurityCodeVerifyFilter<ServletResponse> {
-    private final static String TAG = ImageSecurityCodeVerifyFilter.class.getName();
+public class EmailSecurityCodeVerifyFilter extends AbstractSecurityCodeVerifyFilter<String> {
+    private final static String TAG = EmailSecurityCodeVerifyFilter.class.getName();
 
-    private final ImageSecurityCodeHandler imageSecurityCodeHandler;
-    private final LoginHandler loginHandler;
+    private final EmailSecurityCodeHandler securityCodeHandler;
+    private final LoginHandler failureHandler;
 
-    public ImageSecurityCodeVerifyFilter(ImageSecurityCodeHandler imageSecurityCodeHandler, LoginHandler loginHandler) {
-        this.loginHandler = loginHandler;
-        this.imageSecurityCodeHandler = imageSecurityCodeHandler;
+    public EmailSecurityCodeVerifyFilter(EmailSecurityCodeHandler securityCodeHandler, LoginHandler failureHandler) {
+        this.securityCodeHandler = securityCodeHandler;
+        this.failureHandler = failureHandler;
     }
 
     /**
@@ -42,7 +40,7 @@ public class ImageSecurityCodeVerifyFilter extends AbstractSecurityCodeVerifyFil
      */
     @Override
     protected AuthenticationFailureHandler getFailureHandler() {
-        return loginHandler;
+        return failureHandler;
     }
 
     /**
@@ -51,8 +49,8 @@ public class ImageSecurityCodeVerifyFilter extends AbstractSecurityCodeVerifyFil
      * @return 验证码处理器
      */
     @Override
-    protected SecurityCodeHandler<ServletResponse, ? extends SecurityCode<ServletResponse>, HttpSession> getSecurityCodeHandler() {
-        return imageSecurityCodeHandler;
+    protected SecurityCodeHandler<String, ? extends SecurityCode<String>, HttpSession> getSecurityCodeHandler() {
+        return securityCodeHandler;
     }
 
     /**
@@ -62,8 +60,12 @@ public class ImageSecurityCodeVerifyFilter extends AbstractSecurityCodeVerifyFil
      * @return 描述
      */
     @Override
-    protected ServletResponse getDesc(HttpServletRequest request) {
-        return null;
+    protected String getDesc(HttpServletRequest request) {
+        String code = null;
+        Object obj = request.getAttribute(RequestParamConstant.KEY_EMAIL);
+        if (obj instanceof String) code = (String) obj;
+        if (code == null) code = request.getParameter(RequestParamConstant.KEY_EMAIL);
+        return code;
     }
 
     /**
@@ -75,9 +77,9 @@ public class ImageSecurityCodeVerifyFilter extends AbstractSecurityCodeVerifyFil
     @Override
     protected String getCode(HttpServletRequest request) {
         String code = null;
-        Object obj = request.getAttribute(RequestParamConstant.KEY_IMAGE_SECURITY_CODE);
+        Object obj = request.getAttribute(RequestParamConstant.KEY_EMAIL_SECURITY_CODE);
         if (obj instanceof String) code = (String) obj;
-        if (code == null) code = request.getParameter(RequestParamConstant.KEY_IMAGE_SECURITY_CODE);
+        if (code == null) code = request.getParameter(RequestParamConstant.KEY_EMAIL_SECURITY_CODE);
         return code;
     }
 
@@ -89,6 +91,6 @@ public class ImageSecurityCodeVerifyFilter extends AbstractSecurityCodeVerifyFil
      */
     @Override
     protected String[] getTargetPaths() {
-        return PathConstant.Auth.PATHS_IMAGE_VERIFY;
+        return PathConstant.Auth.PATHS_EMAIL_VERIFY;
     }
 }

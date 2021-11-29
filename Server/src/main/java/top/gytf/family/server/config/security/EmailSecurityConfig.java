@@ -45,7 +45,7 @@ public class EmailSecurityConfig extends SecurityConfigurerAdapter<DefaultSecuri
     }
 
     public EmailAuthenticationFilter getEmailAuthenticationFilter(HttpSecurity httpSecurity) {
-        EmailAuthenticationFilter emailAuthenticationFilter = new EmailAuthenticationFilter(emailSecurityCodeHandler);
+        EmailAuthenticationFilter emailAuthenticationFilter = new EmailAuthenticationFilter();
         emailAuthenticationFilter.setAuthenticationManager(httpSecurity.getSharedObject(AuthenticationManager.class));
         emailAuthenticationFilter.setAuthenticationSuccessHandler(loginHandler);
         emailAuthenticationFilter.setAuthenticationFailureHandler(loginHandler);

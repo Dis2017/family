@@ -57,6 +57,6 @@ public class ImageSecurityCodeGenerator implements SecurityCodeGenerator<Servlet
         for (int i = 0; i < size; i++) {
             builder.append(random.nextInt(10));
         }
-        return new ImageSecurityCode(LocalDateTime.now().plusSeconds(survivalTime), builder.toString(), desc);
+        return new ImageSecurityCode(survivalTime, builder.toString(), desc);
     }
 }

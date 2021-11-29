@@ -1,5 +1,7 @@
 package top.gytf.family.server.security;
 
+import java.time.LocalDateTime;
+
 /**
  * Project:     IntelliJ IDEA
  * ClassName:   SecurityCode
@@ -15,7 +17,21 @@ public interface SecurityCode<D> {
      * 是否过期
      * @return 是否过期
      */
-    boolean isExpired();
+    default boolean isExpired() {
+        return LocalDateTime.now().isAfter(getExpiredTime());
+    }
+
+    /**
+     * 获取签发日期
+     * @return 签发日期
+     */
+    LocalDateTime getIssueDate();
+
+    /**
+     * 获取到期时间
+     * @return 到期时间
+     */
+    LocalDateTime getExpiredTime();
 
     /**
      * 获取验证码

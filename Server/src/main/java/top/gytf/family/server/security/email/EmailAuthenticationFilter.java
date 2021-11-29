@@ -8,6 +8,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import top.gytf.family.server.constants.PathConstant;
+import top.gytf.family.server.constants.RequestParamConstant;
 import top.gytf.family.server.exceptions.SecurityCodeException;
 
 import javax.servlet.ServletException;
@@ -28,9 +29,6 @@ import java.io.IOException;
 public class EmailAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
     private final static String TAG = EmailAuthenticationFilter.class.getName();
 
-    public static final String KEY_AUTH_EMAIL = "email";
-    public static final String KEY_SECURITY_CODE = "email_code";
-
     /**
      * 是否只接受Post请求
      */
@@ -38,15 +36,11 @@ public class EmailAuthenticationFilter extends AbstractAuthenticationProcessingF
     @Getter
     private boolean postOnly = true;
 
-    private final EmailSecurityCodeHandler emailSecurityCodeHandler;
-
     /**
      * Creates a new instance
-     * @param emailSecurityCodeHandler
      */
-    public EmailAuthenticationFilter(EmailSecurityCodeHandler emailSecurityCodeHandler) {
+    public EmailAuthenticationFilter() {
         super(new AntPathRequestMatcher(PathConstant.Auth.AUTH_PREFIX + PathConstant.Auth.PATH_EMAIL_LOGIN, "POST"));
-        this.emailSecurityCodeHandler = emailSecurityCodeHandler;
     }
 
     /**
@@ -76,25 +70,10 @@ public class EmailAuthenticationFilter extends AbstractAuthenticationProcessingF
         }
 
         String email = getEmail(request).trim();
-        try {
-            emailSecurityCodeHandler.verify(request.getSession(), email, getCode(request));
-        } catch (SecurityCodeException e) {
-            throw new AuthenticationServiceException(e.getMessage());
-        }
-
         EmailAuthenticationToken token = new EmailAuthenticationToken(email);
         copyDetails(token, request);
 
         return getAuthenticationManager().authenticate(token);
-    }
-
-    /**
-     * 获取验证码
-     * @param request 请求
-     * @return 邮箱验证码
-     */
-    private String getCode(HttpServletRequest request) {
-        return request.getParameter(KEY_SECURITY_CODE);
     }
 
     /**
@@ -113,7 +92,6 @@ public class EmailAuthenticationFilter extends AbstractAuthenticationProcessingF
      * @return 电子邮箱地址
      */
     private String getEmail(HttpServletRequest request) {
-        String email = request.getParameter(KEY_AUTH_EMAIL);
-        return email == null ? "" : email;
+        return request.getParameter(RequestParamConstant.KEY_EMAIL);
     }
 }

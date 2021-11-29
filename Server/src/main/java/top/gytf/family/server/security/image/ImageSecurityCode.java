@@ -1,11 +1,9 @@
 package top.gytf.family.server.security.image;
 
-import lombok.Data;
-import top.gytf.family.server.security.SecurityCode;
+import lombok.ToString;
+import top.gytf.family.server.security.AbstractSecurityCode;
 
 import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpSession;
-import java.time.LocalDateTime;
 
 /**
  * Project:     IntelliJ IDEA<br>
@@ -16,38 +14,14 @@ import java.time.LocalDateTime;
  * @author user
  * @version V1.0
  */
-@Data
-public class ImageSecurityCode implements SecurityCode<ServletResponse> {
+public class ImageSecurityCode extends AbstractSecurityCode<ServletResponse> {
     private final static String TAG = ImageSecurityCode.class.getName();
 
-    private final LocalDateTime expiredTime;
-    private final String code;
     private final ServletResponse response;
 
-    public ImageSecurityCode(LocalDateTime expiredTime, String code, ServletResponse response) {
-        this.expiredTime = expiredTime;
-        this.code = code;
+    public ImageSecurityCode(long survivalTime, String code, ServletResponse response) {
+        super(survivalTime, code);
         this.response = response;
-    }
-
-    /**
-     * 是否过期
-     *
-     * @return 是否过期
-     */
-    @Override
-    public boolean isExpired() {
-        return expiredTime.isBefore(LocalDateTime.now());
-    }
-
-    /**
-     * 获取验证码
-     *
-     * @return 验证码
-     */
-    @Override
-    public String getCode() {
-        return code;
     }
 
     /**
