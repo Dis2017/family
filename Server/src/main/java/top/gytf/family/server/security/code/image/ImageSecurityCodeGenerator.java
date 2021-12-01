@@ -1,14 +1,12 @@
-package top.gytf.family.server.security.image;
+package top.gytf.family.server.security.code.image;
 
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
 import top.gytf.family.server.exceptions.SecurityCodeGenerateException;
-import top.gytf.family.server.security.SecurityCodeGenerator;
-import top.gytf.family.server.security.email.EmailSecurityCode;
+import top.gytf.family.server.security.code.SecurityCodeGenerator;
 
 import javax.servlet.ServletResponse;
-import java.time.LocalDateTime;
 import java.util.Random;
 
 /**

@@ -1,13 +1,12 @@
-package top.gytf.family.server.security.email;
+package top.gytf.family.server.security.code.email;
 
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 import top.gytf.family.server.constants.PathConstant;
-import top.gytf.family.server.constants.RequestParamConstant;
-import top.gytf.family.server.security.AbstractSecurityCodeVerifyFilter;
+import top.gytf.family.server.security.code.AbstractSecurityCodeVerifyFilter;
 import top.gytf.family.server.security.LoginHandler;
-import top.gytf.family.server.security.SecurityCode;
-import top.gytf.family.server.security.SecurityCodeHandler;
+import top.gytf.family.server.security.code.SecurityCode;
+import top.gytf.family.server.security.code.SecurityCodeHandler;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -22,7 +21,7 @@ import javax.servlet.http.HttpSession;
  * @version V1.0
  */
 @Component
-public class EmailSecurityCodeVerifyFilter extends AbstractSecurityCodeVerifyFilter<String> {
+public class EmailSecurityCodeVerifyFilter extends AbstractSecurityCodeVerifyFilter<String, HttpSession> {
     private final static String TAG = EmailSecurityCodeVerifyFilter.class.getName();
 
     private final EmailSecurityCodeHandler securityCodeHandler;
@@ -54,6 +53,17 @@ public class EmailSecurityCodeVerifyFilter extends AbstractSecurityCodeVerifyFil
     }
 
     /**
+     * 仓库
+     *
+     * @param request 请求
+     * @return 仓库
+     */
+    @Override
+    protected HttpSession getRepository(HttpServletRequest request) {
+        return request.getSession();
+    }
+
+    /**
      * 获取验证码描述
      *
      * @param request 请求
@@ -62,9 +72,9 @@ public class EmailSecurityCodeVerifyFilter extends AbstractSecurityCodeVerifyFil
     @Override
     protected String getDesc(HttpServletRequest request) {
         String code = null;
-        Object obj = request.getAttribute(RequestParamConstant.KEY_EMAIL);
+        Object obj = request.getAttribute("email");
         if (obj instanceof String) code = (String) obj;
-        if (code == null) code = request.getParameter(RequestParamConstant.KEY_EMAIL);
+        if (code == null) code = request.getParameter("email");
         return code;
     }
 
@@ -77,9 +87,9 @@ public class EmailSecurityCodeVerifyFilter extends AbstractSecurityCodeVerifyFil
     @Override
     protected String getCode(HttpServletRequest request) {
         String code = null;
-        Object obj = request.getAttribute(RequestParamConstant.KEY_EMAIL_SECURITY_CODE);
+        Object obj = request.getAttribute("code");
         if (obj instanceof String) code = (String) obj;
-        if (code == null) code = request.getParameter(RequestParamConstant.KEY_EMAIL_SECURITY_CODE);
+        if (code == null) code = request.getParameter("code");
         return code;
     }
 

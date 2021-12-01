@@ -1,15 +1,14 @@
 package top.gytf.family.server.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import top.gytf.family.server.Utils;
 import top.gytf.family.server.response.Response;
 import top.gytf.family.server.response.StateCode;
-import top.gytf.family.server.utills.ResponseUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -39,7 +38,7 @@ public class LoginHandler implements AuthenticationSuccessHandler, Authenticatio
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
             throws IOException, ServletException {
-        ResponseUtil.setToJson(response,
+        Utils.Response.setToJson(response,
                 objectMapper.writeValueAsString(new Response<>(StateCode.SUCCESS, authentication.getPrincipal())));
     }
 
@@ -51,7 +50,7 @@ public class LoginHandler implements AuthenticationSuccessHandler, Authenticatio
 //                    objectMapper.writeValueAsString(new Response<>(StatusCode.NOT_FOUND, exception.getMessage())));
 //            return;
 //        }
-        ResponseUtil.setToJson(response,
+        Utils.Response.setToJson(response,
                 objectMapper.writeValueAsString(new Response<>(StateCode.FAIL, exception.getMessage()))
         );
     }

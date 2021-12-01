@@ -1,4 +1,4 @@
-package top.gytf.family.server.security;
+package top.gytf.family.server.security.code;
 
 import java.time.LocalDateTime;
 

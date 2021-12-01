@@ -1,16 +1,14 @@
-package top.gytf.family.server.security.image;
+package top.gytf.family.server.security.code.image;
 
-import com.baomidou.mybatisplus.extension.api.R;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import top.gytf.family.server.exceptions.SecurityCodeSendException;
-import top.gytf.family.server.security.SecurityCodeSender;
+import top.gytf.family.server.security.code.SecurityCodeSender;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
 import java.io.IOException;
 import java.util.Random;
 

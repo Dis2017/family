@@ -1,4 +1,4 @@
-package top.gytf.family.server.security;
+package top.gytf.family.server.security.code;
 
 import top.gytf.family.server.exceptions.SecurityCodeStorageRemoveException;
 import top.gytf.family.server.exceptions.SecurityCodeStorageSaveException;
@@ -32,7 +32,7 @@ public interface SecurityCodeStorage<R, D, C extends SecurityCode<D>> {
 
     /**
      * 存储验证码<br>
-     * 在{@link top.gytf.family.server.security.SecurityCodeHandler#generate}中生成后存储<br>
+     * 在{@link SecurityCodeHandler#generate}中生成后存储<br>
      * 将多次对同一仓库存储code，保证新存储的顶用旧code
      * @param repos 仓库
      * @param code 验证码
@@ -42,7 +42,7 @@ public interface SecurityCodeStorage<R, D, C extends SecurityCode<D>> {
 
     /**
      * 移除验证码<br>
-     * 在{@link top.gytf.family.server.security.SecurityCodeHandler#verify}中验证完成后使用
+     * 在{@link SecurityCodeHandler#verify}中验证完成后使用
      * @param repos 仓库
      * @param desc 验证码描述
      * @exception SecurityCodeStorageRemoveException 验证取出储错误

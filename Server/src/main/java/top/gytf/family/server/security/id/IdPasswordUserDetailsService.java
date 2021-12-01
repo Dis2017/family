@@ -1,4 +1,4 @@
-package top.gytf.family.server.security.email;
+package top.gytf.family.server.security.id;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -8,22 +8,21 @@ import top.gytf.family.server.entity.User;
 import top.gytf.family.server.services.IUserService;
 
 /**
- * Project:     IntelliJ IDEA
- * ClassName:   EmailUserDetailsService
- * Description: 邮箱用户信息服务
- * CreateDate:  2021/11/25 22:29
+ * Project:     IntelliJ IDEA<br>
+ * Description: 用户编号密码用户信息获取服务<br>
+ * CreateDate:  2021/12/1 19:31 <br>
  * ------------------------------------------------------------------------------------------
  *
  * @author user
  * @version V1.0
  */
 @Component
-public class EmailUserDetailsService implements UserDetailsService {
-    private final static String TAG = EmailUserDetailsService.class.getName();
+public class IdPasswordUserDetailsService implements UserDetailsService {
+    private final static String TAG = IdPasswordUserDetailsService.class.getName();
 
     private final IUserService userService;
 
-    public EmailUserDetailsService(IUserService userService) {
+    public IdPasswordUserDetailsService(IUserService userService) {
         this.userService = userService;
     }
 
@@ -41,8 +40,9 @@ public class EmailUserDetailsService implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userService.get(null, null, username);
-        if (user == null) throw new UsernameNotFoundException("邮箱" + username + "不存在。");
+        Long id = Long.parseLong(username);
+        User user = userService.get(id, null, null);
+        if (user == null) throw new UsernameNotFoundException("ID为" + id + "的用户不存在。");
         return user;
     }
 }

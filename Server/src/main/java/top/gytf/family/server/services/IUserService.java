@@ -13,11 +13,15 @@ import top.gytf.family.server.entity.User;
  */
 public interface IUserService {
     /**
-     * 用户是否存在
-     * @param id 用户id
+     * 用户是否存在<br>
+     * 先查询是否存在id的用户，再查询手机号，最后查询邮箱<br>
+     * 如果某项为null则跳过<br>
+     * @param id 用户的id
+     * @param phone 用户的手机号
+     * @param email 用户的邮箱
      * @return 是否存在
      */
-    boolean exist(Long id);
+    boolean exist(Long id, String phone, String email);
 
     /**
      * 获取用户<br>
@@ -31,6 +35,12 @@ public interface IUserService {
     User get(Long id, String phone, String email);
 
     /**
+     * 更新用户
+     * @param user 新的用户内容
+     */
+    void update(User user);
+
+    /**
      * 添加用户
      * @param user 用户
      */
@@ -40,17 +50,32 @@ public interface IUserService {
      * 绑定邮箱
      * @param id 用户id
      * @param email 待绑邮箱地址
-     * @param securityCode 邮箱验证码
      */
-    void bindEmail(Long id, String email, String securityCode);
+    void bindEmail(Long id, String email);
 
-    void unbindEmail(Long id, String securityCode);
+    /**
+     * 解除邮箱绑定
+     * @param id 用户id
+     */
+    void unbindEmail(Long id);
 
     /**
      * 绑定手机
      * @param id 用户id
      * @param phone 待绑手机号
-     * @param securityCode 手机验证码
      */
-    void bindPhone(Long id, String phone, String securityCode);
+    void bindPhone(Long id, String phone);
+
+    /**
+     * 解除手机绑定
+     * @param id 用户id
+     */
+    void unbindPhone(Long id);
+
+    /**
+     * 修改密码
+     * @param id 用户id
+     * @param password 新密码
+     */
+    void modifyPassword(Long id, String password);
 }

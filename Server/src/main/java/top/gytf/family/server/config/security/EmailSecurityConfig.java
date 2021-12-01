@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 import top.gytf.family.server.security.LoginHandler;
 import top.gytf.family.server.security.email.EmailAuthenticationFilter;
 import top.gytf.family.server.security.email.EmailAuthenticationProvider;
-import top.gytf.family.server.security.email.EmailSecurityCodeHandler;
 
 /**
  * Project:     IntelliJ IDEA
@@ -25,12 +24,10 @@ import top.gytf.family.server.security.email.EmailSecurityCodeHandler;
 public class EmailSecurityConfig extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
     private final static String TAG = EmailSecurityConfig.class.getName();
 
-    private final EmailSecurityCodeHandler emailSecurityCodeHandler;
     private final EmailAuthenticationProvider emailAuthenticationProvider;
     private final LoginHandler loginHandler;
 
-    public EmailSecurityConfig(EmailSecurityCodeHandler emailSecurityCodeHandler, EmailAuthenticationProvider emailAuthenticationProvider, LoginHandler loginHandler) {
-        this.emailSecurityCodeHandler = emailSecurityCodeHandler;
+    public EmailSecurityConfig(EmailAuthenticationProvider emailAuthenticationProvider, LoginHandler loginHandler) {
         this.emailAuthenticationProvider = emailAuthenticationProvider;
         this.loginHandler = loginHandler;
     }

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
-import top.gytf.family.server.utills.ResponseUtil;
+import top.gytf.family.server.Utils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -34,6 +34,6 @@ public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)
             throws IOException, ServletException {
-        ResponseUtil.setToJson(response, objectMapper.writeValueAsString(new Response<>(StateCode.USER_NOT_LOGIN_IN, authException.getMessage())));
+        Utils.Response.setToJson(response, objectMapper.writeValueAsString(new Response<>(StateCode.USER_NOT_LOGIN_IN, authException.getMessage())));
     }
 }

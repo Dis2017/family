@@ -13,8 +13,8 @@ import top.gytf.family.server.constants.PathConstant;
 import top.gytf.family.server.response.AccessDeniedHandlerImpl;
 import top.gytf.family.server.response.AuthenticationEntryPointImpl;
 import top.gytf.family.server.security.LogoutHandler;
-import top.gytf.family.server.security.email.EmailSecurityCodeVerifyFilter;
-import top.gytf.family.server.security.image.ImageSecurityCodeVerifyFilter;
+import top.gytf.family.server.security.code.email.EmailSecurityCodeVerifyFilter;
+import top.gytf.family.server.security.code.image.ImageSecurityCodeVerifyFilter;
 
 import javax.annotation.security.PermitAll;
 import java.util.HashSet;
@@ -38,15 +38,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final ApplicationContext applicationContext;
     private final EmailSecurityConfig emailSecurityConfig;
+    private final IdPasswordConfig idPasswordConfig;
     private final ImageSecurityCodeVerifyFilter imageSecurityCodeVerifyFilter;
     private final EmailSecurityCodeVerifyFilter emailSecurityCodeVerifyFilter;
     private final LogoutHandler logoutHandler;
     private final AccessDeniedHandlerImpl accessDeniedHandler;
     private final AuthenticationEntryPointImpl authenticationEntryPoint;
 
-    public SecurityConfig(ApplicationContext applicationContext, EmailSecurityConfig emailSecurityConfig, ImageSecurityCodeVerifyFilter filter, EmailSecurityCodeVerifyFilter emailSecurityCodeVerifyFilter, LogoutHandler logoutHandler, AccessDeniedHandlerImpl accessDeniedHandler, AuthenticationEntryPointImpl authenticationEntryPoint) {
+    public SecurityConfig(ApplicationContext applicationContext, EmailSecurityConfig emailSecurityConfig, IdPasswordConfig idPasswordConfig, ImageSecurityCodeVerifyFilter filter, EmailSecurityCodeVerifyFilter emailSecurityCodeVerifyFilter, LogoutHandler logoutHandler, AccessDeniedHandlerImpl accessDeniedHandler, AuthenticationEntryPointImpl authenticationEntryPoint) {
         this.applicationContext = applicationContext;
         this.emailSecurityConfig = emailSecurityConfig;
+        this.idPasswordConfig = idPasswordConfig;
         this.imageSecurityCodeVerifyFilter = filter;
         this.emailSecurityCodeVerifyFilter = emailSecurityCodeVerifyFilter;
         this.logoutHandler = logoutHandler;
@@ -74,6 +76,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .authenticationEntryPoint(authenticationEntryPoint)
                 .and()
                 .csrf().disable()
+                .apply(idPasswordConfig)
+                .and()
                 .apply(emailSecurityConfig);
     }
 

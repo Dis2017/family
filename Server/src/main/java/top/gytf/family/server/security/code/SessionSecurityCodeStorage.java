@@ -1,4 +1,4 @@
-package top.gytf.family.server.security;
+package top.gytf.family.server.security.code;
 
 import top.gytf.family.server.exceptions.SecurityCodeStorageRemoveException;
 import top.gytf.family.server.exceptions.SecurityCodeStorageSaveException;
@@ -20,9 +20,9 @@ public abstract class SessionSecurityCodeStorage<D, C extends SecurityCode<D>> i
 
     /**
      * 是否只存储一例</br>
-     * 为<code>true</code>只用{@link top.gytf.family.server.security.SessionSecurityCodeStorage#getKeyPrefix()}作为key值<br>
-     * 为<code>false</code>则用{@link top.gytf.family.server.security.SessionSecurityCodeStorage#getKeyPrefix()} +
-     * {@link top.gytf.family.server.security.SecurityCode#getDesc()}作为key值
+     * 为<code>true</code>只用{@link SessionSecurityCodeStorage#getKeyPrefix()}作为key值<br>
+     * 为<code>false</code>则用{@link SessionSecurityCodeStorage#getKeyPrefix()} +
+     * {@link SecurityCode#getDesc()}作为key值
      * @return 是否为单例
      */
     public abstract boolean isSingle();

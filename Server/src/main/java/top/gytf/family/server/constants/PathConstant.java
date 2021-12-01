@@ -39,6 +39,11 @@ public class PathConstant {
         public static final String PATH_LOGOUT = "/logout";
 
         /**
+         * 用户编号密码登录的路径
+         */
+        public static final String PATH_ID_PASSWORD_LOGIN = "/login/id";
+
+        /**
          * 邮箱登录的路径
          */
         public static final String PATH_EMAIL_LOGIN = "/login/email";
@@ -64,7 +69,8 @@ public class PathConstant {
          * 需要邮箱验证码的请求路径
          */
         public static final String[] PATHS_EMAIL_VERIFY = {
-                AUTH_PREFIX + PATH_EMAIL_LOGIN
+                AUTH_PREFIX + PATH_EMAIL_LOGIN,
+                User.USER_PREFIX + User.PATH_BIND_EMAIL
         };
     }
 
@@ -72,6 +78,18 @@ public class PathConstant {
      * 用户
      */
     public static class User {
+        /**
+         * 用户路径前缀
+         */
         public static final String USER_PREFIX = "/user";
+
+        /**
+         * 注册路径
+         */
+        public static final String PATH_REGISTER = "";
+        /**
+         * 绑定邮箱路径
+         */
+        public static final String PATH_BIND_EMAIL = "/email";
     }
 }

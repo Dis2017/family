@@ -1,7 +1,6 @@
-package top.gytf.family.server.security.image;
+package top.gytf.family.server.security.code.image;
 
-import lombok.ToString;
-import top.gytf.family.server.security.AbstractSecurityCode;
+import top.gytf.family.server.security.code.AbstractSecurityCode;
 
 import javax.servlet.ServletResponse;
 

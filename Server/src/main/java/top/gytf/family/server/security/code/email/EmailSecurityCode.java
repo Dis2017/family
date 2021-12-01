@@ -1,6 +1,6 @@
-package top.gytf.family.server.security.email;
+package top.gytf.family.server.security.code.email;
 
-import top.gytf.family.server.security.AbstractSecurityCode;
+import top.gytf.family.server.security.code.AbstractSecurityCode;
 
 /**
  * Project:     IntelliJ IDEA<br>

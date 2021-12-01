@@ -1,4 +1,4 @@
-package top.gytf.family.server.security.email;
+package top.gytf.family.server.security.code.email;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.MailException;
@@ -6,7 +6,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 import top.gytf.family.server.exceptions.SecurityCodeSendException;
-import top.gytf.family.server.security.SecurityCodeSender;
+import top.gytf.family.server.security.code.SecurityCodeSender;
 
 /**
  * Project:     IntelliJ IDEA<br>

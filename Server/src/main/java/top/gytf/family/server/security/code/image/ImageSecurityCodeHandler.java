@@ -1,8 +1,9 @@
-package top.gytf.family.server.security.image;
+package top.gytf.family.server.security.code.image;
 
 import org.springframework.stereotype.Component;
 import top.gytf.family.server.constants.SessionConstant;
-import top.gytf.family.server.security.*;
+import top.gytf.family.server.security.code.SecurityCodeHandler;
+import top.gytf.family.server.security.code.SessionSecurityCodeStorage;
 
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpSession;

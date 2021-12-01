@@ -6,12 +6,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import top.gytf.family.server.constants.PathConstant;
-import top.gytf.family.server.constants.RequestParamConstant;
 import top.gytf.family.server.exceptions.SecurityCodeException;
-import top.gytf.family.server.security.email.EmailSecurityCode;
-import top.gytf.family.server.security.email.EmailSecurityCodeHandler;
-import top.gytf.family.server.security.image.ImageSecurityCode;
-import top.gytf.family.server.security.image.ImageSecurityCodeHandler;
+import top.gytf.family.server.security.code.email.EmailSecurityCode;
+import top.gytf.family.server.security.code.email.EmailSecurityCodeHandler;
+import top.gytf.family.server.security.code.image.ImageSecurityCode;
+import top.gytf.family.server.security.code.image.ImageSecurityCodeHandler;
 
 import javax.annotation.security.PermitAll;
 import javax.servlet.ServletResponse;
@@ -49,7 +48,7 @@ public class AuthenticationController {
      */
     @GetMapping( PathConstant.Auth.PATH_SECURITY_CODE_EMAIL)
     @PermitAll
-    public String generateEmailSecurityCode(HttpSession session, @RequestParam(RequestParamConstant.KEY_EMAIL) String email)
+    public String generateEmailSecurityCode(HttpSession session, @RequestParam("email") String email)
             throws SecurityCodeException {
         EmailSecurityCode code = emailSecurityCodeHandler.getStorage().take(session, email);
         if (code != null && code.getIssueDate().plusSeconds(60).isBefore(LocalDateTime.now())) {

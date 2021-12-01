@@ -1,14 +1,12 @@
-package top.gytf.family.server.security.image;
+package top.gytf.family.server.security.code.image;
 
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
-import org.springframework.util.AntPathMatcher;
 import top.gytf.family.server.constants.PathConstant;
-import top.gytf.family.server.constants.RequestParamConstant;
-import top.gytf.family.server.security.AbstractSecurityCodeVerifyFilter;
+import top.gytf.family.server.security.code.AbstractSecurityCodeVerifyFilter;
 import top.gytf.family.server.security.LoginHandler;
-import top.gytf.family.server.security.SecurityCode;
-import top.gytf.family.server.security.SecurityCodeHandler;
+import top.gytf.family.server.security.code.SecurityCode;
+import top.gytf.family.server.security.code.SecurityCodeHandler;
 
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -24,7 +22,7 @@ import javax.servlet.http.HttpSession;
  * @version V1.0
  */
 @Component
-public class ImageSecurityCodeVerifyFilter extends AbstractSecurityCodeVerifyFilter<ServletResponse> {
+public class ImageSecurityCodeVerifyFilter extends AbstractSecurityCodeVerifyFilter<ServletResponse, HttpSession> {
     private final static String TAG = ImageSecurityCodeVerifyFilter.class.getName();
 
     private final ImageSecurityCodeHandler imageSecurityCodeHandler;
@@ -56,6 +54,17 @@ public class ImageSecurityCodeVerifyFilter extends AbstractSecurityCodeVerifyFil
     }
 
     /**
+     * 仓库
+     *
+     * @param request 请求
+     * @return 仓库
+     */
+    @Override
+    protected HttpSession getRepository(HttpServletRequest request) {
+        return request.getSession();
+    }
+
+    /**
      * 获取验证码描述
      *
      * @param request 请求
@@ -75,9 +84,9 @@ public class ImageSecurityCodeVerifyFilter extends AbstractSecurityCodeVerifyFil
     @Override
     protected String getCode(HttpServletRequest request) {
         String code = null;
-        Object obj = request.getAttribute(RequestParamConstant.KEY_IMAGE_SECURITY_CODE);
+        Object obj = request.getAttribute("code");
         if (obj instanceof String) code = (String) obj;
-        if (code == null) code = request.getParameter(RequestParamConstant.KEY_IMAGE_SECURITY_CODE);
+        if (code == null) code = request.getParameter("code");
         return code;
     }
 

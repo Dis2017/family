@@ -1,13 +1,18 @@
-package top.gytf.family.server.security.email;
+package top.gytf.family.server.security.id;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
+import org.springframework.security.web.authentication.AuthenticationConverter;
+import org.springframework.security.web.authentication.AuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.stereotype.Component;
 import top.gytf.family.server.constants.PathConstant;
+import top.gytf.family.server.security.email.EmailAuthenticationToken;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -15,17 +20,16 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * Project:     IntelliJ IDEA
- * ClassName:   EmailAuthenticationFilter
- * Description: 拦截请求装配为EmailToken
- * CreateDate:  2021/11/25 16:09
+ * Project:     IntelliJ IDEA<br>
+ * Description: 编号密码认证过滤器<br>
+ * CreateDate:  2021/12/1 19:14 <br>
  * ------------------------------------------------------------------------------------------
  *
  * @author user
  * @version V1.0
  */
-public class EmailAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
-    private final static String TAG = EmailAuthenticationFilter.class.getName();
+public class IdPasswordAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
+    private final static String TAG = IdPasswordAuthenticationFilter.class.getName();
 
     /**
      * 是否只接受Post请求
@@ -34,11 +38,8 @@ public class EmailAuthenticationFilter extends AbstractAuthenticationProcessingF
     @Getter
     private boolean postOnly = true;
 
-    /**
-     * Creates a new instance
-     */
-    public EmailAuthenticationFilter() {
-        super(new AntPathRequestMatcher(PathConstant.Auth.AUTH_PREFIX + PathConstant.Auth.PATH_EMAIL_LOGIN, "POST"));
+    public IdPasswordAuthenticationFilter() {
+        super(new AntPathRequestMatcher(PathConstant.Auth.AUTH_PREFIX + PathConstant.Auth.PATH_ID_PASSWORD_LOGIN, "POST"));
     }
 
     /**
@@ -61,35 +62,43 @@ public class EmailAuthenticationFilter extends AbstractAuthenticationProcessingF
      * @throws AuthenticationException if authentication fails.
      */
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
-            throws AuthenticationException, IOException, ServletException {
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
         if (isPostOnly() && !request.getMethod().equals("POST")) {
             throw new AuthenticationServiceException("不接受非POST请求");
         }
 
-        String email = getEmail(request).trim();
-        EmailAuthenticationToken token = new EmailAuthenticationToken(email);
+        Long id = getId(request);
+        String password = getPassword(request);
+        IdPasswordToken token = new IdPasswordToken(id, password);
         copyDetails(token, request);
 
         return getAuthenticationManager().authenticate(token);
     }
 
     /**
-     * 复制请求信息到token<br>
-     * 包括IP、session等
+     * 复制details
      * @param token 令牌
-     * @param request 请求体
+     * @param request 请求
      */
-    private void copyDetails(EmailAuthenticationToken token, HttpServletRequest request) {
+    private void copyDetails(IdPasswordToken token, HttpServletRequest request) {
         token.setDetails(authenticationDetailsSource.buildDetails(request));
     }
 
     /**
-     * 取出request中的电子邮箱地址
+     * 从请求中获取密码
      * @param request 请求
-     * @return 电子邮箱地址
+     * @return 密码
      */
-    private String getEmail(HttpServletRequest request) {
-        return request.getParameter("email");
+    private String getPassword(HttpServletRequest request) {
+        return request.getParameter("password");
+    }
+
+    /**
+     * 从请求中获取id
+     * @param request 请求
+     * @return id
+     */
+    private Long getId(HttpServletRequest request) {
+        return Long.parseLong(request.getParameter("id"));
     }
 }

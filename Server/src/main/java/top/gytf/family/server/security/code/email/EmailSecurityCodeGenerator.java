@@ -1,11 +1,10 @@
-package top.gytf.family.server.security.email;
+package top.gytf.family.server.security.code.email;
 
 import lombok.Getter;
 import lombok.Setter;
 import top.gytf.family.server.exceptions.SecurityCodeGenerateException;
-import top.gytf.family.server.security.SecurityCodeGenerator;
+import top.gytf.family.server.security.code.SecurityCodeGenerator;
 
-import java.time.LocalDateTime;
 import java.util.Random;
 
 /**
