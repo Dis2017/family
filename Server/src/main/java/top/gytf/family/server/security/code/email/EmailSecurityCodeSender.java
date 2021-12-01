@@ -45,7 +45,8 @@ public class EmailSecurityCodeSender implements SecurityCodeSender<EmailSecurity
         try {
             sender.send(mailMessage);
         } catch (MailException e) {
-            throw new SecurityCodeSendException(e.getMessage());
+            e.printStackTrace();
+            throw new SecurityCodeSendException("邮件发送失败");
         }
     }
 }

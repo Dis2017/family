@@ -91,5 +91,9 @@ public class PathConstant {
          * 绑定邮箱路径
          */
         public static final String PATH_BIND_EMAIL = "/email";
+        /**
+         * 解绑邮箱路径
+         */
+        public static final String PATH_UNBIND_EMAIL = "/email";
     }
 }

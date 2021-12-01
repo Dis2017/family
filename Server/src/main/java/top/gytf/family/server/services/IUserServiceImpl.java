@@ -1,10 +1,13 @@
 package top.gytf.family.server.services;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import org.springframework.stereotype.Service;
 import top.gytf.family.server.Utils;
 import top.gytf.family.server.entity.User;
 import top.gytf.family.server.mapper.UserMapper;
+
+import java.util.Objects;
 
 /**
  * Project:     IntelliJ IDEA<br>
@@ -108,7 +111,7 @@ public class IUserServiceImpl implements IUserService {
         if (!exist(id, null, null)) {
             throw new IllegalArgumentException("ID为" + id + "的用户不存在。");
         }
-        if (!exist(null, null, email)) {
+        if (exist(null, null, email)) {
             throw new IllegalArgumentException("邮箱" + email + "已被其他用户绑定");
         }
         String old = userMapper.selectOne(new LambdaQueryWrapper<User>().eq(User::getId, id)).getEmail();
@@ -129,7 +132,8 @@ public class IUserServiceImpl implements IUserService {
      */
     @Override
     public void unbindEmail(Long id) {
-
+        userMapper.update(User.builder().id(id).build(),
+                new LambdaUpdateWrapper<User>().set(User::getEmail, null));
     }
 
     /**

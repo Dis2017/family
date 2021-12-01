@@ -1,15 +1,16 @@
 package top.gytf.family.server.controller;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import top.gytf.family.server.Utils;
 import top.gytf.family.server.constants.PathConstant;
 import top.gytf.family.server.entity.User;
 import top.gytf.family.server.services.IUserService;
 
 import javax.annotation.security.PermitAll;
+import javax.validation.constraints.Email;
+import java.util.Objects;
 
 /**
  * Project:     IntelliJ IDEA<br>
@@ -45,11 +46,30 @@ public class UserController {
     /**
      * 绑定邮箱<br>
      * 建议调用前判断用户是否已经绑定邮箱
-     * @param id 用户编号
      * @param email 邮箱地址
      */
-    @PostMapping("/email")
-    public void bindEmail(@RequestParam("id") Long id, @RequestParam("email") String email) {
+    @PostMapping(PathConstant.User.PATH_BIND_EMAIL)
+    public void bindEmail(
+            @Validated
+            @Email(message = "邮箱格式不正确")
+            @RequestParam("email") String email) {
+        Long id = Objects.requireNonNull(Utils.Security.current()).getId();
         userService.bindEmail(id, email);
+        Utils.Security.update(userService.get(id, null, null));
+    }
+
+    /**
+     * 解绑邮箱
+     */
+    @DeleteMapping(PathConstant.User.PATH_UNBIND_EMAIL)
+    public void unbindEmail(
+            @Validated
+            @Email(message = "邮箱格式不正确")
+            @RequestParam("email") String email) {
+        User user = Utils.Security.current();
+        assert user != null;
+        if (user.getEmail() == null || !user.getEmail().equals(email)) throw new IllegalArgumentException("邮箱地址不正确。");
+        userService.unbindEmail(user.getId());
+        Utils.Security.update(userService.get(user.getId(), null, null));
     }
 }
