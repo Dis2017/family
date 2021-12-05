@@ -109,6 +109,8 @@ public class Utils {
          * @param user 用户
          */
         public static void update(top.gytf.family.server.entity.User user) {
+            user.setPassword(null);
+
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if (authentication instanceof EmailAuthenticationToken) {
                 EmailAuthenticationToken newToken = new EmailAuthenticationToken(

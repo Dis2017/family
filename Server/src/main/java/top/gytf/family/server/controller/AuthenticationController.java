@@ -1,16 +1,17 @@
 package top.gytf.family.server.controller;
 
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import top.gytf.family.server.Utils;
 import top.gytf.family.server.constants.PathConstant;
 import top.gytf.family.server.exceptions.SecurityCodeException;
+import top.gytf.family.server.security.code.SecurityCodeVerifyStrategy;
 import top.gytf.family.server.security.code.email.EmailSecurityCode;
 import top.gytf.family.server.security.code.email.EmailSecurityCodeHandler;
-import top.gytf.family.server.security.code.image.ImageSecurityCode;
 import top.gytf.family.server.security.code.image.ImageSecurityCodeHandler;
+import top.gytf.family.server.security.code.image.ImageSecurityCodeRequestValidator;
 
 import javax.annotation.security.PermitAll;
 import javax.servlet.ServletResponse;
@@ -47,18 +48,16 @@ public class AuthenticationController {
      * @throws SecurityCodeException 验证码错误
      */
     @GetMapping( PathConstant.Auth.PATH_SECURITY_CODE_EMAIL)
+    @SecurityCodeVerifyStrategy(ImageSecurityCodeRequestValidator.class)
     @PermitAll
-    public String generateEmailSecurityCode(HttpSession session, @RequestParam("email") String email)
+    public void generateEmailSecurityCode(HttpSession session, @RequestParam("email") String email)
             throws SecurityCodeException {
         EmailSecurityCode code = emailSecurityCodeHandler.getStorage().take(session, email);
         if (code != null && code.getIssueDate().plusSeconds(60).isBefore(LocalDateTime.now())) {
             emailSecurityCodeHandler.getStorage().remove(session, email);
             code = null;
         }
-
-        if (code == null) code = emailSecurityCodeHandler.generate(session, email);
-
-        return code.getCode();
+        if (code == null) emailSecurityCodeHandler.generate(session, email);
     }
 
     /**
@@ -72,12 +71,18 @@ public class AuthenticationController {
     public void generateImageSecurityCode(HttpSession session, ServletResponse response)
             throws SecurityCodeException  {
         imageSecurityCodeHandler.getStorage().remove(session, response);
-        ImageSecurityCode code = imageSecurityCodeHandler.generate(session, response);
+        imageSecurityCodeHandler.generate(session, response);
     }
 
+
+
+    /**
+     * 获取当前登录用户
+     * @return 当前登录用户
+     */
     @GetMapping(PathConstant.Auth.PATH_CURRENT)
     @PermitAll
     public Object getCurrentUser() {
-        return SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return Utils.Security.current();
     }
 }

@@ -1,12 +1,11 @@
 package top.gytf.family.server.security.code.email;
 
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 import top.gytf.family.server.constants.PathConstant;
-import top.gytf.family.server.security.code.AbstractSecurityCodeVerifyFilter;
-import top.gytf.family.server.security.LoginHandler;
 import top.gytf.family.server.security.code.SecurityCode;
 import top.gytf.family.server.security.code.SecurityCodeHandler;
+import top.gytf.family.server.security.code.SecurityCodeRequestValidator;
+import top.gytf.family.server.security.code.SecurityCodeVerifyFailureHandler;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -21,13 +20,15 @@ import javax.servlet.http.HttpSession;
  * @version V1.0
  */
 @Component
-public class EmailSecurityCodeVerifyFilter extends AbstractSecurityCodeVerifyFilter<String, HttpSession> {
-    private final static String TAG = EmailSecurityCodeVerifyFilter.class.getName();
+public class EmailSecurityCodeRequestValidator implements SecurityCodeRequestValidator<String, HttpSession> {
+    private final static String TAG = EmailSecurityCodeRequestValidator.class.getName();
+
+    public static final String SECURITY_CODE_KEY = "email_code";
 
     private final EmailSecurityCodeHandler securityCodeHandler;
-    private final LoginHandler failureHandler;
+    private final SecurityCodeVerifyFailureHandler failureHandler;
 
-    public EmailSecurityCodeVerifyFilter(EmailSecurityCodeHandler securityCodeHandler, LoginHandler failureHandler) {
+    public EmailSecurityCodeRequestValidator(EmailSecurityCodeHandler securityCodeHandler, SecurityCodeVerifyFailureHandler failureHandler) {
         this.securityCodeHandler = securityCodeHandler;
         this.failureHandler = failureHandler;
     }
@@ -38,7 +39,7 @@ public class EmailSecurityCodeVerifyFilter extends AbstractSecurityCodeVerifyFil
      * @return 失败处理器
      */
     @Override
-    protected AuthenticationFailureHandler getFailureHandler() {
+    public SecurityCodeVerifyFailureHandler getFailureHandler() {
         return failureHandler;
     }
 
@@ -48,7 +49,7 @@ public class EmailSecurityCodeVerifyFilter extends AbstractSecurityCodeVerifyFil
      * @return 验证码处理器
      */
     @Override
-    protected SecurityCodeHandler<String, ? extends SecurityCode<String>, HttpSession> getSecurityCodeHandler() {
+    public SecurityCodeHandler<String, ? extends SecurityCode<String>, HttpSession> getSecurityCodeHandler() {
         return securityCodeHandler;
     }
 
@@ -59,7 +60,7 @@ public class EmailSecurityCodeVerifyFilter extends AbstractSecurityCodeVerifyFil
      * @return 仓库
      */
     @Override
-    protected HttpSession getRepository(HttpServletRequest request) {
+    public HttpSession getRepository(HttpServletRequest request) {
         return request.getSession();
     }
 
@@ -70,7 +71,7 @@ public class EmailSecurityCodeVerifyFilter extends AbstractSecurityCodeVerifyFil
      * @return 描述
      */
     @Override
-    protected String getDesc(HttpServletRequest request) {
+    public String getDesc(HttpServletRequest request) {
         String code = null;
         Object obj = request.getAttribute("email");
         if (obj instanceof String) code = (String) obj;
@@ -85,22 +86,11 @@ public class EmailSecurityCodeVerifyFilter extends AbstractSecurityCodeVerifyFil
      * @return 验证码
      */
     @Override
-    protected String getCode(HttpServletRequest request) {
+    public String getCode(HttpServletRequest request) {
         String code = null;
-        Object obj = request.getAttribute("code");
+        Object obj = request.getAttribute(SECURITY_CODE_KEY);
         if (obj instanceof String) code = (String) obj;
-        if (code == null) code = request.getParameter("code");
+        if (code == null) code = request.getParameter(SECURITY_CODE_KEY);
         return code;
-    }
-
-    /**
-     * 目标路径<br>
-     * 拦截这些路径进行验证码验证
-     *
-     * @return 目标路径
-     */
-    @Override
-    protected String[] getTargetPaths() {
-        return PathConstant.Auth.PATHS_EMAIL_VERIFY;
     }
 }

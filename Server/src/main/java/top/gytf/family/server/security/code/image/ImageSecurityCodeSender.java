@@ -54,7 +54,7 @@ public class ImageSecurityCodeSender implements SecurityCodeSender<ImageSecurity
             code.getDesc().setContentType(MediaType.IMAGE_JPEG_VALUE);
             ImageIO.write(generateImage(code.getCode()), "JPEG", code.getDesc().getOutputStream());
         } catch (IOException e) {
-            throw new SecurityCodeSendException(e.getMessage());
+            throw new SecurityCodeSendException("图片验证码生成失败。");
         }
     }
 

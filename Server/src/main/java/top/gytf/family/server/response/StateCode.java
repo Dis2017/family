@@ -31,7 +31,7 @@ public enum StateCode {
      *  用户错误
      */
     USER_NOT_LOGIN_IN(601,"用户未登录"),
-    USER_LOGIN_ERROR(602,"账号不存在或者密码错误"),
+    USER_LOGIN_ERROR(602,"密码错误"),
     USER_ACCOUNT_FORBIDDEN(603,"账户被禁用"),
     USER_NOT_EXISTS(604,"用户不存在"),
     USER_HAS_EXISTED(605,"用户已存在"),
@@ -39,7 +39,12 @@ public enum StateCode {
     /**
      * 权限错误
      */
-    SECURITY_NO_PERMISSION(700, "无权限");
+    SECURITY_NO_PERMISSION(700, "无权限"),
+
+    /**
+     * 验证码错误
+     */
+    SECURITY_CODE_EXCEPTION(800, "验证码错误");
 
     /**
      *  代码

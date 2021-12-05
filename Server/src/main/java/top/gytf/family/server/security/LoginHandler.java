@@ -1,8 +1,10 @@
 package top.gytf.family.server.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.tomcat.util.http.ResponseUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -45,13 +47,13 @@ public class LoginHandler implements AuthenticationSuccessHandler, Authenticatio
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception)
             throws IOException, ServletException {
-//        if (exception instanceof UsernameNotFoundException) {
-//            ResponseUtil.setToJson(response,
-//                    objectMapper.writeValueAsString(new Response<>(StatusCode.NOT_FOUND, exception.getMessage())));
-//            return;
-//        }
+        if (exception instanceof UsernameNotFoundException) {
+            Utils.Response.setToJson(response,
+                    objectMapper.writeValueAsString(new Response<>(StateCode.USER_NOT_EXISTS, exception.getMessage())));
+            return;
+        }
         Utils.Response.setToJson(response,
-                objectMapper.writeValueAsString(new Response<>(StateCode.FAIL, exception.getMessage()))
+                objectMapper.writeValueAsString(new Response<>(StateCode.USER_LOGIN_ERROR, exception.getMessage()))
         );
     }
 }

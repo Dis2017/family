@@ -1,15 +1,18 @@
 package top.gytf.family.server.controller;
 
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import top.gytf.family.server.Utils;
 import top.gytf.family.server.constants.PathConstant;
 import top.gytf.family.server.entity.User;
+import top.gytf.family.server.security.code.SecurityCodeVerifyStrategy;
+import top.gytf.family.server.security.code.email.EmailSecurityCodeRequestValidator;
 import top.gytf.family.server.services.IUserService;
 
 import javax.annotation.security.PermitAll;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 /**
@@ -38,9 +41,21 @@ public class UserController {
      */
     @PostMapping(PathConstant.User.PATH_REGISTER)
     @PermitAll
-    public Long register(@Validated User user) {
+    public Long register(@Validated(User.GROUP_REGISTER.class) User user) {
         userService.add(user);
         return user.getId();
+    }
+
+    /**
+     * 更新密码
+     * @param password 新密码
+     */
+    @PatchMapping(PathConstant.User.PATH_MODIFY_PASSWORD)
+    public void modifyPassword(@NotNull(message = "密码不能为空")
+                               @Length(min = 4, max = 32, message = "密码应该在8-32位")
+                               String password) {
+        Long id = Objects.requireNonNull(Utils.Security.current()).getId();
+        userService.modifyPassword(id, password);
     }
 
     /**
@@ -48,9 +63,9 @@ public class UserController {
      * 建议调用前判断用户是否已经绑定邮箱
      * @param email 邮箱地址
      */
-    @PostMapping(PathConstant.User.PATH_BIND_EMAIL)
+    @PatchMapping(PathConstant.User.PATH_BIND_EMAIL)
+    @SecurityCodeVerifyStrategy(EmailSecurityCodeRequestValidator.class)
     public void bindEmail(
-            @Validated
             @Email(message = "邮箱格式不正确")
             @RequestParam("email") String email) {
         Long id = Objects.requireNonNull(Utils.Security.current()).getId();
@@ -62,8 +77,8 @@ public class UserController {
      * 解绑邮箱
      */
     @DeleteMapping(PathConstant.User.PATH_UNBIND_EMAIL)
+    @SecurityCodeVerifyStrategy(EmailSecurityCodeRequestValidator.class)
     public void unbindEmail(
-            @Validated
             @Email(message = "邮箱格式不正确")
             @RequestParam("email") String email) {
         User user = Utils.Security.current();

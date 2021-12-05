@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
@@ -13,8 +12,6 @@ import top.gytf.family.server.constants.PathConstant;
 import top.gytf.family.server.response.AccessDeniedHandlerImpl;
 import top.gytf.family.server.response.AuthenticationEntryPointImpl;
 import top.gytf.family.server.security.LogoutHandler;
-import top.gytf.family.server.security.code.email.EmailSecurityCodeVerifyFilter;
-import top.gytf.family.server.security.code.image.ImageSecurityCodeVerifyFilter;
 
 import javax.annotation.security.PermitAll;
 import java.util.HashSet;
@@ -37,20 +34,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final static String TAG = SecurityConfig.class.getName();
 
     private final ApplicationContext applicationContext;
+    private final SecurityCodeConfig securityCodeConfig;
     private final EmailSecurityConfig emailSecurityConfig;
     private final IdPasswordConfig idPasswordConfig;
-    private final ImageSecurityCodeVerifyFilter imageSecurityCodeVerifyFilter;
-    private final EmailSecurityCodeVerifyFilter emailSecurityCodeVerifyFilter;
     private final LogoutHandler logoutHandler;
     private final AccessDeniedHandlerImpl accessDeniedHandler;
     private final AuthenticationEntryPointImpl authenticationEntryPoint;
 
-    public SecurityConfig(ApplicationContext applicationContext, EmailSecurityConfig emailSecurityConfig, IdPasswordConfig idPasswordConfig, ImageSecurityCodeVerifyFilter filter, EmailSecurityCodeVerifyFilter emailSecurityCodeVerifyFilter, LogoutHandler logoutHandler, AccessDeniedHandlerImpl accessDeniedHandler, AuthenticationEntryPointImpl authenticationEntryPoint) {
+    public SecurityConfig(ApplicationContext applicationContext, SecurityCodeConfig securityCodeConfig, EmailSecurityConfig emailSecurityConfig, IdPasswordConfig idPasswordConfig, LogoutHandler logoutHandler, AccessDeniedHandlerImpl accessDeniedHandler, AuthenticationEntryPointImpl authenticationEntryPoint) {
         this.applicationContext = applicationContext;
+        this.securityCodeConfig = securityCodeConfig;
         this.emailSecurityConfig = emailSecurityConfig;
         this.idPasswordConfig = idPasswordConfig;
-        this.imageSecurityCodeVerifyFilter = filter;
-        this.emailSecurityCodeVerifyFilter = emailSecurityCodeVerifyFilter;
         this.logoutHandler = logoutHandler;
         this.accessDeniedHandler = accessDeniedHandler;
         this.authenticationEntryPoint = authenticationEntryPoint;
@@ -58,10 +53,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .addFilterBefore(imageSecurityCodeVerifyFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(emailSecurityCodeVerifyFilter, UsernamePasswordAuthenticationFilter.class)
-                .formLogin()
-                .and()
                 .logout()
                     .logoutUrl(PathConstant.Auth.AUTH_PREFIX + PathConstant.Auth.PATH_LOGOUT)
                     .logoutSuccessHandler(logoutHandler)
@@ -78,7 +69,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .apply(idPasswordConfig)
                 .and()
-                .apply(emailSecurityConfig);
+                .apply(emailSecurityConfig)
+                .and()
+                .apply(securityCodeConfig);
     }
 
 

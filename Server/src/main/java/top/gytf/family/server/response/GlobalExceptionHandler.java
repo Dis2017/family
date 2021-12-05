@@ -23,6 +23,7 @@ import java.util.List;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     private final static String TAG = GlobalExceptionHandler.class.getName();
+
     @ExceptionHandler(Exception.class)
     public Response<String> exceptionHandler(Exception e) {
         e.printStackTrace();

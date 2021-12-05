@@ -15,7 +15,7 @@ import top.gytf.family.server.exceptions.SecurityCodeNotMatchException;
  * @author user
  * @version V1.0
  */
-public class SecurityCodeHandler<D, C extends SecurityCode<D>, R> {
+public abstract class SecurityCodeHandler<D, C extends SecurityCode<D>, R> {
 
     private final SecurityCodeGenerator<D, C> generator;
     private final SecurityCodeSender<C> sender;
@@ -87,18 +87,16 @@ public class SecurityCodeHandler<D, C extends SecurityCode<D>, R> {
      * @throws SecurityCodeException 验证码错误
      */
     public void verify(R repos, D desc, String stringCode) throws SecurityCodeException {
-        assert stringCode != null;
-
         C code = getStorage().take(repos, desc);
 
         if (code == null) {
-            throw new NullSecurityCodeException(repos + "的验证码不存在");
+            throw new NullSecurityCodeException("验证码不存在");
         }
         if (code.isExpired()) {
-            throw new SecurityCodeExpiredException(code + "验证码过期");
+            throw new SecurityCodeExpiredException("验证码已过期");
         }
         if (code.getCode() == null || !code.getCode().equals(stringCode)) {
-            throw new SecurityCodeNotMatchException(code + "和" + stringCode + "不匹配");
+            throw new SecurityCodeNotMatchException("验证码不匹配");
         }
 
         getStorage().remove(repos, desc);

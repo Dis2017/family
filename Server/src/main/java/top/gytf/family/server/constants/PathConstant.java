@@ -1,5 +1,13 @@
 package top.gytf.family.server.constants;
 
+import top.gytf.family.server.security.code.SecurityCodeRequestValidator;
+import top.gytf.family.server.security.code.SecurityCodeVerifyStrategy;
+import top.gytf.family.server.security.code.email.EmailSecurityCodeRequestValidator;
+
+import java.lang.annotation.Annotation;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Project:     IntelliJ IDEA
  * ClassName:   PathConstant
@@ -59,19 +67,9 @@ public class PathConstant {
         public static final String PATH_SECURITY_CODE_IMAGE = "/security-code/image";
 
         /**
-         * 需要图片验证码的请求路径
+         * 验证密码路径
          */
-        public static final String[] PATHS_IMAGE_VERIFY = {
-                AUTH_PREFIX + PATH_SECURITY_CODE_EMAIL
-        };
-
-        /**
-         * 需要邮箱验证码的请求路径
-         */
-        public static final String[] PATHS_EMAIL_VERIFY = {
-                AUTH_PREFIX + PATH_EMAIL_LOGIN,
-                User.USER_PREFIX + User.PATH_BIND_EMAIL
-        };
+        public static final String PATH_VERIFY_PASSWORD = "/security-code/password";
     }
 
     /**
@@ -82,7 +80,10 @@ public class PathConstant {
          * 用户路径前缀
          */
         public static final String USER_PREFIX = "/user";
-
+        /**
+         * 更新密码
+         */
+        public static final String PATH_MODIFY_PASSWORD = "/password";
         /**
          * 注册路径
          */

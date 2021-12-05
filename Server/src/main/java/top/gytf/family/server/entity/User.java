@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import javax.validation.constraints.Past;
 import java.time.LocalDate;
 import java.util.Collection;
@@ -36,6 +37,11 @@ public class User extends BaseEntity implements UserDetails {
     private final static String TAG = User.class.getName();
 
     /**
+     * 注册场景
+     */
+    public interface GROUP_REGISTER {}
+
+    /**
      * 用户编号
      */
     @TableId(
@@ -48,16 +54,36 @@ public class User extends BaseEntity implements UserDetails {
      * 用户名称 （8位）
      */
     @TableField("name")
-    @NotNull(message = "名称不能为空")
-    @Length(min = 2, max = 8, message = "名称应该在2-8位")
+    @NotNull(
+            message = "名称不能为空",
+            groups = {
+                    GROUP_REGISTER.class
+            }
+    )
+    @Length(
+            min = 2,
+            max = 8,
+            message = "名称应该在2-8位",
+            groups = {
+                    GROUP_REGISTER.class
+            }
+    )
     private String name;
 
     /**
      * 密码 （32位）
      */
     @TableField("password")
-    @NotNull(message = "密码不能为空")
-    @Length(min = 4, max = 32, message = "密码应该在8-32位")
+    @NotNull(
+            message = "密码不能为空"
+    )
+    @Length(min = 4,
+            max = 32,
+            message = "密码应该在8-32位",
+            groups = {
+                    GROUP_REGISTER.class
+            }
+    )
     private String password;
 
     /**
@@ -73,7 +99,12 @@ public class User extends BaseEntity implements UserDetails {
      * 出生日期
      */
     @TableField("birthday")
-    @Past(message = "出生日期应该是一个已经过去的时间")
+    @Past(
+            message = "出生日期应该是一个已经过去的时间",
+            groups = {
+                    GROUP_REGISTER.class
+            }
+    )
     private LocalDate birthday;
 
     /**
@@ -93,13 +124,29 @@ public class User extends BaseEntity implements UserDetails {
      */
     @TableField("email")
     @Email(message = "电子邮箱格式不正确")
+    @Null(
+            message = "电子邮箱应该为空",
+            groups = {
+                    GROUP_REGISTER.class
+            }
+    )
     private String email;
 
     /**
      * 手机号码 （11位）
      */
     @TableField("phone")
-    @Length(min = 11, max = 11, message = "手机号应该为11位")
+    @Length(
+            min = 11,
+            max = 11,
+            message = "手机号应该为11位"
+    )
+    @Null(
+            message = "手机号应该为空",
+            groups = {
+                    GROUP_REGISTER.class
+            }
+    )
     private String phone;
 
     /**
