@@ -1,7 +1,6 @@
 package top.gytf.family.server.security.code.image;
 
 import org.springframework.stereotype.Component;
-import top.gytf.family.server.constants.PathConstant;
 import top.gytf.family.server.security.code.SecurityCodeRequestValidator;
 import top.gytf.family.server.security.code.SecurityCode;
 import top.gytf.family.server.security.code.SecurityCodeHandler;
@@ -27,21 +26,19 @@ public class ImageSecurityCodeRequestValidator implements SecurityCodeRequestVal
     public static final String SECURITY_CODE_KEY = "image_code";
 
     private final ImageSecurityCodeHandler imageSecurityCodeHandler;
-    private final SecurityCodeVerifyFailureHandler failureHandler;
 
-    public ImageSecurityCodeRequestValidator(ImageSecurityCodeHandler imageSecurityCodeHandler, SecurityCodeVerifyFailureHandler failureHandler) {
+    public ImageSecurityCodeRequestValidator(ImageSecurityCodeHandler imageSecurityCodeHandler) {
         this.imageSecurityCodeHandler = imageSecurityCodeHandler;
-        this.failureHandler = failureHandler;
     }
 
     /**
-     * 失败处理器
+     * 验证器名字
      *
-     * @return 失败处理器
+     * @return 验证器名字
      */
     @Override
-    public SecurityCodeVerifyFailureHandler getFailureHandler() {
-        return failureHandler;
+    public String name() {
+        return "图片验证器";
     }
 
     /**

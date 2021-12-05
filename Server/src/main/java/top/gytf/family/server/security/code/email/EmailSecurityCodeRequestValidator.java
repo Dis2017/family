@@ -1,7 +1,8 @@
 package top.gytf.family.server.security.code.email;
 
 import org.springframework.stereotype.Component;
-import top.gytf.family.server.constants.PathConstant;
+import top.gytf.family.server.Utils;
+import top.gytf.family.server.entity.User;
 import top.gytf.family.server.security.code.SecurityCode;
 import top.gytf.family.server.security.code.SecurityCodeHandler;
 import top.gytf.family.server.security.code.SecurityCodeRequestValidator;
@@ -26,21 +27,19 @@ public class EmailSecurityCodeRequestValidator implements SecurityCodeRequestVal
     public static final String SECURITY_CODE_KEY = "email_code";
 
     private final EmailSecurityCodeHandler securityCodeHandler;
-    private final SecurityCodeVerifyFailureHandler failureHandler;
 
-    public EmailSecurityCodeRequestValidator(EmailSecurityCodeHandler securityCodeHandler, SecurityCodeVerifyFailureHandler failureHandler) {
+    public EmailSecurityCodeRequestValidator(EmailSecurityCodeHandler securityCodeHandler) {
         this.securityCodeHandler = securityCodeHandler;
-        this.failureHandler = failureHandler;
     }
 
     /**
-     * 失败处理器
+     * 验证器名字
      *
-     * @return 失败处理器
+     * @return 验证器名字
      */
     @Override
-    public SecurityCodeVerifyFailureHandler getFailureHandler() {
-        return failureHandler;
+    public String name() {
+        return "邮箱验证器";
     }
 
     /**
@@ -72,11 +71,20 @@ public class EmailSecurityCodeRequestValidator implements SecurityCodeRequestVal
      */
     @Override
     public String getDesc(HttpServletRequest request) {
-        String code = null;
-        Object obj = request.getAttribute("email");
-        if (obj instanceof String) code = (String) obj;
-        if (code == null) code = request.getParameter("email");
-        return code;
+        String desc = null;
+
+        //从当前登录用户中获取邮箱描述
+        User user = Utils.Security.current();
+        if (user != null) desc = user.getEmail();
+
+        //从请求中获取
+        if (desc == null) {
+            Object obj = request.getAttribute("email");
+            if (obj instanceof String) desc = (String) obj;
+            if (desc == null) desc = request.getParameter("email");
+        }
+
+        return desc;
     }
 
     /**

@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import top.gytf.family.server.Utils;
 import top.gytf.family.server.constants.PathConstant;
+import top.gytf.family.server.entity.User;
 import top.gytf.family.server.exceptions.SecurityCodeException;
 import top.gytf.family.server.security.code.SecurityCodeVerifyStrategy;
 import top.gytf.family.server.security.code.email.EmailSecurityCode;
@@ -17,6 +18,7 @@ import javax.annotation.security.PermitAll;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * Project:     IntelliJ IDEA
@@ -42,7 +44,8 @@ public class AuthenticationController {
     }
 
     /**
-     * 生成邮箱验证码
+     * 生成邮箱验证码<br>
+     * 不设置email参数则向已登录账户的邮箱发送
      * @param session 会话
      * @param email 邮箱地址
      * @throws SecurityCodeException 验证码错误
@@ -50,8 +53,15 @@ public class AuthenticationController {
     @GetMapping( PathConstant.Auth.PATH_SECURITY_CODE_EMAIL)
     @SecurityCodeVerifyStrategy(ImageSecurityCodeRequestValidator.class)
     @PermitAll
-    public void generateEmailSecurityCode(HttpSession session, @RequestParam("email") String email)
+    public void generateEmailSecurityCode(HttpSession session,
+                                          @RequestParam(value = "email", required = false) String email)
             throws SecurityCodeException {
+        if (email == null) {
+            User user = Utils.Security.current();
+            if (user == null) throw new IllegalArgumentException("请设置email参数。");
+            email = user.getEmail();
+        }
+
         EmailSecurityCode code = emailSecurityCodeHandler.getStorage().take(session, email);
         if (code != null && code.getIssueDate().plusSeconds(60).isBefore(LocalDateTime.now())) {
             emailSecurityCodeHandler.getStorage().remove(session, email);

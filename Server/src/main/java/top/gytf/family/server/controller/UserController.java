@@ -8,6 +8,8 @@ import top.gytf.family.server.constants.PathConstant;
 import top.gytf.family.server.entity.User;
 import top.gytf.family.server.security.code.SecurityCodeVerifyStrategy;
 import top.gytf.family.server.security.code.email.EmailSecurityCodeRequestValidator;
+import top.gytf.family.server.security.code.image.ImageSecurityCodeRequestValidator;
+import top.gytf.family.server.security.code.password.PasswordSecurityCodeRequestValidator;
 import top.gytf.family.server.services.IUserService;
 
 import javax.annotation.security.PermitAll;
@@ -51,6 +53,14 @@ public class UserController {
      * @param password 新密码
      */
     @PatchMapping(PathConstant.User.PATH_MODIFY_PASSWORD)
+    @SecurityCodeVerifyStrategy(
+            value = {
+                    PasswordSecurityCodeRequestValidator.class,
+                    EmailSecurityCodeRequestValidator.class,
+                    ImageSecurityCodeRequestValidator.class
+            },
+            only = true
+    )
     public void modifyPassword(@NotNull(message = "密码不能为空")
                                @Length(min = 4, max = 32, message = "密码应该在8-32位")
                                String password) {
@@ -78,12 +88,9 @@ public class UserController {
      */
     @DeleteMapping(PathConstant.User.PATH_UNBIND_EMAIL)
     @SecurityCodeVerifyStrategy(EmailSecurityCodeRequestValidator.class)
-    public void unbindEmail(
-            @Email(message = "邮箱格式不正确")
-            @RequestParam("email") String email) {
+    public void unbindEmail() {
         User user = Utils.Security.current();
         assert user != null;
-        if (user.getEmail() == null || !user.getEmail().equals(email)) throw new IllegalArgumentException("邮箱地址不正确。");
         userService.unbindEmail(user.getId());
         Utils.Security.update(userService.get(user.getId(), null, null));
     }

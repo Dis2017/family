@@ -37,8 +37,10 @@ public class SecurityCodeVerifyFilter extends OncePerRequestFilter {
     private final AntPathMatcher matcher = new AntPathMatcher();
     private final Map<Class<? extends SecurityCodeRequestValidator>, SecurityCodeRequestValidator> validators;
     private final Map<String, SecurityCodeVerifyStrategy> urlVerifyStrategyMap;
+    private final SecurityCodeVerifyFailureHandler failureHandler;
 
-    protected SecurityCodeVerifyFilter(ApplicationContext context) {
+    protected SecurityCodeVerifyFilter(ApplicationContext context, SecurityCodeVerifyFailureHandler failureHandler) {
+        this.failureHandler = failureHandler;
         validators = new HashMap<>();
         context.getBeansOfType(SecurityCodeRequestValidator.class).values().forEach((validator) -> validators.put(validator.getClass(), validator));
         urlVerifyStrategyMap = getUrlVerifyStrategyMap(context);
@@ -90,22 +92,36 @@ public class SecurityCodeVerifyFilter extends OncePerRequestFilter {
 
         for (Map.Entry<String, SecurityCodeVerifyStrategy> entry : urlVerifyStrategyMap.entrySet()) {
             if (!matcher.match(entry.getKey(), uri)) continue;
+
             Class<? extends SecurityCodeRequestValidator<?, ?>>[] validatorClasses = entry.getValue().value();
             boolean only = entry.getValue().only();
+            boolean ok = false;
+            StringBuilder errorMsg = new StringBuilder();
 
             for (Class<? extends SecurityCodeRequestValidator<?, ?>> validatorClass : validatorClasses) {
                 SecurityCodeRequestValidator validator = validators.get(validatorClass);
                 try {
                     validator.verifyRequest(request);
+                    ok = true;
                     //只需要验证通过一个
                     if (only) break;
                 } catch (SecurityCodeException e) {
-                    e.printStackTrace();
-                    validator.getFailureHandler().onFailure(request, response, e);
                     //有一个没有通过验证并且要求所有都通过验证，无法满足
-                    if (!only) return;
+                    if (!only) {
+                        e.printStackTrace();
+                        failureHandler.onFailure(request, response, e);
+                        return;
+                    } else errorMsg.append(validator.name()).append(": ").append(e.getMessage());
                 }
             }
+
+            // 一个也没有通过
+            if (!ok) {
+                failureHandler.onFailure(request, response, new SecurityCodeException(errorMsg.toString()));
+                return;
+            }
+
+            break;
         }
 
         filterChain.doFilter(request, response);

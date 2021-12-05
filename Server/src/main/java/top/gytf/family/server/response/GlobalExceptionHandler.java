@@ -45,6 +45,9 @@ public class GlobalExceptionHandler {
         } else if (e instanceof AccessDeniedException) {
             //权限不足
             return new Response<>(StateCode.SECURITY_NO_PERMISSION, e.getMessage());
+        } else if (e instanceof IllegalArgumentException) {
+            //也是参数错误
+            return new Response<>(StateCode.PARAM_IS_INVALID, e.getMessage());
         }
 
         return new Response<>(StateCode.FAIL, e.getMessage());

@@ -18,10 +18,10 @@ import javax.servlet.http.HttpServletRequest;
  */
 public interface SecurityCodeRequestValidator<D, R> {
     /**
-     * 失败处理器
-     * @return 失败处理器
+     * 验证器名字
+     * @return 验证器名字
      */
-    SecurityCodeVerifyFailureHandler getFailureHandler();
+    String name();
 
     /**
      * 验证码处理器

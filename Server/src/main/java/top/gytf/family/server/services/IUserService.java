@@ -78,4 +78,11 @@ public interface IUserService {
      * @param password 新密码
      */
     void modifyPassword(Long id, String password);
+
+    /**
+     * 获取密码
+     * @param id 用户编号
+     * @return 密码
+     */
+    String getPassword(Long id);
 }

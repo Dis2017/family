@@ -167,4 +167,15 @@ public class IUserServiceImpl implements IUserService {
     public void modifyPassword(Long id, String password) {
 
     }
+
+    /**
+     * 获取密码
+     *
+     * @param id 用户编号
+     * @return 密码
+     */
+    @Override
+    public String getPassword(Long id) {
+        return userMapper.selectOne(new LambdaQueryWrapper<User>().select(User::getPassword).eq(User::getId, id)).getPassword();
+    }
 }
