@@ -165,7 +165,10 @@ public class IUserServiceImpl implements IUserService {
      */
     @Override
     public void modifyPassword(Long id, String password) {
-
+        userMapper.updateById(User.builder()
+                        .id(id)
+                        .password(password)
+                .build());
     }
 
     /**

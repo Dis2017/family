@@ -61,9 +61,9 @@ public class UserController {
             },
             only = true
     )
-    public void modifyPassword(@NotNull(message = "密码不能为空")
+    public void modifyPassword(@Validated
                                @Length(min = 4, max = 32, message = "密码应该在8-32位")
-                               String password) {
+                               @RequestParam("password") String password) {
         Long id = Objects.requireNonNull(Utils.Security.current()).getId();
         userService.modifyPassword(id, password);
     }
@@ -75,9 +75,8 @@ public class UserController {
      */
     @PatchMapping(PathConstant.User.PATH_BIND_EMAIL)
     @SecurityCodeVerifyStrategy(EmailSecurityCodeRequestValidator.class)
-    public void bindEmail(
-            @Email(message = "邮箱格式不正确")
-            @RequestParam("email") String email) {
+    public void bindEmail(@Email(message = "邮箱格式不正确")
+                          @RequestParam("email") String email) {
         Long id = Objects.requireNonNull(Utils.Security.current()).getId();
         userService.bindEmail(id, email);
         Utils.Security.update(userService.get(id, null, null));

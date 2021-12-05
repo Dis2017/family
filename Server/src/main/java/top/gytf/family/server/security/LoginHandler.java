@@ -9,6 +9,7 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import top.gytf.family.server.Utils;
+import top.gytf.family.server.entity.User;
 import top.gytf.family.server.response.Response;
 import top.gytf.family.server.response.StateCode;
 
@@ -40,8 +41,10 @@ public class LoginHandler implements AuthenticationSuccessHandler, Authenticatio
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
             throws IOException, ServletException {
+        User user = (User) authentication.getPrincipal();
+        user.setPassword(null);
         Utils.Response.setToJson(response,
-                objectMapper.writeValueAsString(new Response<>(StateCode.SUCCESS, authentication.getPrincipal())));
+                objectMapper.writeValueAsString(new Response<>(StateCode.SUCCESS, user)));
     }
 
     @Override

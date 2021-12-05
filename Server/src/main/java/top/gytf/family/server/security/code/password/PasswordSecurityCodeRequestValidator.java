@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 @Component
 public class PasswordSecurityCodeRequestValidator implements SecurityCodeRequestValidator<Object, Object> {
     private final static String TAG = PasswordSecurityCodeRequestValidator.class.getName();
+    private static final String SECURITY_CODE_KEY = "password_code";
 
     private final PasswordSecurityCodeHandler securityCodeHandler;
 
@@ -77,6 +78,10 @@ public class PasswordSecurityCodeRequestValidator implements SecurityCodeRequest
      */
     @Override
     public String getCode(HttpServletRequest request) {
-        return null;
+        String code = null;
+        Object obj = request.getAttribute(SECURITY_CODE_KEY);
+        if (obj instanceof String) code = (String) obj;
+        if (code == null) code = request.getParameter(SECURITY_CODE_KEY);
+        return code;
     }
 }

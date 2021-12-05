@@ -52,7 +52,7 @@ public class PasswordSecurityCodeStorage implements SecurityCodeStorage<Object, 
     public PasswordSecurityCode take(Object repos, Object desc) throws SecurityCodeStorageTakeException {
         User user = Utils.Security.current();
         if (user == null) throw new SecurityCodeStorageTakeException("未登录");
-        return new PasswordSecurityCode(Long.MAX_VALUE, userService.getPassword(user.getId()));
+        return new PasswordSecurityCode(Integer.MAX_VALUE, userService.getPassword(user.getId()));
     }
 
     /**

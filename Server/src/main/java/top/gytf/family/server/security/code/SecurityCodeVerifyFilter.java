@@ -111,7 +111,7 @@ public class SecurityCodeVerifyFilter extends OncePerRequestFilter {
                         e.printStackTrace();
                         failureHandler.onFailure(request, response, e);
                         return;
-                    } else errorMsg.append(validator.name()).append(": ").append(e.getMessage());
+                    } else errorMsg.append(validator.name()).append(": ").append(e.getMessage()).append('\n');
                 }
             }
 
