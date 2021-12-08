@@ -67,11 +67,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .authenticationEntryPoint(authenticationEntryPoint)
                 .and()
                 .csrf().disable()
+                .apply(securityCodeConfig)
+                .and()
                 .apply(idPasswordConfig)
                 .and()
-                .apply(emailSecurityConfig)
-                .and()
-                .apply(securityCodeConfig);
+                .apply(emailSecurityConfig);
     }
 
 

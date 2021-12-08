@@ -5,6 +5,7 @@ import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.stereotype.Component;
 import top.gytf.family.server.constants.PathConstant;
 import top.gytf.family.server.security.LoginHandler;
@@ -46,7 +47,7 @@ public class EmailSecurityConfig extends SecurityConfigurerAdapter<DefaultSecuri
 
         builder
                 .authenticationProvider(emailAuthenticationProvider)
-                .addFilterAfter(getEmailAuthenticationFilter(builder), UsernamePasswordAuthenticationFilter.class);
+                .addFilterAfter(getEmailAuthenticationFilter(builder), LogoutFilter.class);
     }
 
     public EmailAuthenticationFilter getEmailAuthenticationFilter(HttpSecurity httpSecurity) {

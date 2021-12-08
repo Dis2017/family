@@ -15,14 +15,16 @@ import top.gytf.family.server.exceptions.SecurityCodeStorageTakeException;
  */
 public interface SecurityCodeStorage<R, D, C extends SecurityCode<D>> {
     /**
-     * 将对象转化为验证码
+     * 将对象转化为验证码<br>
+     * obj不是目标验证码类型返回null<br>
      * @param obj 验证码的Object对象
      * @return 验证码
      */
     C convert(Object obj);
 
     /**
-     * 取出验证码
+     * 取出验证码<br>
+     * 在{@link SecurityCodeHandler#generate}、{@link SecurityCodeHandler#verify}处调用<br>
      * @param repos 仓库
      * @param desc 验证码描述
      * @return 验证码

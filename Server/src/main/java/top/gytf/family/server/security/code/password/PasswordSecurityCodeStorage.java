@@ -42,7 +42,7 @@ public class PasswordSecurityCodeStorage implements SecurityCodeStorage<Object, 
 
     /**
      * 取出验证码
-     *
+     * 在{@link top.gytf.family.server.security.code.SecurityCodeHandler#generate}、{@link top.gytf.family.server.security.code.SecurityCodeHandler#verify}处调用<br>
      * @param repos 仓库
      * @param desc  验证码描述
      * @return 验证码
@@ -57,7 +57,7 @@ public class PasswordSecurityCodeStorage implements SecurityCodeStorage<Object, 
 
     /**
      * 存储验证码<br>
-     * 在{@link SecurityCodeHandler#generate}中生成后存储<br>
+     * 在{@link top.gytf.family.server.security.code.SecurityCodeHandler#generate}中生成后存储<br>
      * 将多次对同一仓库存储code，保证新存储的顶用旧code
      *
      * @param repos 仓库
@@ -71,7 +71,7 @@ public class PasswordSecurityCodeStorage implements SecurityCodeStorage<Object, 
 
     /**
      * 移除验证码<br>
-     * 在{@link SecurityCodeHandler#verify}中验证完成后使用
+     * 在{@link top.gytf.family.server.security.code.SecurityCodeHandler#verify}中验证完成后使用
      *
      * @param repos 仓库
      * @param desc  验证码描述

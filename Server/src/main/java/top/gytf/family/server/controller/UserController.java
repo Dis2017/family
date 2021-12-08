@@ -14,7 +14,6 @@ import top.gytf.family.server.services.IUserService;
 
 import javax.annotation.security.PermitAll;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 /**
@@ -28,6 +27,7 @@ import java.util.Objects;
  */
 @RestController
 @RequestMapping(PathConstant.User.USER_PREFIX)
+@Validated
 public class UserController {
     private final static String TAG = UserController.class.getName();
 
@@ -61,8 +61,7 @@ public class UserController {
             },
             only = true
     )
-    public void modifyPassword(@Validated
-                               @Length(min = 4, max = 32, message = "密码应该在8-32位")
+    public void modifyPassword(@Length(min = 4, max = 32, message = "密码应该在8-32位")
                                @RequestParam("password") String password) {
         Long id = Objects.requireNonNull(Utils.Security.current()).getId();
         userService.modifyPassword(id, password);

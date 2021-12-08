@@ -2,7 +2,6 @@ package top.gytf.family.server.security.code.password;
 
 import org.springframework.stereotype.Component;
 import top.gytf.family.server.security.code.SecurityCodeHandler;
-import top.gytf.family.server.security.code.SecurityCodeStorage;
 
 /**
  * Project:     IntelliJ IDEA<br>
@@ -17,7 +16,13 @@ import top.gytf.family.server.security.code.SecurityCodeStorage;
 public class PasswordSecurityCodeHandler extends SecurityCodeHandler<Object, PasswordSecurityCode, Object> {
     private final static String TAG = PasswordSecurityCodeHandler.class.getName();
 
-    public PasswordSecurityCodeHandler(SecurityCodeStorage<Object, Object, PasswordSecurityCode> storage) {
+
+    /**
+     * 构造器
+     *
+     * @param storage   存储器（不可为null）
+     */
+    public PasswordSecurityCodeHandler(PasswordSecurityCodeStorage storage) {
         super(null, null, storage);
     }
 }

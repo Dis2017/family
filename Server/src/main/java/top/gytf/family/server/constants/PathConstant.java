@@ -1,12 +1,7 @@
 package top.gytf.family.server.constants;
 
-import top.gytf.family.server.security.code.SecurityCodeRequestValidator;
-import top.gytf.family.server.security.code.SecurityCodeVerifyStrategy;
-import top.gytf.family.server.security.code.email.EmailSecurityCodeRequestValidator;
-
-import java.lang.annotation.Annotation;
-import java.util.HashMap;
-import java.util.Map;
+import top.gytf.family.server.security.email.EmailAuthenticationFilter;
+import top.gytf.family.server.security.id.IdPasswordAuthenticationFilter;
 
 /**
  * Project:     IntelliJ IDEA
@@ -42,34 +37,38 @@ public class PathConstant {
         public static final String  PATH_CURRENT = "/current";
 
         /**
-         * 登出的路径
+         * 登出的路径<br>
+         * <b><font color="green">不通过Controller提供服务！</font></b><br>
+         * <b><font color="green">在</font>{@link top.gytf.family.server.config.security.SecurityConfig}
+         * <font color="green">绑定</font></b>
          */
         public static final String PATH_LOGOUT = "/logout";
 
         /**
-         * 用户编号密码登录的路径
+         * 用户编号密码登录的路径<br>
+         * <b><font color="green">不通过Controller提供服务！</font></b><br>
+         * <b><font color="green">在</font>{@link IdPasswordAuthenticationFilter#IdPasswordAuthenticationFilter()}
+         * <font color="green">绑定</font></b>
          */
         public static final String PATH_ID_PASSWORD_LOGIN = "/login/id";
 
         /**
-         * 邮箱登录的路径
+         * 邮箱登录的路径<br>
+         * <b><font color="green">不通过Controller提供服务！</font></b><br>
+         * <b><font color="green">在</font>{@link EmailAuthenticationFilter#EmailAuthenticationFilter()} )}
+         * <font color="green">绑定</font></b>
          */
         public static final String PATH_EMAIL_LOGIN = "/login/email";
 
         /**
-         * 邮箱验证码路径
+         * 邮箱验证码生成路径
          */
         public static final String PATH_SECURITY_CODE_EMAIL = "/security-code/email";
 
         /**
-         * 图片验证码路径
+         * 图片验证码生成路径
          */
         public static final String PATH_SECURITY_CODE_IMAGE = "/security-code/image";
-
-        /**
-         * 验证密码路径
-         */
-        public static final String PATH_VERIFY_PASSWORD = "/security-code/password";
     }
 
     /**

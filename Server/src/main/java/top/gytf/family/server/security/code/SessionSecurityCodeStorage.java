@@ -43,8 +43,8 @@ public abstract class SessionSecurityCodeStorage<D, C extends SecurityCode<D>> i
     }
 
     /**
-     * 取出验证码
-     *
+     * 取出验证码<br>
+     * 在{@link SecurityCodeHandler#generate}、{@link SecurityCodeHandler#verify}处调用<br>
      * @param repos 仓库
      * @param desc  验证码描述
      * @return 验证码

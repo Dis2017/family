@@ -4,6 +4,7 @@ import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.stereotype.Component;
 import top.gytf.family.server.security.code.SecurityCodeVerifyFilter;
 
@@ -31,6 +32,6 @@ public class SecurityCodeConfig extends SecurityConfigurerAdapter<DefaultSecurit
         super.configure(builder);
 
         builder
-                .addFilterBefore(securityCodeVerifyFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(securityCodeVerifyFilter, LogoutFilter.class);
     }
 }

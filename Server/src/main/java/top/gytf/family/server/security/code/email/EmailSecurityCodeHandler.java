@@ -2,9 +2,7 @@ package top.gytf.family.server.security.code.email;
 
 import org.springframework.stereotype.Component;
 import top.gytf.family.server.constants.SessionConstant;
-import top.gytf.family.server.security.code.SecurityCodeHandler;
-import top.gytf.family.server.security.code.SecurityCodeSender;
-import top.gytf.family.server.security.code.SessionSecurityCodeStorage;
+import top.gytf.family.server.security.code.*;
 
 import javax.servlet.http.HttpSession;
 
@@ -21,6 +19,11 @@ import javax.servlet.http.HttpSession;
 public class EmailSecurityCodeHandler extends SecurityCodeHandler<String, EmailSecurityCode, HttpSession> {
     private final static String TAG = EmailSecurityCodeHandler.class.getName();
 
+    /**
+     * 构造器
+     *
+     * @param sender    发送器（如果为空则应该保证存储器永远可以取出非空数据）
+     */
     public EmailSecurityCodeHandler(SecurityCodeSender<EmailSecurityCode> sender) {
         super(
                 new EmailSecurityCodeGenerator(),
@@ -42,6 +45,6 @@ public class EmailSecurityCodeHandler extends SecurityCodeHandler<String, EmailS
                         return (EmailSecurityCode) obj;
                     }
                 }
-                );
+        );
     }
 }

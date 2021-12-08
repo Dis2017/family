@@ -1,10 +1,9 @@
 package top.gytf.family.server.security.code.image;
 
 import org.springframework.stereotype.Component;
-import top.gytf.family.server.security.code.SecurityCodeRequestValidator;
 import top.gytf.family.server.security.code.SecurityCode;
 import top.gytf.family.server.security.code.SecurityCodeHandler;
-import top.gytf.family.server.security.code.SecurityCodeVerifyFailureHandler;
+import top.gytf.family.server.security.code.SecurityCodeRequestValidator;
 
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -32,8 +31,8 @@ public class ImageSecurityCodeRequestValidator implements SecurityCodeRequestVal
     }
 
     /**
-     * 验证器名字
-     *
+     * 验证器名字<br>
+     * 验证错误时调用，用于提示、区别验证器<br>
      * @return 验证器名字
      */
     @Override
@@ -42,8 +41,9 @@ public class ImageSecurityCodeRequestValidator implements SecurityCodeRequestVal
     }
 
     /**
-     * 验证码处理器
-     *
+     * 验证码处理器<br>
+     * 用于调用{@link top.gytf.family.server.security.code.SecurityCodeHandler#verify}
+     * @see top.gytf.family.server.security.code.SecurityCodeRequestValidator#verifyRequest
      * @return 验证码处理器
      */
     @Override
@@ -52,10 +52,12 @@ public class ImageSecurityCodeRequestValidator implements SecurityCodeRequestVal
     }
 
     /**
-     * 仓库
+     * 仓库<br>
+     * 作为调用{@link SecurityCodeHandler#verify}时的仓库参数
      *
      * @param request 请求
      * @return 仓库
+     * @see SecurityCodeRequestValidator#verifyRequest
      */
     @Override
     public HttpSession getRepository(HttpServletRequest request) {
@@ -63,10 +65,12 @@ public class ImageSecurityCodeRequestValidator implements SecurityCodeRequestVal
     }
 
     /**
-     * 获取验证码描述
+     * 描述<br>
+     * 作为调用{@link SecurityCodeHandler#verify}时的描述参数
      *
      * @param request 请求
      * @return 描述
+     * @see SecurityCodeRequestValidator#verifyRequest
      */
     @Override
     public ServletResponse getDesc(HttpServletRequest request) {
@@ -74,10 +78,12 @@ public class ImageSecurityCodeRequestValidator implements SecurityCodeRequestVal
     }
 
     /**
-     * 验证码
+     * 验证码<br>
+     * 作为调用{@link SecurityCodeHandler#verify}时的验证码参数
      *
      * @param request 请求
      * @return 验证码
+     * @see SecurityCodeRequestValidator#verifyRequest
      */
     @Override
     public String getCode(HttpServletRequest request) {

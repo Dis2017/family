@@ -109,7 +109,11 @@ public class SecurityCodeVerifyFilter extends OncePerRequestFilter {
                     //有一个没有通过验证并且要求所有都通过验证，无法满足
                     if (!only) {
                         e.printStackTrace();
-                        failureHandler.onFailure(request, response, e);
+                        failureHandler.onFailure(
+                                request,
+                                response,
+                                new SecurityCodeException(validator.name() + ": " + e.getMessage())
+                        );
                         return;
                     } else errorMsg.append(validator.name()).append(": ").append(e.getMessage()).append('\n');
                 }
@@ -117,7 +121,9 @@ public class SecurityCodeVerifyFilter extends OncePerRequestFilter {
 
             // 一个也没有通过
             if (!ok) {
-                failureHandler.onFailure(request, response, new SecurityCodeException(errorMsg.toString()));
+                SecurityCodeException exception = new SecurityCodeException(errorMsg.toString());
+                exception.printStackTrace();
+                failureHandler.onFailure(request, response, exception);
                 return;
             }
 

@@ -3,10 +3,9 @@ package top.gytf.family.server.security.code;
 import java.time.LocalDateTime;
 
 /**
- * Project:     IntelliJ IDEA
- * ClassName:   SecurityCode
- * Description: 验证码
- * CreateDate:  2021/11/26 22:31
+ * Project:     IntelliJ IDEA<br>
+ * Description: 验证码<br>
+ * CreateDate:  2021/11/26 22:31<br>
  * ------------------------------------------------------------------------------------------
  *
  * @author user

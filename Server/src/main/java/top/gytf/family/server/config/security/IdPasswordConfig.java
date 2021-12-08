@@ -5,6 +5,7 @@ import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.stereotype.Component;
 import top.gytf.family.server.security.LoginHandler;
 import top.gytf.family.server.security.email.EmailAuthenticationProvider;
@@ -37,7 +38,7 @@ public class IdPasswordConfig extends SecurityConfigurerAdapter<DefaultSecurityF
         super.configure(builder);
         builder
                 .authenticationProvider(idPasswordAuthenticationProvider)
-                .addFilterBefore(getIdPasswordAuthenticationFilter(builder), UsernamePasswordAuthenticationFilter.class);
+                .addFilterAfter(getIdPasswordAuthenticationFilter(builder), LogoutFilter.class);
     }
 
     public IdPasswordAuthenticationFilter getIdPasswordAuthenticationFilter(HttpSecurity httpSecurity) {

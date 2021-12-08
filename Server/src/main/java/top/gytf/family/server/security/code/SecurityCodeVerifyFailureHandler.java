@@ -7,6 +7,7 @@ import top.gytf.family.server.exceptions.SecurityCodeException;
 import top.gytf.family.server.response.Response;
 import top.gytf.family.server.response.StateCode;
 
+import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -29,7 +30,8 @@ public class SecurityCodeVerifyFailureHandler {
     }
 
     /**
-     * 失败时调用
+     * 失败时调用<br>
+     * 在{@link SecurityCodeVerifyFilter#doFilterInternal}调用
      * @param request 请求
      * @param response 响应
      * @param exception 错误

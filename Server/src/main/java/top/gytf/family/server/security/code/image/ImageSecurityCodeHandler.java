@@ -2,8 +2,7 @@ package top.gytf.family.server.security.code.image;
 
 import org.springframework.stereotype.Component;
 import top.gytf.family.server.constants.SessionConstant;
-import top.gytf.family.server.security.code.SecurityCodeHandler;
-import top.gytf.family.server.security.code.SessionSecurityCodeStorage;
+import top.gytf.family.server.security.code.*;
 
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpSession;
@@ -21,7 +20,10 @@ import javax.servlet.http.HttpSession;
 public class ImageSecurityCodeHandler extends SecurityCodeHandler<ServletResponse, ImageSecurityCode, HttpSession> {
     private final static String TAG = ImageSecurityCodeHandler.class.getName();
 
-    public ImageSecurityCodeHandler(){
+    /**
+     * 构造器
+     */
+    public ImageSecurityCodeHandler() {
         super(
                 new ImageSecurityCodeGenerator(),
                 new ImageSecurityCodeSender(),
