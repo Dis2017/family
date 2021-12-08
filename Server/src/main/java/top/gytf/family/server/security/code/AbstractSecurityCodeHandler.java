@@ -17,7 +17,7 @@ import top.gytf.family.server.exceptions.SecurityCodeNotMatchException;
  * @author user
  * @version V1.0
  */
-public abstract class SecurityCodeHandler<D, C extends SecurityCode<D>, R> {
+public abstract class AbstractSecurityCodeHandler<D, C extends SecurityCode<D>, R> {
 
     /**
      * 验证码生成器
@@ -38,7 +38,7 @@ public abstract class SecurityCodeHandler<D, C extends SecurityCode<D>, R> {
      * @param sender 发送器（如果为空则应该保证存储器永远可以取出非空数据）
      * @param storage 存储器（不可为null）
      */
-    public SecurityCodeHandler(SecurityCodeGenerator<D, C> generator, SecurityCodeSender<C> sender, SecurityCodeStorage<R, D, C> storage) {
+    public AbstractSecurityCodeHandler(SecurityCodeGenerator<D, C> generator, SecurityCodeSender<C> sender, SecurityCodeStorage<R, D, C> storage) {
         this.generator = generator;
         this.sender = sender;
         this.storage = storage;

@@ -52,14 +52,16 @@ public class SecurityCodeVerifyFilter extends OncePerRequestFilter {
      * @return 映射
      */
     private Map<String, SecurityCodeVerifyStrategy> getUrlVerifyStrategyMap(ApplicationContext context) {
-        Map<String, SecurityCodeVerifyStrategy> result = new HashMap<>();
+        Map<String, SecurityCodeVerifyStrategy> result = new HashMap<>(32);
 
         // 接口
         RequestMappingHandlerMapping requestMappingHandlerMapping = context.getBean(RequestMappingHandlerMapping.class);
         Map<RequestMappingInfo, HandlerMethod> map = requestMappingHandlerMapping.getHandlerMethods();
         for (Map.Entry<RequestMappingInfo, HandlerMethod> entry : map.entrySet()) {
             SecurityCodeVerifyStrategy strategy = entry.getValue().getMethodAnnotation(SecurityCodeVerifyStrategy.class);
-            if (strategy == null) continue;
+            if (strategy == null) {
+                continue;
+            }
             Set<String> patterns = entry.getKey().getPatternsCondition().getPatterns();
             patterns.forEach((pattern) -> result.put(pattern, strategy));
         }
@@ -91,7 +93,9 @@ public class SecurityCodeVerifyFilter extends OncePerRequestFilter {
         String uri = request.getRequestURI();
 
         for (Map.Entry<String, SecurityCodeVerifyStrategy> entry : urlVerifyStrategyMap.entrySet()) {
-            if (!matcher.match(entry.getKey(), uri)) continue;
+            if (!matcher.match(entry.getKey(), uri)) {
+                continue;
+            }
 
             Class<? extends SecurityCodeRequestValidator<?, ?>>[] validatorClasses = entry.getValue().value();
             boolean only = entry.getValue().only();
@@ -104,7 +108,9 @@ public class SecurityCodeVerifyFilter extends OncePerRequestFilter {
                     validator.verifyRequest(request);
                     ok = true;
                     //只需要验证通过一个
-                    if (only) break;
+                    if (only) {
+                        break;
+                    }
                 } catch (SecurityCodeException e) {
                     //有一个没有通过验证并且要求所有都通过验证，无法满足
                     if (!only) {
@@ -115,7 +121,9 @@ public class SecurityCodeVerifyFilter extends OncePerRequestFilter {
                                 new SecurityCodeException(validator.name() + ": " + e.getMessage())
                         );
                         return;
-                    } else errorMsg.append(validator.name()).append(": ").append(e.getMessage()).append('\n');
+                    } else {
+                        errorMsg.append(validator.name()).append(": ").append(e.getMessage()).append('\n');
+                    }
                 }
             }
 

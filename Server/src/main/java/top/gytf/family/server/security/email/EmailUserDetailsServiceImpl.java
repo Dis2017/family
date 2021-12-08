@@ -18,12 +18,12 @@ import top.gytf.family.server.services.IUserService;
  * @version V1.0
  */
 @Component
-public class EmailUserDetailsService implements UserDetailsService {
-    private final static String TAG = EmailUserDetailsService.class.getName();
+public class EmailUserDetailsServiceImpl implements UserDetailsService {
+    private final static String TAG = EmailUserDetailsServiceImpl.class.getName();
 
     private final IUserService userService;
 
-    public EmailUserDetailsService(IUserService userService) {
+    public EmailUserDetailsServiceImpl(IUserService userService) {
         this.userService = userService;
     }
 
@@ -42,7 +42,9 @@ public class EmailUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userService.get(null, null, username);
-        if (user == null) throw new UsernameNotFoundException("邮箱" + username + "不存在。");
+        if (user == null) {
+            throw new UsernameNotFoundException("邮箱" + username + "不存在。");
+        }
         return user;
     }
 }

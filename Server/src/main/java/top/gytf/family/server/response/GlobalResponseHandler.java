@@ -69,7 +69,7 @@ public class GlobalResponseHandler implements ResponseBodyAdvice<Object> {
         if (body instanceof Response) {
             return body;
         }
-        StatusCarrier statusCarrier = null;
+        StatusCarrier statusCarrier;
         if ((statusCarrier = returnType.getMethodAnnotation(StatusCarrier.class)) != null) {
             return new Response<>(statusCarrier.value(), body);
         }
@@ -82,9 +82,7 @@ public class GlobalResponseHandler implements ResponseBodyAdvice<Object> {
                 return new Response<>(StateCode.FAIL, e.getMessage());
             }
         }
-//        if (Constants.Request.ERROR_PATH.equals(request.getURI().getPath())) {
-//            return Response.fail(body);
-//        }
+
         return new Response<>(StateCode.SUCCESS, body);
     }
 }

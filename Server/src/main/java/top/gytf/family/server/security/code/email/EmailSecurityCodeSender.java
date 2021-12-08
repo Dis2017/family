@@ -6,6 +6,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 import top.gytf.family.server.exceptions.SecurityCodeSendException;
+import top.gytf.family.server.security.code.AbstractSecurityCodeHandler;
 import top.gytf.family.server.security.code.SecurityCodeSender;
 
 /**
@@ -30,7 +31,7 @@ public class EmailSecurityCodeSender implements SecurityCodeSender<EmailSecurity
 
     /**
      * 发送验证码
-     * 在{@link top.gytf.family.server.security.code.SecurityCodeHandler#generate}调用
+     * 在{@link AbstractSecurityCodeHandler#generate}调用
      * @param code 验证码
      * @throws SecurityCodeSendException 发送错误
      */

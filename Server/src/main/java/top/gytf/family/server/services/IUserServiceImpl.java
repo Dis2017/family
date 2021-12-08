@@ -42,9 +42,15 @@ public class IUserServiceImpl implements IUserService {
     public boolean exist(Long id, String phone, String email) {
         boolean exist = false;
 
-        if (id != null)  exist = userMapper.selectCount(new LambdaQueryWrapper<User>().eq(User::getId, id)) == 1;
-        if (!exist && phone != null)  exist = userMapper.selectCount(new LambdaQueryWrapper<User>().eq(User::getId, id)) == 1;
-        if (!exist && email != null)  exist = userMapper.selectCount(new LambdaQueryWrapper<User>().eq(User::getId, id)) == 1;
+        if (id != null) {
+            exist = userMapper.selectCount(new LambdaQueryWrapper<User>().eq(User::getId, id)) == 1;
+        }
+        if (!exist && phone != null) {
+            exist = userMapper.selectCount(new LambdaQueryWrapper<User>().eq(User::getId, id)) == 1;
+        }
+        if (!exist && email != null) {
+            exist = userMapper.selectCount(new LambdaQueryWrapper<User>().eq(User::getId, id)) == 1;
+        }
 
         return exist;
     }
@@ -81,10 +87,12 @@ public class IUserServiceImpl implements IUserService {
     /**
      * 更新用户
      *
+     * @param id   更新的用户id
      * @param user 新的用户内容
      */
     @Override
-    public void update(User user) {
+    public void update(Long id, User user) {
+        user.setId(id);
         Utils.User.clearProtectedMessage(user, true);
         userMapper.updateById(user);
     }

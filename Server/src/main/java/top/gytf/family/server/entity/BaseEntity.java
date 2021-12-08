@@ -3,6 +3,7 @@ package top.gytf.family.server.entity;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -36,6 +37,7 @@ public class BaseEntity implements Serializable {
             value = CREATE_TIME_NAME,
             fill = FieldFill.INSERT
     )
+    @JsonIgnore
     private LocalDateTime createTime;
 
     /**
@@ -45,6 +47,7 @@ public class BaseEntity implements Serializable {
             value = MODIFY_TIME_NAME,
             fill = FieldFill.INSERT_UPDATE
     )
+    @JsonIgnore
     private LocalDateTime modifyTime;
 
     /**
@@ -55,5 +58,6 @@ public class BaseEntity implements Serializable {
             fill = FieldFill.INSERT
     )
     @TableLogic
+    @JsonIgnore
     private Boolean deleteFlag;
 }

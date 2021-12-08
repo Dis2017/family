@@ -48,7 +48,9 @@ public class EmailAuthenticationToken extends AbstractAuthenticationToken {
      */
     @Override
     public void setAuthenticated(boolean authenticated) {
-        if (authenticated) throw new IllegalArgumentException("不要直接设置Token为已认证，请重新创建带权限列表的Token。");
+        if (authenticated) {
+            throw new IllegalArgumentException("不要直接设置Token为已认证，请重新创建带权限列表的Token。");
+        }
         super.setAuthenticated(false);
     }
 

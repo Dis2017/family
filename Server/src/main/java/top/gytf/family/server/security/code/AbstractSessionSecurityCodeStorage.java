@@ -15,13 +15,13 @@ import javax.servlet.http.HttpSession;
  * @author user
  * @version V1.0
  */
-public abstract class SessionSecurityCodeStorage<D, C extends SecurityCode<D>> implements SecurityCodeStorage<HttpSession, D, C> {
-    private final static String TAG = SessionSecurityCodeStorage.class.getName();
+public abstract class AbstractSessionSecurityCodeStorage<D, C extends SecurityCode<D>> implements SecurityCodeStorage<HttpSession, D, C> {
+    private final static String TAG = AbstractSessionSecurityCodeStorage.class.getName();
 
     /**
      * 是否只存储一例</br>
-     * 为<code>true</code>只用{@link SessionSecurityCodeStorage#getKeyPrefix()}作为key值<br>
-     * 为<code>false</code>则用{@link SessionSecurityCodeStorage#getKeyPrefix()} +
+     * 为<code>true</code>只用{@link AbstractSessionSecurityCodeStorage#getKeyPrefix()}作为key值<br>
+     * 为<code>false</code>则用{@link AbstractSessionSecurityCodeStorage#getKeyPrefix()} +
      * {@link SecurityCode#getDesc()}作为key值
      * @return 是否为单例
      */
@@ -44,7 +44,7 @@ public abstract class SessionSecurityCodeStorage<D, C extends SecurityCode<D>> i
 
     /**
      * 取出验证码<br>
-     * 在{@link SecurityCodeHandler#generate}、{@link SecurityCodeHandler#verify}处调用<br>
+     * 在{@link AbstractSecurityCodeHandler#generate}、{@link AbstractSecurityCodeHandler#verify}处调用<br>
      * @param repos 仓库
      * @param desc  验证码描述
      * @return 验证码
@@ -54,13 +54,15 @@ public abstract class SessionSecurityCodeStorage<D, C extends SecurityCode<D>> i
     public C take(HttpSession repos, D desc) throws SecurityCodeStorageTakeException {
         Object obj = repos.getAttribute(getKey(desc));
         C code = null;
-        if (obj != null) code = convert(obj);
+        if (obj != null) {
+            code = convert(obj);
+        }
         return code;
     }
 
     /**
      * 存储验证码<br>
-     * 在{@link SecurityCodeHandler#generate}中生成后存储<br>
+     * 在{@link AbstractSecurityCodeHandler#generate}中生成后存储<br>
      * 将多次对同一仓库存储code，保证新存储的顶用旧code
      *
      * @param repos 仓库
@@ -74,7 +76,7 @@ public abstract class SessionSecurityCodeStorage<D, C extends SecurityCode<D>> i
 
     /**
      * 移除验证码<br>
-     * 在{@link SecurityCodeHandler#verify}中验证完成后使用
+     * 在{@link AbstractSecurityCodeHandler#verify}中验证完成后使用
      *
      * @param repos 仓库
      * @param desc  验证码描述

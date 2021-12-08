@@ -36,9 +36,10 @@ public interface IUserService {
 
     /**
      * 更新用户
+     * @param id 更新的用户id
      * @param user 新的用户内容
      */
-    void update(User user);
+    void update(Long id, User user);
 
     /**
      * 添加用户

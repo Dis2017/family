@@ -17,7 +17,7 @@ import javax.servlet.http.HttpSession;
  * @version V1.0
  */
 @Component
-public class ImageSecurityCodeHandler extends SecurityCodeHandler<ServletResponse, ImageSecurityCode, HttpSession> {
+public class ImageSecurityCodeHandler extends AbstractSecurityCodeHandler<ServletResponse, ImageSecurityCode, HttpSession> {
     private final static String TAG = ImageSecurityCodeHandler.class.getName();
 
     /**
@@ -27,7 +27,7 @@ public class ImageSecurityCodeHandler extends SecurityCodeHandler<ServletRespons
         super(
                 new ImageSecurityCodeGenerator(),
                 new ImageSecurityCodeSender(),
-                new SessionSecurityCodeStorage<ServletResponse, ImageSecurityCode>() {
+                new AbstractSessionSecurityCodeStorage<>() {
                     @Override
                     public boolean isSingle() {
                         return true;
@@ -40,7 +40,9 @@ public class ImageSecurityCodeHandler extends SecurityCodeHandler<ServletRespons
 
                     @Override
                     public ImageSecurityCode convert(Object obj) {
-                        if (!(obj instanceof ImageSecurityCode)) return null;
+                        if (!(obj instanceof ImageSecurityCode)) {
+                            return null;
+                        }
                         return (ImageSecurityCode) obj;
                     }
                 }

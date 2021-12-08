@@ -24,9 +24,9 @@ public class EmailAuthenticationProvider implements AuthenticationProvider {
     /**
      * 读取用户信息服务
      */
-    private final EmailUserDetailsService emailUserDetailsService;
+    private final EmailUserDetailsServiceImpl emailUserDetailsService;
 
-    public EmailAuthenticationProvider(EmailUserDetailsService emailUserDetailsService) {
+    public EmailAuthenticationProvider(EmailUserDetailsServiceImpl emailUserDetailsService) {
         this.emailUserDetailsService = emailUserDetailsService;
     }
 
@@ -71,7 +71,7 @@ public class EmailAuthenticationProvider implements AuthenticationProvider {
      * authentication is conducted at runtime the <code>ProviderManager</code>.
      * </p>
      *
-     * @param authentication
+     * @param authentication 认证内容
      * @return <code>true</code> if the implementation can more closely evaluate the
      * <code>Authentication</code> class presented
      */

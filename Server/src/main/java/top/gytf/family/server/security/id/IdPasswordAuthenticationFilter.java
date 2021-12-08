@@ -12,6 +12,7 @@ import org.springframework.security.web.authentication.AuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.stereotype.Component;
 import top.gytf.family.server.constants.PathConstant;
+import top.gytf.family.server.security.email.EmailAuthenticationFilter;
 import top.gytf.family.server.security.email.EmailAuthenticationToken;
 
 import javax.servlet.ServletException;
@@ -62,8 +63,8 @@ public class IdPasswordAuthenticationFilter extends AbstractAuthenticationProces
      * @throws AuthenticationException if authentication fails.
      */
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
-        if (isPostOnly() && !request.getMethod().equals("POST")) {
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+        if (isPostOnly() && !EmailAuthenticationFilter.POST_METHOD_NAME.equals(request.getMethod())) {
             throw new AuthenticationServiceException("不接受非POST请求");
         }
 

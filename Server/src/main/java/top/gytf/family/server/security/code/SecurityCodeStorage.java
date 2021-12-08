@@ -24,30 +24,30 @@ public interface SecurityCodeStorage<R, D, C extends SecurityCode<D>> {
 
     /**
      * 取出验证码<br>
-     * 在{@link SecurityCodeHandler#generate}、{@link SecurityCodeHandler#verify}处调用<br>
+     * 在{@link AbstractSecurityCodeHandler#generate}、{@link AbstractSecurityCodeHandler#verify}处调用<br>
      * @param repos 仓库
      * @param desc 验证码描述
      * @return 验证码
-     * @exception SecurityCodeStorageTakeException 验证码取出错误
+     * @throws SecurityCodeStorageTakeException 验证码取出错误
      */
     C take(R repos, D desc) throws SecurityCodeStorageTakeException;
 
     /**
      * 存储验证码<br>
-     * 在{@link SecurityCodeHandler#generate}中生成后存储<br>
+     * 在{@link AbstractSecurityCodeHandler#generate}中生成后存储<br>
      * 将多次对同一仓库存储code，保证新存储的顶用旧code
      * @param repos 仓库
      * @param code 验证码
-     * @exception SecurityCodeStorageSaveException 验证码存储错误
+     * @throws SecurityCodeStorageSaveException 验证码存储错误
      */
     void save(R repos, C code) throws SecurityCodeStorageSaveException;
 
     /**
      * 移除验证码<br>
-     * 在{@link SecurityCodeHandler#verify}中验证完成后使用
+     * 在{@link AbstractSecurityCodeHandler#verify}中验证完成后使用
      * @param repos 仓库
      * @param desc 验证码描述
-     * @exception SecurityCodeStorageRemoveException 验证取出储错误
+     * @throws SecurityCodeStorageRemoveException 验证取出储错误
      */
     void remove(R repos, D desc) throws SecurityCodeStorageRemoveException;
 }

@@ -1,7 +1,7 @@
 package top.gytf.family.server.security.code.password;
 
 import org.springframework.stereotype.Component;
-import top.gytf.family.server.security.code.SecurityCodeHandler;
+import top.gytf.family.server.security.code.AbstractSecurityCodeHandler;
 
 /**
  * Project:     IntelliJ IDEA<br>
@@ -13,7 +13,7 @@ import top.gytf.family.server.security.code.SecurityCodeHandler;
  * @version V1.0
  */
 @Component
-public class PasswordSecurityCodeHandler extends SecurityCodeHandler<Object, PasswordSecurityCode, Object> {
+public class PasswordSecurityCodeHandler extends AbstractSecurityCodeHandler<Object, PasswordSecurityCode, Object> {
     private final static String TAG = PasswordSecurityCodeHandler.class.getName();
 
 

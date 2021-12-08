@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.GrantedAuthority;
@@ -39,7 +39,17 @@ public class User extends BaseEntity implements UserDetails {
     /**
      * 注册场景
      */
-    public interface GROUP_REGISTER {}
+    public interface GroupRegister {}
+
+    /**
+     * 更新场景
+     */
+    public interface GroupModify {}
+
+    public static final Class<?>[] GROUP_ALL = {
+            GroupRegister.class,
+            GroupModify.class
+    };
 
     /**
      * 用户编号
@@ -47,6 +57,13 @@ public class User extends BaseEntity implements UserDetails {
     @TableId(
             value = "id",
             type = IdType.AUTO
+    )
+    @Null(
+            message = "应该为空",
+            groups = {
+                    GroupRegister.class,
+                    GroupModify.class
+            }
     )
     private Long id;
 
@@ -57,7 +74,7 @@ public class User extends BaseEntity implements UserDetails {
     @NotNull(
             message = "名称不能为空",
             groups = {
-                    GROUP_REGISTER.class
+                    GroupRegister.class
             }
     )
     @Length(
@@ -65,7 +82,8 @@ public class User extends BaseEntity implements UserDetails {
             max = 8,
             message = "名称应该在2-8位",
             groups = {
-                    GROUP_REGISTER.class
+                    GroupRegister.class,
+                    GroupModify.class
             }
     )
     private String name;
@@ -74,14 +92,24 @@ public class User extends BaseEntity implements UserDetails {
      * 密码 （32位）
      */
     @TableField("password")
-    @NotNull(
-            message = "密码不能为空"
+    @Null(
+            message = "密码应该为空",
+            groups = {
+                    GroupModify.class
+            }
     )
-    @Length(min = 4,
+    @NotNull(
+            message = "密码不能为空",
+            groups = {
+                    GroupRegister.class
+            }
+    )
+    @Length(min = 8,
             max = 32,
             message = "密码应该在8-32位",
             groups = {
-                    GROUP_REGISTER.class
+                    GroupRegister.class,
+                    GroupModify.class
             }
     )
     private String password;
@@ -100,10 +128,7 @@ public class User extends BaseEntity implements UserDetails {
      */
     @TableField("birthday")
     @Past(
-            message = "出生日期应该是一个已经过去的时间",
-            groups = {
-                    GROUP_REGISTER.class
-            }
+            message = "出生日期应该是一个已经过去的时间"
     )
     private LocalDate birthday;
 
@@ -117,17 +142,31 @@ public class User extends BaseEntity implements UserDetails {
      * 归属家庭编号
      */
     @TableField("family_id")
+    @Null(
+            message = "家庭应该为空",
+            groups = {
+                    GroupRegister.class,
+                    GroupModify.class
+            }
+    )
     private Long familyId;
 
     /**
      * 电子邮箱
      */
     @TableField("email")
-    @Email(message = "电子邮箱格式不正确")
+    @Email(
+            message = "电子邮箱格式不正确",
+            groups = {
+                    GroupRegister.class,
+                    GroupModify.class
+            }
+    )
     @Null(
             message = "电子邮箱应该为空",
             groups = {
-                    GROUP_REGISTER.class
+                    GroupRegister.class,
+                    GroupModify.class
             }
     )
     private String email;
@@ -139,12 +178,17 @@ public class User extends BaseEntity implements UserDetails {
     @Length(
             min = 11,
             max = 11,
-            message = "手机号应该为11位"
+            message = "手机号应该为11位",
+            groups = {
+                    GroupRegister.class,
+                    GroupModify.class
+            }
     )
     @Null(
             message = "手机号应该为空",
             groups = {
-                    GROUP_REGISTER.class
+                    GroupRegister.class,
+                    GroupModify.class
             }
     )
     private String phone;
@@ -154,6 +198,7 @@ public class User extends BaseEntity implements UserDetails {
      * 由创建实体时选择注入
      */
     @TableField(exist = false)
+    @JsonIgnore
     private Collection<? extends GrantedAuthority> authorities;
 
     /**
@@ -172,8 +217,9 @@ public class User extends BaseEntity implements UserDetails {
      * @return the username (never <code>null</code>)
      */
     @Override
+    @JsonIgnore
     public String getUsername() {
-        return null;
+        return String.valueOf(id);
     }
 
     /**
@@ -184,6 +230,7 @@ public class User extends BaseEntity implements UserDetails {
      * <code>false</code> if no longer valid (ie expired)
      */
     @Override
+    @JsonIgnore
     public boolean isAccountNonExpired() {
         return false;
     }
@@ -195,6 +242,7 @@ public class User extends BaseEntity implements UserDetails {
      * @return <code>true</code> if the user is not locked, <code>false</code> otherwise
      */
     @Override
+    @JsonIgnore
     public boolean isAccountNonLocked() {
         return false;
     }
@@ -207,6 +255,7 @@ public class User extends BaseEntity implements UserDetails {
      * <code>false</code> if no longer valid (ie expired)
      */
     @Override
+    @JsonIgnore
     public boolean isCredentialsNonExpired() {
         return false;
     }

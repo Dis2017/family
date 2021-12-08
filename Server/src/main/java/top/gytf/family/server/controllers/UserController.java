@@ -8,7 +8,6 @@ import top.gytf.family.server.constants.PathConstant;
 import top.gytf.family.server.entity.User;
 import top.gytf.family.server.security.code.SecurityCodeVerifyStrategy;
 import top.gytf.family.server.security.code.email.EmailSecurityCodeRequestValidator;
-import top.gytf.family.server.security.code.image.ImageSecurityCodeRequestValidator;
 import top.gytf.family.server.security.code.password.PasswordSecurityCodeRequestValidator;
 import top.gytf.family.server.services.IUserService;
 
@@ -39,13 +38,13 @@ public class UserController {
 
     /**
      * 注册用户
-     * @param user 用户
+     * @param userInfo 用户
      */
     @PostMapping(PathConstant.User.PATH_REGISTER)
     @PermitAll
-    public Long register(@Validated(User.GROUP_REGISTER.class) User user) {
-        userService.add(user);
-        return user.getId();
+    public Long register(@Validated(User.GroupRegister.class) User userInfo) {
+        userService.add(userInfo);
+        return userInfo.getId();
     }
 
     /**
@@ -54,9 +53,9 @@ public class UserController {
      * @return 新用户信息
      */
     @PatchMapping(PathConstant.User.PATH_MODIFY)
-    public User modifyUser(@Validated(User.GROUP_REGISTER.class) User updateInfo) {
+    public User modifyUser(@Validated(User.GroupModify.class) User updateInfo) {
         User user = Utils.Security.current();
-        assert user != null;
+        assert user != null : "当前用户不存在";
         userService.update(user.getId(), updateInfo);
         Utils.Security.update(userService.get(user.getId(), null, null));
         return Utils.Security.current();
@@ -75,7 +74,7 @@ public class UserController {
             },
             only = true
     )
-    public void modifyPassword(@Length(min = 4, max = 32, message = "密码应该在8-32位")
+    public void modifyPassword(@Length(min = 8, max = 32, message = "密码应该在8-32位")
                                @RequestParam("password") String password) {
         Long id = Objects.requireNonNull(Utils.Security.current()).getId();
         userService.modifyPassword(id, password);
@@ -104,7 +103,7 @@ public class UserController {
     @SecurityCodeVerifyStrategy(EmailSecurityCodeRequestValidator.class)
     public void unbindEmail() {
         User user = Utils.Security.current();
-        assert user != null;
+        assert user != null : "当前用户不存在";
         userService.unbindEmail(user.getId());
         Utils.Security.update(userService.get(user.getId(), null, null));
     }

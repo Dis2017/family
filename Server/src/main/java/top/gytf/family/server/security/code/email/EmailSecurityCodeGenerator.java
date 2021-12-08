@@ -3,6 +3,7 @@ package top.gytf.family.server.security.code.email;
 import lombok.Getter;
 import lombok.Setter;
 import top.gytf.family.server.exceptions.SecurityCodeGenerateException;
+import top.gytf.family.server.security.code.AbstractSecurityCodeHandler;
 import top.gytf.family.server.security.code.SecurityCodeGenerator;
 
 import java.util.Random;
@@ -41,7 +42,7 @@ public class EmailSecurityCodeGenerator implements SecurityCodeGenerator<String,
 
     /**
      * 生成验证码<br>
-     * 在{@link top.gytf.family.server.security.code.SecurityCodeHandler#generate}中调用
+     * 在{@link AbstractSecurityCodeHandler#generate}中调用
      * @param desc 描述
      * @return 验证码
      * @throws SecurityCodeGenerateException 验证码生成错误

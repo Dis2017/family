@@ -88,6 +88,10 @@ public class PathConstant {
          */
         public static final String PATH_REGISTER = "";
         /**
+         * 更新用户信息路径
+         */
+        public static final String PATH_MODIFY = "";
+        /**
          * 绑定邮箱路径
          */
         public static final String PATH_BIND_EMAIL = "/email";

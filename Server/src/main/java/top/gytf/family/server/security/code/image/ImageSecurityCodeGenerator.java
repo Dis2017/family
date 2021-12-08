@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
 import top.gytf.family.server.exceptions.SecurityCodeGenerateException;
+import top.gytf.family.server.security.code.AbstractSecurityCodeHandler;
 import top.gytf.family.server.security.code.SecurityCodeGenerator;
 
 import javax.servlet.ServletResponse;
@@ -44,7 +45,7 @@ public class ImageSecurityCodeGenerator implements SecurityCodeGenerator<Servlet
 
     /**
      * 生成验证码<br>
-     * 在{@link top.gytf.family.server.security.code.SecurityCodeHandler#generate}中调用
+     * 在{@link AbstractSecurityCodeHandler#generate}中调用
      * @param desc 描述
      * @return 验证码
      * @throws SecurityCodeGenerateException 验证码生成错误

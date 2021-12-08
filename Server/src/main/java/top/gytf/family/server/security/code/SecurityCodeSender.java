@@ -14,9 +14,9 @@ import top.gytf.family.server.exceptions.SecurityCodeSendException;
 public interface SecurityCodeSender<C extends SecurityCode<?>> {
     /**
      * 发送验证码<br>
-     * 在{@link SecurityCodeHandler#generate}调用
+     * 在{@link AbstractSecurityCodeHandler#generate}调用
      * @param code 验证码
-     * @exception SecurityCodeSendException 发送错误
+     * @throws SecurityCodeSendException 发送错误
      */
     void send(C code) throws SecurityCodeSendException;
 }

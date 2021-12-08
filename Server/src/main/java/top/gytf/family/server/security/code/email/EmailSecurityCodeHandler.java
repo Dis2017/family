@@ -16,7 +16,7 @@ import javax.servlet.http.HttpSession;
  * @version V1.0
  */
 @Component
-public class EmailSecurityCodeHandler extends SecurityCodeHandler<String, EmailSecurityCode, HttpSession> {
+public class EmailSecurityCodeHandler extends AbstractSecurityCodeHandler<String, EmailSecurityCode, HttpSession> {
     private final static String TAG = EmailSecurityCodeHandler.class.getName();
 
     /**
@@ -28,7 +28,7 @@ public class EmailSecurityCodeHandler extends SecurityCodeHandler<String, EmailS
         super(
                 new EmailSecurityCodeGenerator(),
                 sender,
-                new SessionSecurityCodeStorage<String, EmailSecurityCode>() {
+                new AbstractSessionSecurityCodeStorage<>() {
                     @Override
                     public boolean isSingle() {
                         return false;
@@ -41,7 +41,9 @@ public class EmailSecurityCodeHandler extends SecurityCodeHandler<String, EmailS
 
                     @Override
                     public EmailSecurityCode convert(Object obj) {
-                        if (!(obj instanceof EmailSecurityCode)) return null;
+                        if (!(obj instanceof EmailSecurityCode)) {
+                            return null;
+                        }
                         return (EmailSecurityCode) obj;
                     }
                 }

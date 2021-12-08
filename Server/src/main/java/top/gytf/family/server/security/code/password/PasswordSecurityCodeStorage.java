@@ -6,6 +6,7 @@ import top.gytf.family.server.entity.User;
 import top.gytf.family.server.exceptions.SecurityCodeStorageRemoveException;
 import top.gytf.family.server.exceptions.SecurityCodeStorageSaveException;
 import top.gytf.family.server.exceptions.SecurityCodeStorageTakeException;
+import top.gytf.family.server.security.code.AbstractSecurityCodeHandler;
 import top.gytf.family.server.security.code.SecurityCodeStorage;
 import top.gytf.family.server.services.IUserService;
 
@@ -36,13 +37,15 @@ public class PasswordSecurityCodeStorage implements SecurityCodeStorage<Object, 
      */
     @Override
     public PasswordSecurityCode convert(Object obj) {
-        if (obj instanceof PasswordSecurityCode) return (PasswordSecurityCode) obj;
+        if (obj instanceof PasswordSecurityCode) {
+            return (PasswordSecurityCode) obj;
+        }
         return null;
     }
 
     /**
      * 取出验证码
-     * 在{@link top.gytf.family.server.security.code.SecurityCodeHandler#generate}、{@link top.gytf.family.server.security.code.SecurityCodeHandler#verify}处调用<br>
+     * 在{@link AbstractSecurityCodeHandler#generate}、{@link AbstractSecurityCodeHandler#verify}处调用<br>
      * @param repos 仓库
      * @param desc  验证码描述
      * @return 验证码
@@ -51,13 +54,15 @@ public class PasswordSecurityCodeStorage implements SecurityCodeStorage<Object, 
     @Override
     public PasswordSecurityCode take(Object repos, Object desc) throws SecurityCodeStorageTakeException {
         User user = Utils.Security.current();
-        if (user == null) throw new SecurityCodeStorageTakeException("未登录");
+        if (user == null) {
+            throw new SecurityCodeStorageTakeException("未登录");
+        }
         return new PasswordSecurityCode(Integer.MAX_VALUE, userService.getPassword(user.getId()));
     }
 
     /**
      * 存储验证码<br>
-     * 在{@link top.gytf.family.server.security.code.SecurityCodeHandler#generate}中生成后存储<br>
+     * 在{@link AbstractSecurityCodeHandler#generate}中生成后存储<br>
      * 将多次对同一仓库存储code，保证新存储的顶用旧code
      *
      * @param repos 仓库
@@ -71,7 +76,7 @@ public class PasswordSecurityCodeStorage implements SecurityCodeStorage<Object, 
 
     /**
      * 移除验证码<br>
-     * 在{@link top.gytf.family.server.security.code.SecurityCodeHandler#verify}中验证完成后使用
+     * 在{@link AbstractSecurityCodeHandler#verify}中验证完成后使用
      *
      * @param repos 仓库
      * @param desc  验证码描述

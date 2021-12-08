@@ -81,7 +81,9 @@ public class Utils {
          * @param clearPsd 是否清除密码
          */
         public static void clearProtectedMessage(top.gytf.family.server.entity.User user, boolean clearPsd) {
-            if (clearPsd) user.setPassword(null);
+            if (clearPsd) {
+                user.setPassword(null);
+            }
             user.setEmail(null);
             user.setPhone(null);
             user.setFamilyId(null);
@@ -99,8 +101,12 @@ public class Utils {
         public static top.gytf.family.server.entity.User current() {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             Object principalObj = null;
-            if (authentication != null) principalObj = authentication.getPrincipal();
-            if (!(principalObj instanceof top.gytf.family.server.entity.User)) return null;
+            if (authentication != null) {
+                principalObj = authentication.getPrincipal();
+            }
+            if (!(principalObj instanceof top.gytf.family.server.entity.User)) {
+                return null;
+            }
             return (top.gytf.family.server.entity.User) principalObj;
         }
 

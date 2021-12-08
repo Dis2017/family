@@ -27,6 +27,8 @@ import java.io.IOException;
 public class EmailAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
     private final static String TAG = EmailAuthenticationFilter.class.getName();
 
+    public static final String POST_METHOD_NAME = "POST";
+
     /**
      * 是否只接受Post请求
      */
@@ -62,8 +64,8 @@ public class EmailAuthenticationFilter extends AbstractAuthenticationProcessingF
      */
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
-            throws AuthenticationException, IOException, ServletException {
-        if (isPostOnly() && !request.getMethod().equals("POST")) {
+            throws AuthenticationException {
+        if (isPostOnly() && !POST_METHOD_NAME.equals(request.getMethod())) {
             throw new AuthenticationServiceException("不接受非POST请求");
         }
 

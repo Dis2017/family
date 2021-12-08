@@ -24,9 +24,9 @@ public class IdPasswordAuthenticationProvider implements AuthenticationProvider 
     /**
      * 读取用户信息服务
      */
-    private final IdPasswordUserDetailsService idPasswordUserDetailsService;
+    private final IdPasswordUserDetailsServiceImpl idPasswordUserDetailsService;
 
-    public IdPasswordAuthenticationProvider(IdPasswordUserDetailsService idPasswordUserDetailsService) {
+    public IdPasswordAuthenticationProvider(IdPasswordUserDetailsServiceImpl idPasswordUserDetailsService) {
         this.idPasswordUserDetailsService = idPasswordUserDetailsService;
     }
 

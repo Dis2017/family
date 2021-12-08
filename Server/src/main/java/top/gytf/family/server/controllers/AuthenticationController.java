@@ -32,7 +32,7 @@ import java.time.LocalDateTime;
 @RestController
 @RequestMapping(PathConstant.Auth.AUTH_PREFIX)
 public class AuthenticationController {
-    private final static String TAG = AuthenticationController.class.getName();
+    public static final Integer EMAIL_RESEND_TIME = 60;
 
     private final EmailSecurityCodeHandler emailSecurityCodeHandler;
     private final ImageSecurityCodeHandler imageSecurityCodeHandler;
@@ -57,16 +57,20 @@ public class AuthenticationController {
             throws SecurityCodeException {
         if (email == null) {
             User user = Utils.Security.current();
-            if (user == null) throw new IllegalArgumentException("请设置email参数。");
+            if (user == null) {
+                throw new IllegalArgumentException("请设置email参数。");
+            }
             email = user.getEmail();
         }
 
         EmailSecurityCode code = emailSecurityCodeHandler.getStorage().take(session, email);
-        if (code != null && code.getIssueDate().plusSeconds(60).isBefore(LocalDateTime.now())) {
+        if (code != null && code.getIssueDate().plusSeconds(EMAIL_RESEND_TIME).isBefore(LocalDateTime.now())) {
             emailSecurityCodeHandler.getStorage().remove(session, email);
             code = null;
         }
-        if (code == null) emailSecurityCodeHandler.generate(session, email);
+        if (code == null) {
+            emailSecurityCodeHandler.generate(session, email);
+        }
     }
 
     /**

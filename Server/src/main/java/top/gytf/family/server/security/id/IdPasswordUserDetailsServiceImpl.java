@@ -17,12 +17,12 @@ import top.gytf.family.server.services.IUserService;
  * @version V1.0
  */
 @Component
-public class IdPasswordUserDetailsService implements UserDetailsService {
-    private final static String TAG = IdPasswordUserDetailsService.class.getName();
+public class IdPasswordUserDetailsServiceImpl implements UserDetailsService {
+    private final static String TAG = IdPasswordUserDetailsServiceImpl.class.getName();
 
     private final IUserService userService;
 
-    public IdPasswordUserDetailsService(IUserService userService) {
+    public IdPasswordUserDetailsServiceImpl(IUserService userService) {
         this.userService = userService;
     }
 
@@ -42,7 +42,9 @@ public class IdPasswordUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Long id = Long.parseLong(username);
         User user = userService.get(id, null, null);
-        if (user == null) throw new UsernameNotFoundException("ID为" + id + "的用户不存在。");
+        if (user == null) {
+            throw new UsernameNotFoundException("ID为" + id + "的用户不存在。");
+        }
         return user;
     }
 }

@@ -25,8 +25,7 @@ import top.gytf.family.server.security.email.EmailAuthenticationProvider;
  * @version V1.0
  */
 @Component
-//邮箱登录的验证码验证策略
-@SecurityCodeVerifyStrategy(
+@SecurityCodeVerifyStrategy(  //邮箱验证码验证
         value = {EmailSecurityCodeRequestValidator.class},
         patterns = {PathConstant.Auth.AUTH_PREFIX + PathConstant.Auth.PATH_EMAIL_LOGIN}
 )

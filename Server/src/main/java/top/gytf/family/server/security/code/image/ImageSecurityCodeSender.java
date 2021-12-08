@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import top.gytf.family.server.exceptions.SecurityCodeSendException;
+import top.gytf.family.server.security.code.AbstractSecurityCodeHandler;
 import top.gytf.family.server.security.code.SecurityCodeSender;
 
 import javax.imageio.ImageIO;
@@ -24,7 +25,6 @@ import java.util.Random;
 @Component
 @Slf4j
 public class ImageSecurityCodeSender implements SecurityCodeSender<ImageSecurityCode> {
-    private final static String TAG = ImageSecurityCodeSender.class.getName();
 
     /**
      * 图片验证码宽度
@@ -34,6 +34,14 @@ public class ImageSecurityCodeSender implements SecurityCodeSender<ImageSecurity
      * 图片验证码高度
      */
     public static final int IMAGE_HEIGHT = 30;
+    /**
+     * 图片中的线数量
+     */
+    private static final int LINE_COUNT = 155;
+    /**
+     * rgb值上限
+     */
+    public static final int RGB_VAL_MAX = 255;
 
     private final Random random;
 
@@ -43,7 +51,7 @@ public class ImageSecurityCodeSender implements SecurityCodeSender<ImageSecurity
 
     /**
      * 发送验证码
-     * 在{@link top.gytf.family.server.security.code.SecurityCodeHandler#generate}调用
+     * 在{@link AbstractSecurityCodeHandler#generate}调用
      * @param code 验证码
      * @throws SecurityCodeSendException 发送错误
      */
@@ -69,7 +77,7 @@ public class ImageSecurityCodeSender implements SecurityCodeSender<ImageSecurity
 
         g.setColor(getRandColor(200, 255));
         g.fillRect(0, 0, IMAGE_WIDTH, IMAGE_HEIGHT);
-        for (int i = 0; i < 155; i++) {
+        for (int i = 0; i < LINE_COUNT; i++) {
             int x = random.nextInt(IMAGE_WIDTH);
             int y = random.nextInt(IMAGE_HEIGHT);
             int xl = random.nextInt(12);
@@ -104,10 +112,10 @@ public class ImageSecurityCodeSender implements SecurityCodeSender<ImageSecurity
      * @return 颜色
      */
     private Color getRandColor(int begin, int end) {
-        if (begin > 255) {
+        if (begin > RGB_VAL_MAX) {
             begin = 255;
         }
-        if (end > 255) {
+        if (end > RGB_VAL_MAX) {
             end = 255;
         }
         if (begin > end) {
