@@ -1,4 +1,4 @@
-package top.gytf.family.server.controller;
+package top.gytf.family.server.controllers;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +18,6 @@ import javax.annotation.security.PermitAll;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 /**
  * Project:     IntelliJ IDEA

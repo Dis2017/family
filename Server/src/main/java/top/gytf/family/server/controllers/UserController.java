@@ -1,4 +1,4 @@
-package top.gytf.family.server.controller;
+package top.gytf.family.server.controllers;
 
 import org.hibernate.validator.constraints.Length;
 import org.springframework.validation.annotation.Validated;
@@ -49,15 +49,29 @@ public class UserController {
     }
 
     /**
-     * 更新密码
+     * 更新用户信息（非保护数据）
+     * @param updateInfo 用户信息
+     * @return 新用户信息
+     */
+    @PatchMapping(PathConstant.User.PATH_MODIFY)
+    public User modifyUser(@Validated(User.GROUP_REGISTER.class) User updateInfo) {
+        User user = Utils.Security.current();
+        assert user != null;
+        userService.update(user.getId(), updateInfo);
+        Utils.Security.update(userService.get(user.getId(), null, null));
+        return Utils.Security.current();
+    }
+
+    /**
+     * 更新密码<br>
+     * 需要通过密码、邮箱其中之一
      * @param password 新密码
      */
     @PatchMapping(PathConstant.User.PATH_MODIFY_PASSWORD)
     @SecurityCodeVerifyStrategy(
             value = {
                     PasswordSecurityCodeRequestValidator.class,
-                    EmailSecurityCodeRequestValidator.class,
-                    ImageSecurityCodeRequestValidator.class
+                    EmailSecurityCodeRequestValidator.class
             },
             only = true
     )
@@ -69,7 +83,8 @@ public class UserController {
 
     /**
      * 绑定邮箱<br>
-     * 建议调用前判断用户是否已经绑定邮箱
+     * 建议调用前判断用户是否已经绑定邮箱<br>
+     * 需要通过邮箱验证
      * @param email 邮箱地址
      */
     @PatchMapping(PathConstant.User.PATH_BIND_EMAIL)
@@ -82,7 +97,8 @@ public class UserController {
     }
 
     /**
-     * 解绑邮箱
+     * 解绑邮箱<br>
+     * 需要通过邮箱验证
      */
     @DeleteMapping(PathConstant.User.PATH_UNBIND_EMAIL)
     @SecurityCodeVerifyStrategy(EmailSecurityCodeRequestValidator.class)
