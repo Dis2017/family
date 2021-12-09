@@ -8,6 +8,7 @@ import top.gytf.family.server.Utils;
 import top.gytf.family.server.constants.PathConstant;
 import top.gytf.family.server.entity.User;
 import top.gytf.family.server.exceptions.SecurityCodeException;
+import top.gytf.family.server.response.IgnoreResultAdvice;
 import top.gytf.family.server.security.code.SecurityCodeVerifyStrategy;
 import top.gytf.family.server.security.code.email.EmailSecurityCode;
 import top.gytf.family.server.security.code.email.EmailSecurityCodeHandler;
@@ -81,6 +82,7 @@ public class AuthenticationController {
      */
     @GetMapping(PathConstant.Auth.PATH_SECURITY_CODE_IMAGE)
     @PermitAll
+    @IgnoreResultAdvice
     public void generateImageSecurityCode(HttpSession session, ServletResponse response)
             throws SecurityCodeException  {
         imageSecurityCodeHandler.getStorage().remove(session, response);

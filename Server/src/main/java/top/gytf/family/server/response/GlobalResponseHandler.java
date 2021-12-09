@@ -2,14 +2,28 @@ package top.gytf.family.server.response;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
+import lombok.val;
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.Signature;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
+import top.gytf.family.server.Utils;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.Objects;
 
 /**
@@ -22,13 +36,45 @@ import java.util.Objects;
  * @version V1.0
  */
 @RestControllerAdvice(basePackages = {"top.gytf.family.server.controller"})
+@Aspect
+@Slf4j
 public class GlobalResponseHandler implements ResponseBodyAdvice<Object> {
-    private final static String TAG = GlobalResponseHandler.class.getName();
 
     private final ObjectMapper mapper;
 
     public GlobalResponseHandler(ObjectMapper mapper) {
         this.mapper = mapper;
+    }
+
+    /**
+     * 指向{@link top.gytf.family.server.controllers}包下的所有返回值为void的接口
+     */
+    @Pointcut("execution(public void top.gytf.family.server.controllers..*(..))")
+    public void allVoidResponseApi() {}
+
+    /**
+     * 指向所有标注了{@link IgnoreResultAdvice}的接口
+     */
+    @Pointcut("@annotation(IgnoreResultAdvice)")
+    public void allIgnoreResultAdviceApi() {}
+
+    /**
+     * 设置为空的全局响应<br>
+     * 在调用相关接口({@link #allVoidResponseApi()}并且不是{@link #allIgnoreResultAdviceApi()} ()}所指向的连接点)之前执行
+     * @throws IOException 写入响应错误
+     */
+    @Before("allVoidResponseApi() && !allIgnoreResultAdviceApi()")
+    public void setToEmptyGlobalResponse() throws IOException {
+        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        //无法转换类型
+        if (!(requestAttributes instanceof ServletRequestAttributes)) {
+            return;
+        }
+
+        ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) requestAttributes;
+        HttpServletResponse response = servletRequestAttributes.getResponse();
+        assert response != null : "无法获取Response";
+        Utils.Response.setToJson(response, mapper.writeValueAsString(new Response<>(StateCode.SUCCESS, null)));
     }
 
     /**
