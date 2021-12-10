@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.stereotype.Component;
-import top.gytf.family.server.Utils;
 import top.gytf.family.server.response.Response;
 import top.gytf.family.server.response.StateCode;
+import top.gytf.family.server.utils.ResponseUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -35,7 +35,7 @@ public class LogoutHandler implements LogoutSuccessHandler {
 
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
-            throws IOException, ServletException {
-        Utils.Response.setToJson(response, objectMapper.writeValueAsString(new Response<>(StateCode.SUCCESS, "成功登出")));
+            throws IOException {
+        ResponseUtil.setToJson(response, objectMapper.writeValueAsString(new Response<>(StateCode.SUCCESS, "成功登出")));
     }
 }

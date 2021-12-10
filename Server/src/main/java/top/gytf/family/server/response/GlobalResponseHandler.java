@@ -3,9 +3,7 @@ package top.gytf.family.server.response;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
-import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.Signature;
+import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
@@ -19,11 +17,10 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
-import top.gytf.family.server.Utils;
+import top.gytf.family.server.utils.ResponseUtil;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.Objects;
 
 /**
@@ -63,7 +60,7 @@ public class GlobalResponseHandler implements ResponseBodyAdvice<Object> {
      * 在调用相关接口({@link #allVoidResponseApi()}并且不是{@link #allIgnoreResultAdviceApi()} ()}所指向的连接点)之前执行
      * @throws IOException 写入响应错误
      */
-    @Before("allVoidResponseApi() && !allIgnoreResultAdviceApi()")
+    @After("allVoidResponseApi() && !allIgnoreResultAdviceApi()")
     public void setToEmptyGlobalResponse() throws IOException {
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
         //无法转换类型
@@ -71,10 +68,9 @@ public class GlobalResponseHandler implements ResponseBodyAdvice<Object> {
             return;
         }
 
-        ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) requestAttributes;
-        HttpServletResponse response = servletRequestAttributes.getResponse();
+        HttpServletResponse response = ((ServletRequestAttributes) requestAttributes).getResponse();
         assert response != null : "无法获取Response";
-        Utils.Response.setToJson(response, mapper.writeValueAsString(new Response<>(StateCode.SUCCESS, null)));
+        ResponseUtil.setToJson(response, mapper.writeValueAsString(new Response<>(StateCode.SUCCESS, null)));
     }
 
     /**

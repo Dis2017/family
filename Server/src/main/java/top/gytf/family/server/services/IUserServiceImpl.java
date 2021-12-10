@@ -2,12 +2,15 @@ package top.gytf.family.server.services;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.stereotype.Service;
-import top.gytf.family.server.Utils;
 import top.gytf.family.server.entity.User;
 import top.gytf.family.server.mapper.UserMapper;
+import top.gytf.family.server.utils.UserUtil;
+import top.gytf.family.server.utils.query.GeneralSearchEntity;
+import top.gytf.family.server.utils.query.QueryUtil;
 
-import java.util.Objects;
+import java.util.Map;
 
 /**
  * Project:     IntelliJ IDEA<br>
@@ -85,6 +88,29 @@ public class IUserServiceImpl implements IUserService {
     }
 
     /**
+     * 查找用户
+     *
+     * @param generalSearchEntity 统一查询
+     * @return 查询的结果
+     */
+    @Override
+    public IPage<User> findPage(GeneralSearchEntity generalSearchEntity) {
+        return userMapper.selectPage(QueryUtil.generatePage(generalSearchEntity.getPages()),
+                QueryUtil.parse(User.class, generalSearchEntity));
+    }
+
+    /**
+     * 查找用户
+     *
+     * @param generalSearchEntity 统一查询
+     * @return 查询的结果
+     */
+    @Override
+    public User[] find(GeneralSearchEntity generalSearchEntity) {
+        return userMapper.selectList(QueryUtil.parse(User.class, generalSearchEntity)).toArray(User[]::new);
+    }
+
+    /**
      * 更新用户
      *
      * @param id   更新的用户id
@@ -93,7 +119,7 @@ public class IUserServiceImpl implements IUserService {
     @Override
     public void update(Long id, User user) {
         user.setId(id);
-        Utils.User.clearProtectedMessage(user, true);
+        UserUtil.clearProtectedMessage(user, true);
         userMapper.updateById(user);
     }
 
@@ -104,7 +130,7 @@ public class IUserServiceImpl implements IUserService {
      */
     @Override
     public void add(User user) {
-        Utils.User.clearProtectedMessage(user, false);
+        UserUtil.clearProtectedMessage(user, false);
         userMapper.insert(user);
     }
 

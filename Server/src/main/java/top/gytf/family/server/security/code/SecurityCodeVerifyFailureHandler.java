@@ -2,12 +2,11 @@ package top.gytf.family.server.security.code;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Component;
-import top.gytf.family.server.Utils;
 import top.gytf.family.server.exceptions.SecurityCodeException;
 import top.gytf.family.server.response.Response;
 import top.gytf.family.server.response.StateCode;
+import top.gytf.family.server.utils.ResponseUtil;
 
-import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -37,7 +36,7 @@ public class SecurityCodeVerifyFailureHandler {
      * @param exception 错误
      */
     public void onFailure(HttpServletRequest request, HttpServletResponse response, SecurityCodeException exception) throws IOException {
-        Utils.Response.setToJson(response,
+        ResponseUtil.setToJson(response,
                 mapper.writeValueAsString(new Response<>(StateCode.SECURITY_CODE_EXCEPTION, exception.getMessage())));
     }
 }

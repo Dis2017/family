@@ -76,13 +76,13 @@ public class PathConstant {
      */
     public static class User {
         /**
-         * 用户路径前缀
+         * 寻找用户
          */
-        public static final String USER_PREFIX = "/user";
+        public static final String PATH_FIND_USER = "";
         /**
-         * 更新密码
+         * 寻找用户分页
          */
-        public static final String PATH_MODIFY_PASSWORD = "/password";
+        public static final String PATH_FIND_USER_PAGE = "/page";
         /**
          * 注册路径
          */
@@ -92,6 +92,14 @@ public class PathConstant {
          */
         public static final String PATH_MODIFY = "";
         /**
+         * 用户路径前缀
+         */
+        public static final String USER_PREFIX = "/user";
+        /**
+         * 更新密码
+         */
+        public static final String PATH_MODIFY_PASSWORD = "/password";
+        /**
          * 绑定邮箱路径
          */
         public static final String PATH_BIND_EMAIL = "/email";
@@ -99,5 +107,6 @@ public class PathConstant {
          * 解绑邮箱路径
          */
         public static final String PATH_UNBIND_EMAIL = "/email";
+
     }
 }

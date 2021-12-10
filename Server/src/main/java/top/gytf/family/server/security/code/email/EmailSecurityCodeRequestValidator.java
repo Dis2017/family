@@ -1,11 +1,11 @@
 package top.gytf.family.server.security.code.email;
 
 import org.springframework.stereotype.Component;
-import top.gytf.family.server.Utils;
 import top.gytf.family.server.entity.User;
 import top.gytf.family.server.security.code.SecurityCode;
 import top.gytf.family.server.security.code.AbstractSecurityCodeHandler;
 import top.gytf.family.server.security.code.SecurityCodeRequestValidator;
+import top.gytf.family.server.utils.SecurityUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -78,7 +78,7 @@ public class EmailSecurityCodeRequestValidator implements SecurityCodeRequestVal
         String desc = null;
 
         //从当前登录用户中获取邮箱描述
-        User user = Utils.Security.current();
+        User user = SecurityUtil.current();
         if (user != null) {
             desc = user.getEmail();
         }

@@ -4,7 +4,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import top.gytf.family.server.Utils;
 import top.gytf.family.server.constants.PathConstant;
 import top.gytf.family.server.entity.User;
 import top.gytf.family.server.exceptions.SecurityCodeException;
@@ -14,6 +13,7 @@ import top.gytf.family.server.security.code.email.EmailSecurityCode;
 import top.gytf.family.server.security.code.email.EmailSecurityCodeHandler;
 import top.gytf.family.server.security.code.image.ImageSecurityCodeHandler;
 import top.gytf.family.server.security.code.image.ImageSecurityCodeRequestValidator;
+import top.gytf.family.server.utils.SecurityUtil;
 
 import javax.annotation.security.PermitAll;
 import javax.servlet.ServletResponse;
@@ -57,7 +57,7 @@ public class AuthenticationController {
                                           @RequestParam(value = "email", required = false) String email)
             throws SecurityCodeException {
         if (email == null) {
-            User user = Utils.Security.current();
+            User user = SecurityUtil.current();
             if (user == null) {
                 throw new IllegalArgumentException("请设置email参数。");
             }
@@ -98,6 +98,6 @@ public class AuthenticationController {
     @GetMapping(PathConstant.Auth.PATH_CURRENT)
     @PermitAll
     public Object getCurrentUser() {
-        return Utils.Security.current();
+        return SecurityUtil.current();
     }
 }

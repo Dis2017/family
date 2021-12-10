@@ -1,6 +1,10 @@
 package top.gytf.family.server.services;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import top.gytf.family.server.entity.User;
+import top.gytf.family.server.utils.query.GeneralSearchEntity;
+
+import java.util.Map;
 
 /**
  * Project:     IntelliJ IDEA<br>
@@ -33,6 +37,22 @@ public interface IUserService {
      * @return 用户
      */
     User get(Long id, String phone, String email);
+
+
+    /**
+     * 查找用户
+     * @param generalSearchEntity 统一查询
+     * @return 查询的结果
+     */
+    IPage<User> findPage(GeneralSearchEntity generalSearchEntity);
+
+
+    /**
+     * 查找用户
+     * @param generalSearchEntity 统一查询
+     * @return 查询的结果
+     */
+    User[] find(GeneralSearchEntity generalSearchEntity);
 
     /**
      * 更新用户

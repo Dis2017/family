@@ -9,6 +9,9 @@ import lombok.*;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import top.gytf.family.server.utils.query.ConditionField;
+import top.gytf.family.server.utils.query.RequestField;
+import top.gytf.family.server.utils.query.SortField;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
@@ -65,6 +68,9 @@ public class User extends BaseEntity implements UserDetails {
                     GroupModify.class
             }
     )
+    @RequestField
+    @SortField
+    @ConditionField
     private Long id;
 
     /**
@@ -86,6 +92,9 @@ public class User extends BaseEntity implements UserDetails {
                     GroupModify.class
             }
     )
+    @RequestField
+    @SortField
+    @ConditionField
     private String name;
 
     /**
@@ -121,6 +130,9 @@ public class User extends BaseEntity implements UserDetails {
      * <li>null：    未知</li>
      */
     @TableField("sex")
+    @RequestField
+    @SortField
+    @ConditionField
     private Boolean sex;
 
     /**
@@ -130,12 +142,18 @@ public class User extends BaseEntity implements UserDetails {
     @Past(
             message = "出生日期应该是一个已经过去的时间"
     )
+    @RequestField
+    @SortField
+    @ConditionField
     private LocalDate birthday;
 
     /**
      * 地区
      */
     @TableField("area")
+    @RequestField
+    @SortField
+    @ConditionField
     private Integer area;
 
     /**
@@ -149,6 +167,8 @@ public class User extends BaseEntity implements UserDetails {
                     GroupModify.class
             }
     )
+    @RequestField
+    @ConditionField
     private Long familyId;
 
     /**
@@ -169,6 +189,8 @@ public class User extends BaseEntity implements UserDetails {
                     GroupModify.class
             }
     )
+    @RequestField
+    @ConditionField
     private String email;
 
     /**
@@ -191,6 +213,8 @@ public class User extends BaseEntity implements UserDetails {
                     GroupModify.class
             }
     )
+    @RequestField
+    @ConditionField
     private String phone;
 
     /**
@@ -268,6 +292,6 @@ public class User extends BaseEntity implements UserDetails {
      */
     @Override
     public boolean isEnabled() {
-        return !getDeleteFlag();
+        return getDeleteFlag() == null || !getDeleteFlag();
     }
 }

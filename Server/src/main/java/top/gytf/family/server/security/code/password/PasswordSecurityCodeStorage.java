@@ -1,7 +1,6 @@
 package top.gytf.family.server.security.code.password;
 
 import org.springframework.stereotype.Component;
-import top.gytf.family.server.Utils;
 import top.gytf.family.server.entity.User;
 import top.gytf.family.server.exceptions.SecurityCodeStorageRemoveException;
 import top.gytf.family.server.exceptions.SecurityCodeStorageSaveException;
@@ -9,6 +8,7 @@ import top.gytf.family.server.exceptions.SecurityCodeStorageTakeException;
 import top.gytf.family.server.security.code.AbstractSecurityCodeHandler;
 import top.gytf.family.server.security.code.SecurityCodeStorage;
 import top.gytf.family.server.services.IUserService;
+import top.gytf.family.server.utils.SecurityUtil;
 
 /**
  * Project:     IntelliJ IDEA<br>
@@ -53,7 +53,7 @@ public class PasswordSecurityCodeStorage implements SecurityCodeStorage<Object, 
      */
     @Override
     public PasswordSecurityCode take(Object repos, Object desc) throws SecurityCodeStorageTakeException {
-        User user = Utils.Security.current();
+        User user = SecurityUtil.current();
         if (user == null) {
             throw new SecurityCodeStorageTakeException("未登录");
         }

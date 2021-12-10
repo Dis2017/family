@@ -1,18 +1,22 @@
 package top.gytf.family.server.controllers;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import top.gytf.family.server.Utils;
 import top.gytf.family.server.constants.PathConstant;
 import top.gytf.family.server.entity.User;
 import top.gytf.family.server.security.code.SecurityCodeVerifyStrategy;
 import top.gytf.family.server.security.code.email.EmailSecurityCodeRequestValidator;
 import top.gytf.family.server.security.code.password.PasswordSecurityCodeRequestValidator;
 import top.gytf.family.server.services.IUserService;
+import top.gytf.family.server.utils.SecurityUtil;
+import top.gytf.family.server.utils.query.GeneralSearchEntity;
 
 import javax.annotation.security.PermitAll;
 import javax.validation.constraints.Email;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -27,6 +31,7 @@ import java.util.Objects;
 @RestController
 @RequestMapping(PathConstant.User.USER_PREFIX)
 @Validated
+@Slf4j
 public class UserController {
     private final static String TAG = UserController.class.getName();
 
@@ -34,6 +39,30 @@ public class UserController {
 
     public UserController(IUserService userService) {
         this.userService = userService;
+    }
+
+    /**
+     * 查询用户
+     * @param generalSearchEntity 统一查询
+     * @param conditions 条件
+     * @return 结果
+     */
+    @GetMapping(PathConstant.User.PATH_FIND_USER)
+    public User[] findUser(GeneralSearchEntity generalSearchEntity, @RequestParam Map<String, String> conditions) {
+        generalSearchEntity.setConditions(conditions);
+        return userService.find(generalSearchEntity);
+    }
+
+    /**
+     * 分页查询用户
+     * @param generalSearchEntity 统一查询
+     * @param conditions 条件
+     * @return 分页结果
+     */
+    @GetMapping(PathConstant.User.PATH_FIND_USER_PAGE)
+    public IPage<User> findUserPage(GeneralSearchEntity generalSearchEntity, @RequestParam Map<String, String> conditions) {
+        generalSearchEntity.setConditions(conditions);
+        return userService.findPage(generalSearchEntity);
     }
 
     /**
@@ -54,11 +83,11 @@ public class UserController {
      */
     @PatchMapping(PathConstant.User.PATH_MODIFY)
     public User modifyUser(@Validated(User.GroupModify.class) User updateInfo) {
-        User user = Utils.Security.current();
+        User user = SecurityUtil.current();
         assert user != null : "当前用户不存在";
         userService.update(user.getId(), updateInfo);
-        Utils.Security.update(userService.get(user.getId(), null, null));
-        return Utils.Security.current();
+        SecurityUtil.update(userService.get(user.getId(), null, null));
+        return SecurityUtil.current();
     }
 
     /**
@@ -76,7 +105,7 @@ public class UserController {
     )
     public void modifyPassword(@Length(min = 8, max = 32, message = "密码应该在8-32位")
                                @RequestParam("password") String password) {
-        Long id = Objects.requireNonNull(Utils.Security.current()).getId();
+        Long id = Objects.requireNonNull(SecurityUtil.current()).getId();
         userService.modifyPassword(id, password);
     }
 
@@ -90,9 +119,9 @@ public class UserController {
     @SecurityCodeVerifyStrategy(EmailSecurityCodeRequestValidator.class)
     public void bindEmail(@Email(message = "邮箱格式不正确")
                           @RequestParam("email") String email) {
-        Long id = Objects.requireNonNull(Utils.Security.current()).getId();
+        Long id = Objects.requireNonNull(SecurityUtil.current()).getId();
         userService.bindEmail(id, email);
-        Utils.Security.update(userService.get(id, null, null));
+        SecurityUtil.update(userService.get(id, null, null));
     }
 
     /**
@@ -102,9 +131,9 @@ public class UserController {
     @DeleteMapping(PathConstant.User.PATH_UNBIND_EMAIL)
     @SecurityCodeVerifyStrategy(EmailSecurityCodeRequestValidator.class)
     public void unbindEmail() {
-        User user = Utils.Security.current();
+        User user = SecurityUtil.current();
         assert user != null : "当前用户不存在";
         userService.unbindEmail(user.getId());
-        Utils.Security.update(userService.get(user.getId(), null, null));
+        SecurityUtil.update(userService.get(user.getId(), null, null));
     }
 }

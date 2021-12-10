@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
-import top.gytf.family.server.Utils;
+import top.gytf.family.server.utils.ResponseUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -33,8 +33,8 @@ public class AccessDeniedHandlerImpl implements AccessDeniedHandler {
 
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException)
-            throws IOException, ServletException {
-        Utils.Response.setToJson(response,
+            throws IOException {
+        ResponseUtil.setToJson(response,
                 objectMapper.writeValueAsString(new Response<>(StateCode.SECURITY_NO_PERMISSION,
                         accessDeniedException.getMessage())));
     }
