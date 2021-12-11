@@ -1,0 +1,17 @@
+INSERT INTO family.url_role (id, url_id, role_id, create_time, modify_time, delete_flag) VALUES (1, 1, 2, '2021-12-12 00:13:38', '2021-12-12 00:13:41', 0);
+INSERT INTO family.url_role (id, url_id, role_id, create_time, modify_time, delete_flag) VALUES (2, 2, 2, '2021-12-12 00:13:38', '2021-12-12 00:13:41', 0);
+INSERT INTO family.url_role (id, url_id, role_id, create_time, modify_time, delete_flag) VALUES (3, 3, 1, '2021-12-12 00:13:38', '2021-12-12 00:13:41', 0);
+INSERT INTO family.url_role (id, url_id, role_id, create_time, modify_time, delete_flag) VALUES (4, 4, 1, '2021-12-12 00:13:38', '2021-12-12 00:13:41', 0);
+INSERT INTO family.url_role (id, url_id, role_id, create_time, modify_time, delete_flag) VALUES (5, 5, 1, '2021-12-12 00:13:38', '2021-12-12 00:13:41', 0);
+INSERT INTO family.url_role (id, url_id, role_id, create_time, modify_time, delete_flag) VALUES (6, 5, 2, '2021-12-12 00:13:38', '2021-12-12 00:13:41', 0);
+INSERT INTO family.url_role (id, url_id, role_id, create_time, modify_time, delete_flag) VALUES (7, 6, 1, '2021-12-12 00:13:38', '2021-12-12 00:13:41', 0);
+INSERT INTO family.url_role (id, url_id, role_id, create_time, modify_time, delete_flag) VALUES (8, 6, 2, '2021-12-12 00:13:38', '2021-12-12 00:13:41', 0);
+INSERT INTO family.url_role (id, url_id, role_id, create_time, modify_time, delete_flag) VALUES (9, 7, 1, '2021-12-12 00:13:38', '2021-12-12 00:13:41', 0);
+INSERT INTO family.url_role (id, url_id, role_id, create_time, modify_time, delete_flag) VALUES (10, 8, 2, '2021-12-12 00:13:38', '2021-12-12 00:13:41', 0);
+INSERT INTO family.url_role (id, url_id, role_id, create_time, modify_time, delete_flag) VALUES (11, 9, 2, '2021-12-12 00:13:38', '2021-12-12 00:13:41', 0);
+INSERT INTO family.url_role (id, url_id, role_id, create_time, modify_time, delete_flag) VALUES (12, 10, 2, '2021-12-12 00:13:38', '2021-12-12 00:13:41', 0);
+INSERT INTO family.url_role (id, url_id, role_id, create_time, modify_time, delete_flag) VALUES (13, 11, 2, '2021-12-12 00:13:38', '2021-12-12 00:13:41', 0);
+INSERT INTO family.url_role (id, url_id, role_id, create_time, modify_time, delete_flag) VALUES (14, 12, 2, '2021-12-12 00:13:38', '2021-12-12 00:13:41', 0);
+INSERT INTO family.url_role (id, url_id, role_id, create_time, modify_time, delete_flag) VALUES (15, 13, 2, '2021-12-12 00:13:38', '2021-12-12 00:13:41', 0);
+INSERT INTO family.url_role (id, url_id, role_id, create_time, modify_time, delete_flag) VALUES (16, 14, 1, '2021-12-12 00:13:38', '2021-12-12 00:13:41', 0);
+INSERT INTO family.url_role (id, url_id, role_id, create_time, modify_time, delete_flag) VALUES (17, 14, 2, '2021-12-12 00:13:38', '2021-12-12 00:13:41', 0);

@@ -1,0 +1,2 @@
+INSERT INTO family.roles (id, role, description, create_time, modify_time, delete_flag) VALUES (1, 'ROLE_GUEST', '访客', '2021-12-12 00:05:11', '2021-12-12 00:05:16', 0);
+INSERT INTO family.roles (id, role, description, create_time, modify_time, delete_flag) VALUES (2, 'ROLE_USER', '用户', '2021-12-12 00:05:11', '2021-12-12 00:05:16', 0);

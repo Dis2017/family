@@ -1,11 +1,21 @@
 package top.gytf.family.server.security.id;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
+import top.gytf.family.server.entity.Role;
 import top.gytf.family.server.entity.User;
+import top.gytf.family.server.entity.UserRole;
+import top.gytf.family.server.mapper.RolesMapper;
+import top.gytf.family.server.mapper.UserRoleMapper;
 import top.gytf.family.server.services.IUserService;
+import top.gytf.family.server.utils.UserUtil;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Project:     IntelliJ IDEA<br>
@@ -21,9 +31,13 @@ public class IdPasswordUserDetailsServiceImpl implements UserDetailsService {
     private final static String TAG = IdPasswordUserDetailsServiceImpl.class.getName();
 
     private final IUserService userService;
+    private final UserRoleMapper userRoleMapper;
+    private final RolesMapper rolesMapper;
 
-    public IdPasswordUserDetailsServiceImpl(IUserService userService) {
+    public IdPasswordUserDetailsServiceImpl(IUserService userService, UserRoleMapper userRoleMapper, RolesMapper rolesMapper) {
         this.userService = userService;
+        this.userRoleMapper = userRoleMapper;
+        this.rolesMapper = rolesMapper;
     }
 
     /**
@@ -45,6 +59,7 @@ public class IdPasswordUserDetailsServiceImpl implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException("ID为" + id + "的用户不存在。");
         }
-        return user;
+
+        return UserUtil.loadAuthorities(user, userRoleMapper, rolesMapper);
     }
 }

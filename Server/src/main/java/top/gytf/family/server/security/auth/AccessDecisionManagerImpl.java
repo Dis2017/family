@@ -1,10 +1,13 @@
 package top.gytf.family.server.security.auth;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
@@ -19,6 +22,7 @@ import java.util.Collection;
  * @version V1.0
  */
 @Component
+@Slf4j
 public class AccessDecisionManagerImpl implements AccessDecisionManager {
     private final static String TAG = AccessDecisionManagerImpl.class.getName();
 
@@ -36,7 +40,18 @@ public class AccessDecisionManagerImpl implements AccessDecisionManager {
      */
     @Override
     public void decide(Authentication authentication, Object object, Collection<ConfigAttribute> configAttributes) throws AccessDeniedException, InsufficientAuthenticationException {
+        //获取登录用户具有的角色
+        Collection<? extends GrantedAuthority> auths = authentication.getAuthorities();
 
+        for (ConfigAttribute configAttribute : configAttributes) {
+            for (GrantedAuthority grantedAuthority : auths) {
+                if (configAttribute.getAttribute().equals(grantedAuthority.getAuthority())){
+                    return;
+                }
+            }
+        }
+
+        throw new AccessDeniedException("权限不足");
     }
 
     /**

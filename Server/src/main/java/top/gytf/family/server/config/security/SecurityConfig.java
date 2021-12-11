@@ -1,11 +1,14 @@
 package top.gytf.family.server.config.security;
 
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
@@ -58,14 +61,29 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         this.accessDecisionManager = accessDecisionManager;
         this.filterInvocationSecurityMetadataSource = filterInvocationSecurityMetadataSource;
     }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        //会话管理
+        http
+                .sessionManagement()
+                    .maximumSessions(1)
+                    .sessionRegistry(sessionRegistry());
+
+        //登出
         http
                 .logout()
                     .logoutUrl(PathConstant.Auth.AUTH_PREFIX + PathConstant.Auth.PATH_LOGOUT)
                     .logoutSuccessHandler(logoutHandler)
-                    .permitAll()
-                .and()
+                    .permitAll();
+
+        //未登录用户默认授权
+        http
+                .anonymous()
+                    .authorities("ROLE_GUEST");
+
+        //访问控制
+        http
                 .authorizeRequests()
                     .anyRequest().authenticated()
                     .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
@@ -75,43 +93,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                             fsi.setAccessDecisionManager(accessDecisionManager);
                             return fsi;
                         }
-                    })
-                .and()
+                    });
+
+        //异常处理
+        http
                 .exceptionHandling()
                     .accessDeniedHandler(accessDeniedHandler)
-                    .authenticationEntryPoint(authenticationEntryPoint)
-                .and()
-                .csrf().disable()
-                .apply(securityCodeConfig)
-                .and()
-                .apply(idPasswordConfig)
-                .and()
+                    .authenticationEntryPoint(authenticationEntryPoint);
+
+        //禁用csrf
+        http
+                .csrf().disable();
+
+        //应用其他配置
+        http
+                .apply(securityCodeConfig).and()
+                .apply(idPasswordConfig).and()
                 .apply(emailSecurityConfig);
     }
 
-
-    /**
-     * 获取标有注解 AnonymousAccess 的访问路径
-     */
-    private String[] getAnonymousUrls() {
-        // 获取所有的 RequestMapping
-        Map<RequestMappingInfo, HandlerMethod> handlerMethods = applicationContext.getBean(RequestMappingHandlerMapping.class).getHandlerMethods();
-        Set<String> allAnonymousAccess = new HashSet<>();
-        // 循环 RequestMapping
-        for (Map.Entry<RequestMappingInfo, HandlerMethod> infoEntry : handlerMethods.entrySet()) {
-            HandlerMethod value = infoEntry.getValue();
-            // 获取方法上 AnonymousAccess 类型的注解
-            PermitAll methodAnnotation = value.getMethodAnnotation(PermitAll.class);
-            // 如果方法上标注了 AnonymousAccess 注解，就获取该方法的访问全路径
-            if (methodAnnotation != null) {
-                allAnonymousAccess.addAll(infoEntry.getKey().getPatternsCondition().getPatterns());
-            }
-        }
-
-        // 不能用注解的路径
-        allAnonymousAccess.add(PathConstant.Auth.AUTH_PREFIX + PathConstant.Auth.PATH_EMAIL_LOGIN);
-        allAnonymousAccess.add(PathConstant.Auth.AUTH_PREFIX + PathConstant.Auth.PATH_LOGOUT);
-
-        return allAnonymousAccess.toArray(new String[0]);
+    @Bean
+    public SessionRegistry sessionRegistry() {
+        return new SessionRegistryImpl();
     }
 }

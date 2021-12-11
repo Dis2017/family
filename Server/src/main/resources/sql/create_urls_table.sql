@@ -1,4 +1,4 @@
-create table url
+create table urls
 (
     id          bigint auto_increment comment '编号'
         primary key,

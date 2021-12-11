@@ -35,7 +35,7 @@ import java.util.Collection;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@TableName("User")
+@TableName("user")
 public class User extends BaseEntity implements UserDetails {
     private final static String TAG = User.class.getName();
 
