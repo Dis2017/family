@@ -1,4 +1,4 @@
-package top.gytf.family.server.utils.query;
+package top.gytf.family.server.search;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

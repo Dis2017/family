@@ -9,9 +9,9 @@ import lombok.*;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import top.gytf.family.server.utils.query.ConditionField;
-import top.gytf.family.server.utils.query.RequestField;
-import top.gytf.family.server.utils.query.SortField;
+import top.gytf.family.server.search.ConditionField;
+import top.gytf.family.server.search.RequestField;
+import top.gytf.family.server.search.SortField;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;

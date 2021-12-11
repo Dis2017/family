@@ -2,9 +2,7 @@ package top.gytf.family.server.services;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import top.gytf.family.server.entity.User;
-import top.gytf.family.server.utils.query.GeneralSearchEntity;
-
-import java.util.Map;
+import top.gytf.family.server.search.GeneralSearchEntity;
 
 /**
  * Project:     IntelliJ IDEA<br>

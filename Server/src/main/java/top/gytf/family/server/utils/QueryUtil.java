@@ -1,4 +1,4 @@
-package top.gytf.family.server.utils.query;
+package top.gytf.family.server.utils;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -7,6 +7,10 @@ import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
+import top.gytf.family.server.search.ConditionField;
+import top.gytf.family.server.search.GeneralSearchEntity;
+import top.gytf.family.server.search.RequestField;
+import top.gytf.family.server.search.SortField;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;

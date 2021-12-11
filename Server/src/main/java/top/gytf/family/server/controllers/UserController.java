@@ -7,16 +7,16 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import top.gytf.family.server.constants.PathConstant;
 import top.gytf.family.server.entity.User;
+import top.gytf.family.server.mapper.UserMapper;
+import top.gytf.family.server.search.GeneralSearch;
 import top.gytf.family.server.security.code.SecurityCodeVerifyStrategy;
 import top.gytf.family.server.security.code.email.EmailSecurityCodeRequestValidator;
 import top.gytf.family.server.security.code.password.PasswordSecurityCodeRequestValidator;
 import top.gytf.family.server.services.IUserService;
 import top.gytf.family.server.utils.SecurityUtil;
-import top.gytf.family.server.utils.query.GeneralSearchEntity;
 
 import javax.annotation.security.PermitAll;
 import javax.validation.constraints.Email;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -43,26 +43,22 @@ public class UserController {
 
     /**
      * 查询用户
-     * @param generalSearchEntity 统一查询
-     * @param conditions 条件
      * @return 结果
      */
     @GetMapping(PathConstant.User.PATH_FIND_USER)
-    public User[] findUser(GeneralSearchEntity generalSearchEntity, @RequestParam Map<String, String> conditions) {
-        generalSearchEntity.setConditions(conditions);
-        return userService.find(generalSearchEntity);
+    @GeneralSearch(mapper = UserMapper.class, entityClass = User.class)
+    public Object[] findUser() {
+        return null;
     }
 
     /**
      * 分页查询用户
-     * @param generalSearchEntity 统一查询
-     * @param conditions 条件
      * @return 分页结果
      */
     @GetMapping(PathConstant.User.PATH_FIND_USER_PAGE)
-    public IPage<User> findUserPage(GeneralSearchEntity generalSearchEntity, @RequestParam Map<String, String> conditions) {
-        generalSearchEntity.setConditions(conditions);
-        return userService.findPage(generalSearchEntity);
+    @GeneralSearch(mapper = UserMapper.class, entityClass = User.class)
+    public IPage<User> findUserPage() {
+        return null;
     }
 
     /**

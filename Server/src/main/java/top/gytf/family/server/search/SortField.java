@@ -1,4 +1,4 @@
-package top.gytf.family.server.utils.query;
+package top.gytf.family.server.search;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,8 +7,8 @@ import java.lang.annotation.Target;
 
 /**
  * Project:     IntelliJ IDEA<br>
- * Description: 可以被查询请求拉取的字段<br>
- * CreateDate:  2021/12/10 15:18 <br>
+ * Description: 查询时可以作为排序依据的字段<br>
+ * CreateDate:  2021/12/10 15:21 <br>
  * ------------------------------------------------------------------------------------------
  *
  * @author user
@@ -16,5 +16,5 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface RequestField {
+public @interface SortField {
 }

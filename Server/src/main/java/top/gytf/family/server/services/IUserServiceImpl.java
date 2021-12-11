@@ -7,10 +7,8 @@ import org.springframework.stereotype.Service;
 import top.gytf.family.server.entity.User;
 import top.gytf.family.server.mapper.UserMapper;
 import top.gytf.family.server.utils.UserUtil;
-import top.gytf.family.server.utils.query.GeneralSearchEntity;
-import top.gytf.family.server.utils.query.QueryUtil;
-
-import java.util.Map;
+import top.gytf.family.server.search.GeneralSearchEntity;
+import top.gytf.family.server.utils.QueryUtil;
 
 /**
  * Project:     IntelliJ IDEA<br>

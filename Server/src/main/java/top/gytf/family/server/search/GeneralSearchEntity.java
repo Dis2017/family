@@ -1,10 +1,11 @@
-package top.gytf.family.server.utils.query;
+package top.gytf.family.server.search;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Project:     IntelliJ IDEA<br>
@@ -38,7 +39,7 @@ public class GeneralSearchEntity {
      * <li> <= </li>
      * <li> like </li>
      */
-    private Map<String, String> conditions;
+    private Map<String, String> conditions = new ConcurrentHashMap<>();
 
     /**
      * 排序依据<br>
