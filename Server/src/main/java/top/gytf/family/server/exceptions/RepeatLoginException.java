@@ -6,18 +6,18 @@ import top.gytf.family.server.response.StatusCarrier;
 
 /**
  * Project:     IntelliJ IDEA<br>
- * Description: 未登录错误<br>
- * CreateDate:  2021/12/11 0:57 <br>
+ * Description: 重复登录错误<br>
+ * CreateDate:  2021/12/12 2:12 <br>
  * ------------------------------------------------------------------------------------------
  *
  * @author user
  * @version V1.0
  */
-@StatusCarrier(code = StateCode.USER_NOT_LOGIN_IN)
-public class NotLoginException extends AuthenticationException {
-    private final static String TAG = NotLoginException.class.getName();
+@StatusCarrier(code = StateCode.USER_REPEAT_LOGIN)
+public class RepeatLoginException extends AuthenticationException {
+    private final static String TAG = RepeatLoginException.class.getName();
 
-    public NotLoginException() {
-        super("未登录");
+    public RepeatLoginException() {
+        super("重复登录");
     }
 }

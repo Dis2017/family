@@ -18,5 +18,5 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE, ElementType.METHOD, ElementType.TYPE_USE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface StatusCarrier {
-    StateCode value();
+    StateCode code();
 }

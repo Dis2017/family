@@ -10,9 +10,9 @@ import org.springframework.stereotype.Component;
 import top.gytf.family.server.entity.User;
 import top.gytf.family.server.response.Response;
 import top.gytf.family.server.response.StateCode;
+import top.gytf.family.server.response.StatusCarrier;
 import top.gytf.family.server.utils.ResponseUtil;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -54,8 +54,15 @@ public class LoginHandler implements AuthenticationSuccessHandler, Authenticatio
                     objectMapper.writeValueAsString(new Response<>(StateCode.USER_NOT_EXISTS, exception.getMessage())));
             return;
         }
+        StatusCarrier statusCarrier = exception.getClass().getAnnotation(StatusCarrier.class);
+        StateCode stateCode = StateCode.FAIL;
+
+        if (statusCarrier != null) {
+            stateCode = statusCarrier.code();
+        }
+
         ResponseUtil.setToJson(response,
-                objectMapper.writeValueAsString(new Response<>(StateCode.USER_LOGIN_ERROR, exception.getMessage()))
+                objectMapper.writeValueAsString(new Response<>(stateCode, exception.getMessage()))
         );
     }
 }

@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
@@ -113,7 +112,7 @@ public class GlobalResponseHandler implements ResponseBodyAdvice<Object> {
         }
         StatusCarrier statusCarrier;
         if ((statusCarrier = returnType.getMethodAnnotation(StatusCarrier.class)) != null) {
-            return new Response<>(statusCarrier.value(), body);
+            return new Response<>(statusCarrier.code(), body);
         }
         // String特殊处理，否则会抛异常
         if (body instanceof String) {

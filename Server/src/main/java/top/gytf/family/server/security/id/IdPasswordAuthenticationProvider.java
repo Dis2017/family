@@ -2,11 +2,11 @@ package top.gytf.family.server.security.id;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import top.gytf.family.server.exceptions.PasswordUnmatchedErrorException;
 
 /**
  * Project:     IntelliJ IDEA<br>
@@ -49,7 +49,7 @@ public class IdPasswordAuthenticationProvider implements AuthenticationProvider 
 
         UserDetails userDetails = idPasswordUserDetailsService.loadUserByUsername(String.valueOf(tokenAuthentication.getPrincipal()));
         if (!userDetails.getPassword().equals(tokenAuthentication.getCredentials())) {
-            throw new AuthenticationServiceException("密码错误");
+            throw new PasswordUnmatchedErrorException("密码错误");
         }
 
         IdPasswordToken token = new IdPasswordToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());

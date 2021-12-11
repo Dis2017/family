@@ -35,6 +35,7 @@ public enum StateCode {
     USER_ACCOUNT_FORBIDDEN(603,"账户被禁用"),
     USER_NOT_EXISTS(604,"用户不存在"),
     USER_HAS_EXISTED(605,"用户已存在"),
+    USER_REPEAT_LOGIN(606,"重复登录"),
 
     /**
      * 权限错误

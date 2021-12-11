@@ -27,9 +27,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public Response<String> exceptionHandler(Exception e) {
         e.printStackTrace();
-        StatusCarrier statusCarrier = null;
+        StatusCarrier statusCarrier;
         if ((statusCarrier = e.getClass().getAnnotation(StatusCarrier.class)) != null) {
-            return new Response<>(statusCarrier.value(), e.getMessage());
+            return new Response<>(statusCarrier.code(), e.getMessage());
         }
 
         if (e instanceof BindException) {

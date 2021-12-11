@@ -12,6 +12,7 @@ import top.gytf.family.server.entity.UserRole;
 import top.gytf.family.server.mapper.RolesMapper;
 import top.gytf.family.server.mapper.UserRoleMapper;
 import top.gytf.family.server.services.IUserService;
+import top.gytf.family.server.utils.SecurityUtil;
 import top.gytf.family.server.utils.UserUtil;
 
 import java.util.List;
@@ -54,6 +55,10 @@ public class IdPasswordUserDetailsServiceImpl implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        if (SecurityUtil.current() != null) {
+            throw new RuntimeException("当前存在登录用户。");
+        }
+
         Long id = Long.parseLong(username);
         User user = userService.get(id, null, null);
         if (user == null) {
