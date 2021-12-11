@@ -7,10 +7,11 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import top.gytf.family.server.utils.QueryUtil;
+import top.gytf.family.server.utils.SearchUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
@@ -28,6 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Component
 @Aspect
+@Order(500)
 public class GeneralSearchHandler {
     private final static String TAG = GeneralSearchHandler.class.getName();
 
@@ -66,8 +68,8 @@ public class GeneralSearchHandler {
         GeneralSearchEntity entity = getGeneralSearchEntity(request);
 
         IPage result = getMapper(search.mapper()).selectPage(
-                QueryUtil.generatePage(entity.getPages()),
-                QueryUtil.parse(search.entityClass(), entity)
+                SearchUtil.generatePage(entity.getPages()),
+                SearchUtil.parse(search.entityClass(), entity)
         );
 
         proceedingJoinPoint.proceed();
@@ -83,7 +85,7 @@ public class GeneralSearchHandler {
         GeneralSearchEntity entity = getGeneralSearchEntity(request);
 
         Object[] result = getMapper(search.mapper()).selectList(
-                QueryUtil.parse(search.entityClass(), entity)
+                SearchUtil.parse(search.entityClass(), entity)
         ).toArray();
 
         proceedingJoinPoint.proceed();

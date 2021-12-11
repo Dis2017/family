@@ -1,10 +1,12 @@
 package top.gytf.family.server;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
+import top.gytf.family.server.entity.User;
 import top.gytf.family.server.security.code.SecurityCodeVerifyFilter;
 
 import java.util.Map;
@@ -18,8 +20,10 @@ class ServerApplicationTests {
 
     @Test
     void contextLoads() {
-        Map<String, SecurityCodeVerifyFilter> map = context.getBeansOfType(SecurityCodeVerifyFilter.class);
-        log.info(map.toString());
+        String text = "";
+        QueryWrapper<User> wrapper = new QueryWrapper<>();
+        wrapper.select("name").eq("sex", "true").or().eq("email", "null");
+        log.debug(wrapper.getSqlSegment());
     }
 
 }

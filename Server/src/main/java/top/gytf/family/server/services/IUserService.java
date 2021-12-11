@@ -36,22 +36,6 @@ public interface IUserService {
      */
     User get(Long id, String phone, String email);
 
-
-    /**
-     * 查找用户
-     * @param generalSearchEntity 统一查询
-     * @return 查询的结果
-     */
-    IPage<User> findPage(GeneralSearchEntity generalSearchEntity);
-
-
-    /**
-     * 查找用户
-     * @param generalSearchEntity 统一查询
-     * @return 查询的结果
-     */
-    User[] find(GeneralSearchEntity generalSearchEntity);
-
     /**
      * 更新用户
      * @param id 更新的用户id

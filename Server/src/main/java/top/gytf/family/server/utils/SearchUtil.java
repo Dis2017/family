@@ -31,8 +31,8 @@ import java.util.stream.Collectors;
  * @version V1.0
  */
 @Slf4j
-public class QueryUtil {
-    private final static String TAG = QueryUtil.class.getName();
+public class SearchUtil {
+    private final static String TAG = SearchUtil.class.getName();
 
     /**
      * 排序的符号：升序

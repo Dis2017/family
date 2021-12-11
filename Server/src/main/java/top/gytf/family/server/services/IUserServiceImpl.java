@@ -2,13 +2,10 @@ package top.gytf.family.server.services;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.stereotype.Service;
 import top.gytf.family.server.entity.User;
 import top.gytf.family.server.mapper.UserMapper;
 import top.gytf.family.server.utils.UserUtil;
-import top.gytf.family.server.search.GeneralSearchEntity;
-import top.gytf.family.server.utils.QueryUtil;
 
 /**
  * Project:     IntelliJ IDEA<br>
@@ -83,29 +80,6 @@ public class IUserServiceImpl implements IUserService {
         }
 
         return user;
-    }
-
-    /**
-     * 查找用户
-     *
-     * @param generalSearchEntity 统一查询
-     * @return 查询的结果
-     */
-    @Override
-    public IPage<User> findPage(GeneralSearchEntity generalSearchEntity) {
-        return userMapper.selectPage(QueryUtil.generatePage(generalSearchEntity.getPages()),
-                QueryUtil.parse(User.class, generalSearchEntity));
-    }
-
-    /**
-     * 查找用户
-     *
-     * @param generalSearchEntity 统一查询
-     * @return 查询的结果
-     */
-    @Override
-    public User[] find(GeneralSearchEntity generalSearchEntity) {
-        return userMapper.selectList(QueryUtil.parse(User.class, generalSearchEntity)).toArray(User[]::new);
     }
 
     /**
