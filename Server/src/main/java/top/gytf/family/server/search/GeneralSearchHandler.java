@@ -101,16 +101,9 @@ public class GeneralSearchHandler {
         GeneralSearchEntity entity = new GeneralSearchEntity();
 
         entity.setRequests(request.getParameter("requests"));
+        entity.setConditions(request.getParameter("conditions"));
         entity.setSorts(request.getParameter("sorts"));
         entity.setPages(request.getParameter("pages"));
-
-        request.getParameterMap().forEach((key, value) -> {
-            StringBuilder builder = new StringBuilder();
-            for (String val : value) {
-                builder.append(val);
-            }
-            entity.getConditions().put(key, builder.toString());
-        });
 
         return entity;
     }

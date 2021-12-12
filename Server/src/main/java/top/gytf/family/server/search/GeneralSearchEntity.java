@@ -39,7 +39,7 @@ public class GeneralSearchEntity {
      * <li> <= </li>
      * <li> like </li>
      */
-    private Map<String, String> conditions = new ConcurrentHashMap<>();
+    private String conditions;
 
     /**
      * 排序依据<br>

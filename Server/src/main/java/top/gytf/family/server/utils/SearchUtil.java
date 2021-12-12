@@ -7,10 +7,8 @@ import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
-import top.gytf.family.server.search.ConditionField;
-import top.gytf.family.server.search.GeneralSearchEntity;
-import top.gytf.family.server.search.RequestField;
-import top.gytf.family.server.search.SortField;
+import top.gytf.family.server.exceptions.GeneralSearchConditionFormatException;
+import top.gytf.family.server.search.*;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -46,7 +44,7 @@ public class SearchUtil {
     /**
      * like符号
      */
-    public static final String SIGN_LIKE = "like ";
+    public static final String SIGN_LIKE = " like ";
 
     /**
      * 正则表达式：匹配like模式
@@ -192,10 +190,16 @@ public class SearchUtil {
      * @param conditions 条件
      * @param sorts 排序依据
      */
-    public static <T> QueryWrapper<T> parse(Class<T> clazz, String requests, Map<String, String> conditions, String sorts) {
+    public static <T> QueryWrapper<T> parse(Class<T> clazz, String requests, String conditions, String sorts) {
         QueryWrapper<T> queryWrapper = new QueryWrapper<>();
         setRequests(queryWrapper, clazz, requests);
-        setConditions(queryWrapper, clazz, conditions);
+//        setConditions(queryWrapper, clazz, conditions);
+        if (conditions != null) {
+            final ConditionNode conditionNode = parseCondition(clazz, new Reader(conditions));
+            if (conditionNode != null) {
+                queryWrapper.and(conditionNode.parse());
+            }
+        }
         setSort(queryWrapper, clazz, sorts);
         return queryWrapper;
     }
@@ -216,6 +220,103 @@ public class SearchUtil {
             }
         }
         return new Page<>();
+    }
+
+    /**
+     * 解析条件
+     * @param reader 存储了条件表达式的阅读器
+     * @return 条件节点（调用{@link ConditionNode#parse()}可以解析出Wrapper用的表达式
+     */
+    private static <T> ConditionNode<T> parseCondition(Class<T> clazz, Reader reader) {
+        ConditionGroupNode<T> node;
+
+        // 取出前缀，确定连接方式
+        if (reader.startsWith("AND(")) {
+            reader.skips(4);
+            node = new ConditionGroupNode();
+        } else if (reader.startsWith("OR(")) {
+            reader.skips(3);
+            node = new ConditionGroupNode(false);
+        } else {
+            // 是叶子表达式
+            ConditionLeafNode<T> conditionLeafNode = parseLeftCondition(reader);
+            final String fieldName = conditionLeafNode.getFieldName();
+            final Set<Class<? extends Annotation>> classes = getClassInfo(clazz).get(fieldName);
+            if (classes == null || !classes.contains(ConditionField.class)) {
+                return null;
+            }
+            return conditionLeafNode;
+        }
+
+        // 取出里面所有表达式（包括嵌套）
+        while (reader.readable() > 0) {
+            ConditionNode children = parseCondition(clazz, reader);
+            if (children != null) {
+                node.addChild(children);
+            }
+            char ch = reader.read();
+            if (ch == ')') {
+                break;
+            } else if (ch != ',') {
+                throw new RuntimeException("格式错误");
+            }
+        }
+
+        return node;
+    }
+
+    /**
+     * 解析叶子上的条件表达式
+     * @param reader 存储了条件表达式的阅读器
+     * @return 叶子条件节点
+     */
+    private static <T> ConditionLeafNode<T> parseLeftCondition(Reader reader) {
+        StringBuilder name = new StringBuilder();
+        StringBuilder value = new StringBuilder();
+        String sign = null;
+        boolean flag = true;
+
+        // 取出名称
+        do {
+            name.append(reader.read());
+            if (reader.readable() > 0) {
+                for (String[] pair : SearchUtil.SING_AND_REGEX_PAIRS) {
+                    if (reader.startsWith(pair[0])) {
+                        flag = false;
+                        sign = pair[0];
+                        reader.skips(sign.length());
+                        break;
+                    }
+                }
+            }
+        } while (reader.readable() > 0 && flag);
+
+        // 读取完成后可以读取内容为空 或者 下一个字符不为" 代表并不是一个正确格式的表达式
+        if (reader.readable() <= 0 || reader.read() != '\"') {
+            throw new GeneralSearchConditionFormatException();
+        }
+
+        // 读取值
+        flag = true;
+        while (reader.readable() > 0) {
+            char ch = reader.read();
+            if (ch == '\\') {
+                // 是\则跳过到下个字符，并且不处理
+                ch = reader.read();
+            } else if (ch == '\"') {
+                // 读取到了"代表值结束
+                flag = false;
+                break;
+            }
+            value.append(ch);
+        }
+
+        // 从未读到过" 代表格式错误
+        if (flag) {
+            throw new GeneralSearchConditionFormatException();
+        }
+
+        return new ConditionLeafNode<>(name.toString(), sign, value.toString());
     }
 
     /**
