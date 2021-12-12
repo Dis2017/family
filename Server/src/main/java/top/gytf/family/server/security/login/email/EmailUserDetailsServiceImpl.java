@@ -1,21 +1,14 @@
-package top.gytf.family.server.security.email;
+package top.gytf.family.server.security.login.email;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
-import top.gytf.family.server.entity.Role;
 import top.gytf.family.server.entity.User;
-import top.gytf.family.server.entity.UserRole;
 import top.gytf.family.server.mapper.RolesMapper;
 import top.gytf.family.server.mapper.UserRoleMapper;
 import top.gytf.family.server.services.IUserService;
 import top.gytf.family.server.utils.UserUtil;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Project:     IntelliJ IDEA

@@ -1,4 +1,4 @@
-package top.gytf.family.server.security.id;
+package top.gytf.family.server.security.login.id;
 
 import lombok.Setter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;

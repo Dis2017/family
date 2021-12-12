@@ -1,4 +1,4 @@
-package top.gytf.family.server.security.email;
+package top.gytf.family.server.security.login.email;
 
 import lombok.Setter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;

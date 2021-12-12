@@ -320,51 +320,6 @@ public class SearchUtil {
     }
 
     /**
-     * 解析条件
-     * @param queryWrapper Wrapper
-     * @param clazz 请求对象类型
-     * @param conditions 条件
-     * @param <T> 对象泛型
-     */
-    private static <T> void setConditions(QueryWrapper<T> queryWrapper, Class<T> clazz, Map<String, String> conditions) {
-        if (conditions == null) {
-            return;
-        }
-
-        final Map<String, Set<Class<? extends Annotation>>> classInfo = getClassInfo(clazz);
-
-        conditions.entrySet().stream()
-                .filter((entry) -> {
-                    final Set<Class<? extends Annotation>> classes = classInfo.get(entry.getKey());
-                    return classes != null && classes.contains(ConditionField.class);
-                })
-                .forEach((entry) -> {
-                    //去除左侧空格
-                    String value = entry.getValue().replaceFirst("^[ ]+", "");
-                    //匹配运算符
-                    for (String[] pair : SING_AND_REGEX_PAIRS) {
-                        if (!value.matches(pair[1])) {
-                            continue;
-                        }
-
-                        //设置到条件
-                        value = value.substring(pair[0].length());
-                        switch (pair[0]) {
-                            case SIGN_EQ: queryWrapper.eq(entry.getKey(), value); break;
-                            case SIGN_NE: queryWrapper.ne(entry.getKey(), value); break;
-                            case SIGN_GT: queryWrapper.gt(entry.getKey(), value); break;
-                            case SIGN_GE: queryWrapper.ge(entry.getKey(), value); break;
-                            case SIGN_LT: queryWrapper.lt(entry.getKey(), value); break;
-                            case SIGN_LE: queryWrapper.le(entry.getKey(), value); break;
-                            case SIGN_LIKE: queryWrapper.like(entry.getKey(), value); break;
-                            default: break;
-                        }
-                        break;
-                    }
-                });
-    }
-
-    /**
      * 请求的内容
      * @param queryWrapper Wrapper
      * @param clazz 请求对象类型

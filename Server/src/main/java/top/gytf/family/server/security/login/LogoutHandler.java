@@ -1,4 +1,4 @@
-package top.gytf.family.server.security;
+package top.gytf.family.server.security.login;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.core.Authentication;
@@ -8,7 +8,6 @@ import top.gytf.family.server.response.Response;
 import top.gytf.family.server.response.StateCode;
 import top.gytf.family.server.utils.ResponseUtil;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;

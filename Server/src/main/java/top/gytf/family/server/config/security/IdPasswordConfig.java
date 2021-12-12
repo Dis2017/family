@@ -4,13 +4,12 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.DefaultSecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.stereotype.Component;
-import top.gytf.family.server.security.LoginHandler;
-import top.gytf.family.server.security.email.EmailAuthenticationProvider;
-import top.gytf.family.server.security.id.IdPasswordAuthenticationFilter;
-import top.gytf.family.server.security.id.IdPasswordAuthenticationProvider;
+import top.gytf.family.server.security.login.LoginHandler;
+import top.gytf.family.server.security.login.id.IdPasswordAuthenticationFilter;
+import top.gytf.family.server.security.login.id.IdPasswordAuthenticationProvider;
 
 /**
  * Project:     IntelliJ IDEA<br>
@@ -38,7 +37,7 @@ public class IdPasswordConfig extends SecurityConfigurerAdapter<DefaultSecurityF
         super.configure(builder);
         builder
                 .authenticationProvider(idPasswordAuthenticationProvider)
-                .addFilterAfter(getIdPasswordAuthenticationFilter(builder), LogoutFilter.class);
+                .addFilterAfter(getIdPasswordAuthenticationFilter(builder), FilterSecurityInterceptor.class);
     }
 
     public IdPasswordAuthenticationFilter getIdPasswordAuthenticationFilter(HttpSecurity httpSecurity) {

@@ -1,4 +1,4 @@
-package top.gytf.family.server.security.auth;
+package top.gytf.family.server.security.access;
 
 import org.springframework.context.event.EventListener;
 import org.springframework.security.core.session.SessionRegistry;

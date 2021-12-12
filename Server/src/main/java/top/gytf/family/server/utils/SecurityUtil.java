@@ -2,8 +2,8 @@ package top.gytf.family.server.utils;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import top.gytf.family.server.security.email.EmailAuthenticationToken;
-import top.gytf.family.server.security.id.IdPasswordToken;
+import top.gytf.family.server.security.login.email.EmailAuthenticationToken;
+import top.gytf.family.server.security.login.id.IdPasswordToken;
 
 /**
  * Project:     IntelliJ IDEA<br>

@@ -1,7 +1,7 @@
 package top.gytf.family.server.constants;
 
-import top.gytf.family.server.security.email.EmailAuthenticationFilter;
-import top.gytf.family.server.security.id.IdPasswordAuthenticationFilter;
+import top.gytf.family.server.security.login.email.EmailAuthenticationFilter;
+import top.gytf.family.server.security.login.id.IdPasswordAuthenticationFilter;
 
 /**
  * Project:     IntelliJ IDEA

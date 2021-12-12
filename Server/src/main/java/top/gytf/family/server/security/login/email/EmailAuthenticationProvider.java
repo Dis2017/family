@@ -1,4 +1,4 @@
-package top.gytf.family.server.security.id;
+package top.gytf.family.server.security.login.email;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -6,28 +6,28 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import top.gytf.family.server.exceptions.PasswordUnmatchedErrorException;
 
 /**
- * Project:     IntelliJ IDEA<br>
- * Description: 编号密码认证提供器<br>
- * CreateDate:  2021/12/1 19:28 <br>
+ * Project:     IntelliJ IDEA
+ * ClassName:   EmailAuthenticationProvider
+ * Description: 邮箱认证器
+ * CreateDate:  2021/11/25 22:22
  * ------------------------------------------------------------------------------------------
  *
  * @author user
  * @version V1.0
  */
 @Component
-public class IdPasswordAuthenticationProvider implements AuthenticationProvider {
-    private final static String TAG = IdPasswordAuthenticationProvider.class.getName();
+public class EmailAuthenticationProvider implements AuthenticationProvider {
+    private final static String TAG = EmailAuthenticationProvider.class.getName();
 
     /**
      * 读取用户信息服务
      */
-    private final IdPasswordUserDetailsServiceImpl idPasswordUserDetailsService;
+    private final EmailUserDetailsServiceImpl emailUserDetailsService;
 
-    public IdPasswordAuthenticationProvider(IdPasswordUserDetailsServiceImpl idPasswordUserDetailsService) {
-        this.idPasswordUserDetailsService = idPasswordUserDetailsService;
+    public EmailAuthenticationProvider(EmailUserDetailsServiceImpl emailUserDetailsService) {
+        this.emailUserDetailsService = emailUserDetailsService;
     }
 
     /**
@@ -45,15 +45,12 @@ public class IdPasswordAuthenticationProvider implements AuthenticationProvider 
      */
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        IdPasswordToken tokenAuthentication = (IdPasswordToken) authentication;
+        EmailAuthenticationToken emailAuthentication = (EmailAuthenticationToken) authentication;
 
-        UserDetails userDetails = idPasswordUserDetailsService.loadUserByUsername(String.valueOf(tokenAuthentication.getPrincipal()));
-        if (!userDetails.getPassword().equals(tokenAuthentication.getCredentials())) {
-            throw new PasswordUnmatchedErrorException("密码错误");
-        }
-
-        IdPasswordToken token = new IdPasswordToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
-        token.setDetails(tokenAuthentication.getDetails());
+        String email = emailAuthentication.getName();
+        UserDetails userDetails = emailUserDetailsService.loadUserByUsername(email);
+        EmailAuthenticationToken token = new EmailAuthenticationToken(userDetails, userDetails.getAuthorities());
+        token.setDetails(authentication.getDetails());
 
         return token;
     }
@@ -74,12 +71,12 @@ public class IdPasswordAuthenticationProvider implements AuthenticationProvider 
      * authentication is conducted at runtime the <code>ProviderManager</code>.
      * </p>
      *
-     * @param authentication authentication
+     * @param authentication 认证内容
      * @return <code>true</code> if the implementation can more closely evaluate the
      * <code>Authentication</code> class presented
      */
     @Override
     public boolean supports(Class<?> authentication) {
-        return IdPasswordToken.class.isAssignableFrom(authentication);
+        return EmailAuthenticationToken.class.isAssignableFrom(authentication);
     }
 }

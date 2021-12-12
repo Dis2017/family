@@ -59,6 +59,12 @@ public class GeneralSearchHandler {
     @Pointcut("execution(Object[] top.gytf.family.server.controllers..*(..))")
     public void allArrayReturnTypeApi() {}
 
+    /**
+     * 分页统一查询处理
+     * @param proceedingJoinPoint 接入点
+     * @return 分页内容
+     * @throws Throwable 处理错误
+     */
     @Around("allGeneralSearchApi() && allPageReturnTypeApi()")
     public IPage generalSearchPageApi(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         GeneralSearch search = getAnnotation(proceedingJoinPoint);
@@ -67,6 +73,7 @@ public class GeneralSearchHandler {
         HttpServletRequest request = attributes.getRequest();
         GeneralSearchEntity entity = getGeneralSearchEntity(request);
 
+        // 解析请求
         IPage result = getMapper(search.mapper()).selectPage(
                 SearchUtil.generatePage(entity.getPages()),
                 SearchUtil.parse(search.entityClass(), entity)
@@ -76,6 +83,12 @@ public class GeneralSearchHandler {
         return result;
     }
 
+    /**
+     * 统一查询处理
+     * @param proceedingJoinPoint 接入点
+     * @return 分页内容
+     * @throws Throwable 处理错误
+     */
     @Around("allGeneralSearchApi() && allArrayReturnTypeApi()")
     public Object[] generalSearchArrayApi(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         GeneralSearch search = getAnnotation(proceedingJoinPoint);

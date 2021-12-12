@@ -1,9 +1,7 @@
 package top.gytf.family.server.controllers;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.web.bind.annotation.*;
 import top.gytf.family.server.constants.PathConstant;
 import top.gytf.family.server.entity.User;
 import top.gytf.family.server.exceptions.SecurityCodeException;
@@ -15,8 +13,8 @@ import top.gytf.family.server.security.code.image.ImageSecurityCodeHandler;
 import top.gytf.family.server.security.code.image.ImageSecurityCodeRequestValidator;
 import top.gytf.family.server.utils.SecurityUtil;
 
-import javax.annotation.security.PermitAll;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 
@@ -37,10 +35,12 @@ public class AuthenticationController {
 
     private final EmailSecurityCodeHandler emailSecurityCodeHandler;
     private final ImageSecurityCodeHandler imageSecurityCodeHandler;
+    private final SecurityContextLogoutHandler securityContextLogoutHandler;
 
     public AuthenticationController(EmailSecurityCodeHandler emailSecurityCodeHandler, ImageSecurityCodeHandler imageSecurityCodeHandler) {
         this.emailSecurityCodeHandler = emailSecurityCodeHandler;
         this.imageSecurityCodeHandler = imageSecurityCodeHandler;
+        this.securityContextLogoutHandler = new SecurityContextLogoutHandler();
     }
 
     /**
@@ -52,7 +52,6 @@ public class AuthenticationController {
      */
     @GetMapping( PathConstant.Auth.PATH_SECURITY_CODE_EMAIL)
     @SecurityCodeVerifyStrategy(ImageSecurityCodeRequestValidator.class)
-    @PermitAll
     public void generateEmailSecurityCode(HttpSession session,
                                           @RequestParam(value = "email", required = false) String email)
             throws SecurityCodeException {
@@ -81,7 +80,6 @@ public class AuthenticationController {
      * @throws SecurityCodeException 验证码错误
      */
     @GetMapping(PathConstant.Auth.PATH_SECURITY_CODE_IMAGE)
-    @PermitAll
     @IgnoreResultAdvice
     public void generateImageSecurityCode(HttpSession session, ServletResponse response)
             throws SecurityCodeException  {
@@ -89,15 +87,21 @@ public class AuthenticationController {
         imageSecurityCodeHandler.generate(session, response);
     }
 
-
-
     /**
      * 获取当前登录用户
      * @return 当前登录用户
      */
     @GetMapping(PathConstant.Auth.PATH_CURRENT)
-    @PermitAll
     public Object getCurrentUser() {
         return SecurityUtil.current();
+    }
+
+    /**
+     * 登出
+     * @param request 请求
+     */
+    @PostMapping(PathConstant.Auth.PATH_LOGOUT)
+    public void logout(HttpServletRequest request) {
+        securityContextLogoutHandler.logout(request, null, null);
     }
 }

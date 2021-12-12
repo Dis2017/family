@@ -1,4 +1,4 @@
-package top.gytf.family.server.security.email;
+package top.gytf.family.server.security.login.email;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,13 +8,9 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import top.gytf.family.server.constants.PathConstant;
-import top.gytf.family.server.exceptions.RepeatLoginException;
-import top.gytf.family.server.utils.SecurityUtil;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 /**
  * Project:     IntelliJ IDEA

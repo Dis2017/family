@@ -1,29 +1,14 @@
 package top.gytf.family.server.config.security;
 
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
-import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
-import org.springframework.web.method.HandlerMethod;
-import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
-import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
-import top.gytf.family.server.constants.PathConstant;
-import top.gytf.family.server.response.AccessDeniedHandlerImpl;
-import top.gytf.family.server.response.AuthenticationEntryPointImpl;
-import top.gytf.family.server.security.LogoutHandler;
-import top.gytf.family.server.security.auth.AccessDecisionManagerImpl;
-import top.gytf.family.server.security.auth.FilterInvocationSecurityMetadataSourceImpl;
-
-import javax.annotation.security.PermitAll;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import top.gytf.family.server.response.GlobalExceptionHandler;
+import top.gytf.family.server.security.login.LogoutHandler;
 
 /**
  * Project:     IntelliJ IDEA
@@ -40,26 +25,18 @@ import java.util.Set;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final static String TAG = SecurityConfig.class.getName();
 
-    private final ApplicationContext applicationContext;
     private final SecurityCodeConfig securityCodeConfig;
     private final EmailSecurityConfig emailSecurityConfig;
     private final IdPasswordConfig idPasswordConfig;
-    private final LogoutHandler logoutHandler;
-    private final AccessDeniedHandlerImpl accessDeniedHandler;
-    private final AuthenticationEntryPointImpl authenticationEntryPoint;
-    private final AccessDecisionManagerImpl accessDecisionManager;
-    private final FilterInvocationSecurityMetadataSourceImpl filterInvocationSecurityMetadataSource;
+    private final GlobalExceptionHandler globalExceptionHandler;
+    private final AccessConfig accessConfig;
 
-    public SecurityConfig(ApplicationContext applicationContext, SecurityCodeConfig securityCodeConfig, EmailSecurityConfig emailSecurityConfig, IdPasswordConfig idPasswordConfig, LogoutHandler logoutHandler, AccessDeniedHandlerImpl accessDeniedHandler, AuthenticationEntryPointImpl authenticationEntryPoint, AccessDecisionManagerImpl accessDecisionManager, FilterInvocationSecurityMetadataSourceImpl filterInvocationSecurityMetadataSource) {
-        this.applicationContext = applicationContext;
+    public SecurityConfig(SecurityCodeConfig securityCodeConfig, EmailSecurityConfig emailSecurityConfig, IdPasswordConfig idPasswordConfig, GlobalExceptionHandler globalExceptionHandler, AccessConfig accessConfig) {
         this.securityCodeConfig = securityCodeConfig;
         this.emailSecurityConfig = emailSecurityConfig;
         this.idPasswordConfig = idPasswordConfig;
-        this.logoutHandler = logoutHandler;
-        this.accessDeniedHandler = accessDeniedHandler;
-        this.authenticationEntryPoint = authenticationEntryPoint;
-        this.accessDecisionManager = accessDecisionManager;
-        this.filterInvocationSecurityMetadataSource = filterInvocationSecurityMetadataSource;
+        this.globalExceptionHandler = globalExceptionHandler;
+        this.accessConfig = accessConfig;
     }
 
     @Override
@@ -73,9 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         //登出
         http
                 .logout()
-                    .logoutUrl(PathConstant.Auth.AUTH_PREFIX + PathConstant.Auth.PATH_LOGOUT)
-                    .logoutSuccessHandler(logoutHandler)
-                    .permitAll();
+                    .disable();
 
         //未登录用户默认授权
         http
@@ -85,28 +60,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         //访问控制
         http
                 .authorizeRequests()
-                    .anyRequest().authenticated()
-                    .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
-                        @Override
-                        public <O extends FilterSecurityInterceptor> O postProcess(O fsi) {
-                            fsi.setSecurityMetadataSource(filterInvocationSecurityMetadataSource);
-                            fsi.setAccessDecisionManager(accessDecisionManager);
-                            return fsi;
-                        }
-                    });
+                    .anyRequest().permitAll();
 
         //异常处理
         http
                 .exceptionHandling()
-                    .accessDeniedHandler(accessDeniedHandler)
-                    .authenticationEntryPoint(authenticationEntryPoint);
+                    .accessDeniedHandler(globalExceptionHandler)
+                    .authenticationEntryPoint(globalExceptionHandler);
 
         //禁用csrf
         http
                 .csrf().disable();
 
         //应用其他配置
+        /*
+        AccessDecisionFilter
+        SecurityCodeVerifyFilter
+        IdPasswordAuthenticationFilter
+        EmailAuthenticationFilter
+         */
         http
+                .apply(accessConfig).and()
                 .apply(securityCodeConfig).and()
                 .apply(idPasswordConfig).and()
                 .apply(emailSecurityConfig);
