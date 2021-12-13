@@ -8,9 +8,7 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import top.gytf.family.server.entity.User;
-import top.gytf.family.server.response.Response;
-import top.gytf.family.server.response.StateCode;
-import top.gytf.family.server.response.StatusCarrier;
+import top.gytf.family.server.response.*;
 import top.gytf.family.server.utils.ResponseUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,9 +30,13 @@ public class LoginHandler implements AuthenticationSuccessHandler, Authenticatio
     private final static String TAG = LoginHandler.class.getName();
 
     private final ObjectMapper objectMapper;
+    private final GlobalExceptionHandler globalExceptionHandler;
+    private final GlobalResponseHandler globalResponseHandler;
 
-    public LoginHandler(ObjectMapper objectMapper) {
+    public LoginHandler(ObjectMapper objectMapper, GlobalExceptionHandler globalExceptionHandler, GlobalResponseHandler globalResponseHandler) {
         this.objectMapper = objectMapper;
+        this.globalExceptionHandler = globalExceptionHandler;
+        this.globalResponseHandler = globalResponseHandler;
     }
 
     @Override

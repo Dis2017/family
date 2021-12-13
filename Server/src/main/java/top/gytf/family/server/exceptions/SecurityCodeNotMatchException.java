@@ -1,5 +1,8 @@
 package top.gytf.family.server.exceptions;
 
+import top.gytf.family.server.response.StateCode;
+import top.gytf.family.server.response.StatusCarrier;
+
 /**
  * Project:     IntelliJ IDEA
  * ClassName:   SecurityCodeNotMatchException
@@ -10,6 +13,7 @@ package top.gytf.family.server.exceptions;
  * @author user
  * @version V1.0
  */
+@StatusCarrier(code = StateCode.NOT_MATCH_SECURITY_CODE)
 public class SecurityCodeNotMatchException extends SecurityCodeException{
     private final static String TAG = SecurityCodeNotMatchException.class.getName();
 

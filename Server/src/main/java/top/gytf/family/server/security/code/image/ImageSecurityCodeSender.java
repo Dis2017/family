@@ -1,13 +1,12 @@
 package top.gytf.family.server.security.code.image;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import top.gytf.family.server.exceptions.SecurityCodeSendException;
 import top.gytf.family.server.security.code.AbstractSecurityCodeHandler;
 import top.gytf.family.server.security.code.SecurityCodeSender;
+import top.gytf.family.server.utils.ResponseUtil;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -59,8 +58,7 @@ public class ImageSecurityCodeSender implements SecurityCodeSender<ImageSecurity
     public void send(ImageSecurityCode code) throws SecurityCodeSendException {
         log.debug(code.toString());
         try {
-            code.getDesc().setContentType(MediaType.IMAGE_JPEG_VALUE);
-            ImageIO.write(generateImage(code.getCode()), "JPEG", code.getDesc().getOutputStream());
+            ResponseUtil.setToImage(code.getDesc(), generateImage(code.getCode()));
         } catch (IOException e) {
             throw new SecurityCodeSendException("图片验证码生成失败。");
         }

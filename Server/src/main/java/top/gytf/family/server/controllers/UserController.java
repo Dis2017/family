@@ -5,18 +5,24 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import top.gytf.family.server.constants.PathConstant;
 import top.gytf.family.server.entity.User;
 import top.gytf.family.server.mapper.UserMapper;
+import top.gytf.family.server.response.IgnoreResultAdvice;
 import top.gytf.family.server.search.GeneralSearch;
 import top.gytf.family.server.security.code.SecurityCodeVerifyStrategy;
 import top.gytf.family.server.security.code.email.EmailSecurityCodeRequestValidator;
 import top.gytf.family.server.security.code.password.PasswordSecurityCodeRequestValidator;
 import top.gytf.family.server.services.IUserService;
+import top.gytf.family.server.utils.ResponseUtil;
 import top.gytf.family.server.utils.SecurityUtil;
 
 import javax.annotation.security.PermitAll;
+import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.Email;
+import java.io.IOException;
 import java.util.Objects;
 
 /**
@@ -131,5 +137,37 @@ public class UserController {
         assert user != null : "当前用户不存在";
         userService.unbindEmail(user.getId());
         SecurityUtil.update(userService.get(user.getId(), null, null));
+    }
+
+    /**
+     * 下载头像
+     * @param response 响应
+     */
+    @GetMapping(PathConstant.User.PATH_DOWNLOAD_AVATAR)
+    @IgnoreResultAdvice
+    public void downloadAvatar(HttpServletResponse response) {
+        User user = SecurityUtil.current();
+        assert user != null : "当前用户不存在";
+        try {
+            ResponseUtil.setToImage(response, userService.getAvatar(user.getId()));
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("下载失败");
+        }
+    }
+
+    /**
+     * 上传头像
+     */
+    @PostMapping(PathConstant.User.PATH_DOWNLOAD_AVATAR)
+    public void uploadAvatar(@RequestParam("avatar") MultipartFile file) {
+        User user = SecurityUtil.current();
+        assert user != null : "当前用户不存在";
+        try {
+            userService.setAvatar(user.getId(), ImageIO.read(file.getInputStream()));
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("上传失败");
+        }
     }
 }

@@ -1,6 +1,5 @@
 package top.gytf.family.server.search;
 
-import com.baomidou.mybatisplus.core.conditions.AbstractWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.Setter;
 
@@ -52,14 +51,12 @@ public class ConditionGroupNode<T> implements ConditionNode<T> {
      */
     @Override
     public Consumer<? extends QueryWrapper<T>> parse() {
-        return (wrapper) -> {
-            children.forEach((node) -> {
-                if (and) {
-                    wrapper.and(node.parse());
-                } else {
-                    wrapper.or(node.parse());
-                }
-            });
-        };
+        return (wrapper) -> children.forEach((node) -> {
+            if (and) {
+                wrapper.and(node.parse());
+            } else {
+                wrapper.or(node.parse());
+            }
+        });
     }
 }

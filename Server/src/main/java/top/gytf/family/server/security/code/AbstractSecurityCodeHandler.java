@@ -87,14 +87,10 @@ public abstract class AbstractSecurityCodeHandler<D, C extends SecurityCode<D>, 
         if (code == null || code.isExpired()) {
             // 生成新的
             code = getGenerator().generate(desc);
-            try {
-                //尝试发送
-                getSender().send(code);
-                //存储
-                getStorage().save(repos, code);
-            } catch (Exception e) {
-                throw new SecurityCodeException(e.getMessage());
-            }
+            //尝试发送
+            getSender().send(code);
+            //存储
+            getStorage().save(repos, code);
         }
         return code;
     }

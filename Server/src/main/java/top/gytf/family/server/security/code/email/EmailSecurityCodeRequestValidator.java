@@ -2,8 +2,8 @@ package top.gytf.family.server.security.code.email;
 
 import org.springframework.stereotype.Component;
 import top.gytf.family.server.entity.User;
-import top.gytf.family.server.security.code.SecurityCode;
 import top.gytf.family.server.security.code.AbstractSecurityCodeHandler;
+import top.gytf.family.server.security.code.SecurityCode;
 import top.gytf.family.server.security.code.SecurityCodeRequestValidator;
 import top.gytf.family.server.utils.SecurityUtil;
 

@@ -1,5 +1,8 @@
 package top.gytf.family.server.exceptions;
 
+import top.gytf.family.server.response.StateCode;
+import top.gytf.family.server.response.StatusCarrier;
+
 /**
  * Project:     IntelliJ IDEA
  * ClassName:   NullSecurityCodeException
@@ -10,6 +13,7 @@ package top.gytf.family.server.exceptions;
  * @author user
  * @version V1.0
  */
+@StatusCarrier(code = StateCode.NULL_SECURITY_CODE)
 public class NullSecurityCodeException extends SecurityCodeException {
     private final static String TAG = NullSecurityCodeException.class.getName();
 

@@ -1,12 +1,12 @@
 package top.gytf.family.server.security.code.image;
 
 import org.springframework.stereotype.Component;
-import top.gytf.family.server.security.code.SecurityCode;
 import top.gytf.family.server.security.code.AbstractSecurityCodeHandler;
+import top.gytf.family.server.security.code.SecurityCode;
 import top.gytf.family.server.security.code.SecurityCodeRequestValidator;
 
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
@@ -19,7 +19,7 @@ import javax.servlet.http.HttpSession;
  * @version V1.0
  */
 @Component
-public class ImageSecurityCodeRequestValidator implements SecurityCodeRequestValidator<ServletResponse, HttpSession> {
+public class ImageSecurityCodeRequestValidator implements SecurityCodeRequestValidator<HttpServletResponse, HttpSession> {
     private final static String TAG = ImageSecurityCodeRequestValidator.class.getName();
 
     public static final String SECURITY_CODE_KEY = "image_code";
@@ -47,7 +47,7 @@ public class ImageSecurityCodeRequestValidator implements SecurityCodeRequestVal
      * @return 验证码处理器
      */
     @Override
-    public AbstractSecurityCodeHandler<ServletResponse, ? extends SecurityCode<ServletResponse>, HttpSession> getSecurityCodeHandler() {
+    public AbstractSecurityCodeHandler<HttpServletResponse, ? extends SecurityCode<HttpServletResponse>, HttpSession> getSecurityCodeHandler() {
         return imageSecurityCodeHandler;
     }
 
@@ -73,7 +73,7 @@ public class ImageSecurityCodeRequestValidator implements SecurityCodeRequestVal
      * @see SecurityCodeRequestValidator#verifyRequest
      */
     @Override
-    public ServletResponse getDesc(HttpServletRequest request) {
+    public HttpServletResponse getDesc(HttpServletRequest request) {
         return null;
     }
 

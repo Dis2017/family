@@ -7,7 +7,7 @@ import top.gytf.family.server.exceptions.SecurityCodeGenerateException;
 import top.gytf.family.server.security.code.AbstractSecurityCodeHandler;
 import top.gytf.family.server.security.code.SecurityCodeGenerator;
 
-import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Random;
 
 /**
@@ -20,7 +20,7 @@ import java.util.Random;
  * @version V1.0
  */
 @Component
-public class ImageSecurityCodeGenerator implements SecurityCodeGenerator<ServletResponse, ImageSecurityCode> {
+public class ImageSecurityCodeGenerator implements SecurityCodeGenerator<HttpServletResponse, ImageSecurityCode> {
     private final static String TAG = ImageSecurityCodeGenerator.class.getName();
 
     /**
@@ -51,7 +51,7 @@ public class ImageSecurityCodeGenerator implements SecurityCodeGenerator<Servlet
      * @throws SecurityCodeGenerateException 验证码生成错误
      */
     @Override
-    public ImageSecurityCode generate(ServletResponse desc) throws SecurityCodeGenerateException {
+    public ImageSecurityCode generate(HttpServletResponse desc) throws SecurityCodeGenerateException {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < size; i++) {
             builder.append(random.nextInt(10));

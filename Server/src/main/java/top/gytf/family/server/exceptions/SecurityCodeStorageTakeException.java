@@ -1,5 +1,8 @@
 package top.gytf.family.server.exceptions;
 
+import top.gytf.family.server.response.StateCode;
+import top.gytf.family.server.response.StatusCarrier;
+
 /**
  * Project:     IntelliJ IDEA<br>
  * Description: 验证码从存储器中取出错误<br>
@@ -9,7 +12,8 @@ package top.gytf.family.server.exceptions;
  * @author user
  * @version V1.0
  */
-public class SecurityCodeStorageTakeException extends SecurityCodeSendException {
+@StatusCarrier(code = StateCode.STORAGE_TAKE_SECURITY_CODE)
+public class SecurityCodeStorageTakeException extends SecurityCodeStorageException {
     private final static String TAG = SecurityCodeStorageTakeException.class.getName();
 
     /**

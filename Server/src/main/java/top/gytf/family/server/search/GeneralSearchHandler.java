@@ -126,7 +126,7 @@ public class GeneralSearchHandler {
      * @param mapperClass Mapper类型
      * @return Mapper
      */
-    private BaseMapper getMapper(Class<? extends BaseMapper> mapperClass) {
+    private synchronized BaseMapper getMapper(Class<? extends BaseMapper> mapperClass) {
         BaseMapper mapper = MAPPER_CACHE.get(mapperClass);
 
         if (mapper == null) {
@@ -142,7 +142,7 @@ public class GeneralSearchHandler {
      * @param proceedingJoinPoint 切入点
      * @return 统一查询注解
      */
-    private GeneralSearch getAnnotation(ProceedingJoinPoint proceedingJoinPoint) {
+    private synchronized GeneralSearch getAnnotation(ProceedingJoinPoint proceedingJoinPoint) {
         Class clazz = proceedingJoinPoint.getSignature().getDeclaringType();
         GeneralSearch generalSearch = GENERAL_SEARCH_CACHE.get(clazz);
 

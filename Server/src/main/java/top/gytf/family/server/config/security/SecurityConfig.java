@@ -8,7 +8,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import top.gytf.family.server.response.GlobalExceptionHandler;
-import top.gytf.family.server.security.login.LogoutHandler;
 
 /**
  * Project:     IntelliJ IDEA
@@ -47,6 +46,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .maximumSessions(1)
                     .sessionRegistry(sessionRegistry());
 
+        //所有都需要权限
+        http
+                .authorizeRequests()
+                    .anyRequest().permitAll();
+
         //登出
         http
                 .logout()
@@ -56,11 +60,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .anonymous()
                     .authorities("ROLE_GUEST");
-
-        //访问控制
-        http
-                .authorizeRequests()
-                    .anyRequest().permitAll();
 
         //异常处理
         http

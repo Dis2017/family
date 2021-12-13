@@ -5,12 +5,11 @@ import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
-import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.stereotype.Component;
 import top.gytf.family.server.constants.PathConstant;
-import top.gytf.family.server.security.login.LoginHandler;
 import top.gytf.family.server.security.code.SecurityCodeVerifyStrategy;
 import top.gytf.family.server.security.code.email.EmailSecurityCodeRequestValidator;
+import top.gytf.family.server.security.login.LoginHandler;
 import top.gytf.family.server.security.login.email.EmailAuthenticationFilter;
 import top.gytf.family.server.security.login.email.EmailAuthenticationProvider;
 

@@ -4,8 +4,15 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import org.springframework.stereotype.Service;
 import top.gytf.family.server.entity.User;
+import top.gytf.family.server.exceptions.AvatarNotFoundException;
+import top.gytf.family.server.file.FileManager;
 import top.gytf.family.server.mapper.UserMapper;
 import top.gytf.family.server.utils.UserUtil;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Project:     IntelliJ IDEA<br>
@@ -185,6 +192,37 @@ public class IUserServiceImpl implements IUserService {
      */
     @Override
     public String getPassword(Long id) {
-        return userMapper.selectOne(new LambdaQueryWrapper<User>().select(User::getPassword).eq(User::getId, id)).getPassword();
+        return userMapper.selectOne(
+                new LambdaQueryWrapper<User>()
+                        .select(User::getPassword)
+                        .eq(User::getId, id)
+        ).getPassword();
+    }
+
+    /**
+     * 获取头像
+     *
+     * @param id 用户编号
+     * @return 头像
+     */
+    @Override
+    public BufferedImage getAvatar(Long id) throws IOException {
+        File avatar = FileManager.current().getUserFileSpace().getAvatar();
+        if (!avatar.exists()) {
+            throw new AvatarNotFoundException("头像未找到");
+        }
+        return ImageIO.read(avatar);
+    }
+
+    /**
+     * 设置头像
+     *
+     * @param id     用户编号
+     * @param avatar 头像
+     * @throws IOException 写入错误
+     */
+    @Override
+    public void setAvatar(Long id, BufferedImage avatar) throws IOException {
+        ImageIO.write(avatar, "jpg", FileManager.current().getUserFileSpace().getAvatar());
     }
 }

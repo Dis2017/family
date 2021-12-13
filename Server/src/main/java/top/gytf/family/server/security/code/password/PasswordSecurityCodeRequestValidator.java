@@ -1,8 +1,8 @@
 package top.gytf.family.server.security.code.password;
 
 import org.springframework.stereotype.Component;
-import top.gytf.family.server.security.code.SecurityCode;
 import top.gytf.family.server.security.code.AbstractSecurityCodeHandler;
+import top.gytf.family.server.security.code.SecurityCode;
 import top.gytf.family.server.security.code.SecurityCodeRequestValidator;
 
 import javax.servlet.http.HttpServletRequest;

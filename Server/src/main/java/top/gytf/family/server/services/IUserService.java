@@ -1,8 +1,9 @@
 package top.gytf.family.server.services;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import top.gytf.family.server.entity.User;
-import top.gytf.family.server.search.GeneralSearchEntity;
+
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 /**
  * Project:     IntelliJ IDEA<br>
@@ -88,4 +89,20 @@ public interface IUserService {
      * @return 密码
      */
     String getPassword(Long id);
+
+    /**
+     * 获取头像
+     * @param id 用户编号
+     * @return 头像
+     * @throws IOException 读取错误
+     */
+    BufferedImage getAvatar(Long id) throws IOException;
+
+    /**
+     * 设置头像
+     * @param id 用户编号
+     * @param avatar 头像
+     * @throws IOException 写入错误
+     */
+    void setAvatar(Long id, BufferedImage avatar) throws IOException;
 }

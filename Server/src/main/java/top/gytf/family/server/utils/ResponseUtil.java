@@ -2,7 +2,9 @@ package top.gytf.family.server.utils;
 
 import org.springframework.http.MediaType;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -54,5 +56,19 @@ public class ResponseUtil {
                 out.write(bytes);
             }
         }
+    }
+
+    /**
+     * 设置成下载响应
+     * @param response 响应体
+     * @param image 图片
+     * @throws IOException 下载失败
+     */
+    public static void setToImage(HttpServletResponse response, BufferedImage image) throws IOException {
+        //设置响应头
+        response.reset();
+        response.setContentType(MediaType.IMAGE_JPEG_VALUE);
+        //设置文件
+        ImageIO.write(image, "jpeg", response.getOutputStream());
     }
 }

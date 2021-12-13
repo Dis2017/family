@@ -1,5 +1,8 @@
 package top.gytf.family.server.exceptions;
 
+import top.gytf.family.server.response.StateCode;
+import top.gytf.family.server.response.StatusCarrier;
+
 /**
  * Project:     IntelliJ IDEA<br>
  * Description: 验证码发送错误<br>
@@ -9,6 +12,7 @@ package top.gytf.family.server.exceptions;
  * @author user
  * @version V1.0
  */
+@StatusCarrier(code = StateCode.SEND_SECURITY_CODE)
 public class SecurityCodeSendException extends SecurityCodeException {
     private final static String TAG = SecurityCodeSendException.class.getName();
 

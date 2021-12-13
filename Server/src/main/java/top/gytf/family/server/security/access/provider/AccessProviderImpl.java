@@ -2,8 +2,6 @@ package top.gytf.family.server.security.access.provider;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.springframework.context.event.EventListener;
-import org.springframework.security.access.ConfigAttribute;
-import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
@@ -62,7 +60,7 @@ public class AccessProviderImpl implements AccessProvider {
      * @return 权限列表
      */
     @Override
-    public Collection<GrantedAuthority> loadAuthorities(String uri, String method) {
+    public synchronized Collection<GrantedAuthority> loadAuthorities(String uri, String method) {
         String key = method + ':' + uri;
         Collection<GrantedAuthority> result = CACHE.get(key);
 

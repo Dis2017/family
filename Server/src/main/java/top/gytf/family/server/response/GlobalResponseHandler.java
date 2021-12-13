@@ -3,7 +3,7 @@ package top.gytf.family.server.response;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.lang.annotation.After;
+import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.core.MethodParameter;
@@ -59,7 +59,7 @@ public class GlobalResponseHandler implements ResponseBodyAdvice<Object> {
      * 在调用相关接口({@link #allVoidResponseApi()}并且不是{@link #allIgnoreResultAdviceApi()} ()}所指向的连接点)之前执行
      * @throws IOException 写入响应错误
      */
-    @After("allVoidResponseApi() && !allIgnoreResultAdviceApi()")
+    @AfterReturning("allVoidResponseApi() && !allIgnoreResultAdviceApi()")
     public void setToEmptyGlobalResponse() throws IOException {
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
         //无法转换类型

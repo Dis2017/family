@@ -129,7 +129,7 @@ public class SearchUtil {
      * @param clazz 类
      * @return 信息
      */
-    private static Map<String, Set<Class<? extends Annotation>>> getClassInfo(Class clazz) {
+    private synchronized static Map<String, Set<Class<? extends Annotation>>> getClassInfo(Class clazz) {
         Map<String, Set<Class<? extends Annotation>>> info = CACHE.get(clazz);
 
         if (info == null) {

@@ -2,7 +2,6 @@ package top.gytf.family.server.utils;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import top.gytf.family.server.entity.Role;
 import top.gytf.family.server.entity.User;
 import top.gytf.family.server.entity.UserRole;

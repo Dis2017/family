@@ -37,10 +37,8 @@ public class SecurityCodeVerifyFilter extends OncePerRequestFilter {
     private final AntPathMatcher matcher = new AntPathMatcher();
     private final Map<Class<? extends SecurityCodeRequestValidator>, SecurityCodeRequestValidator> validators;
     private final Map<String, SecurityCodeVerifyStrategy> urlVerifyStrategyMap;
-    private final SecurityCodeVerifyFailureHandler failureHandler;
 
-    protected SecurityCodeVerifyFilter(ApplicationContext context, SecurityCodeVerifyFailureHandler failureHandler) {
-        this.failureHandler = failureHandler;
+    protected SecurityCodeVerifyFilter(ApplicationContext context) {
         validators = new HashMap<>();
         context.getBeansOfType(SecurityCodeRequestValidator.class).values().forEach((validator) -> validators.put(validator.getClass(), validator));
         urlVerifyStrategyMap = getUrlVerifyStrategyMap(context);
@@ -114,13 +112,7 @@ public class SecurityCodeVerifyFilter extends OncePerRequestFilter {
                 } catch (SecurityCodeException e) {
                     //有一个没有通过验证并且要求所有都通过验证，无法满足
                     if (!only) {
-                        e.printStackTrace();
-                        failureHandler.onFailure(
-                                request,
-                                response,
-                                new SecurityCodeException(validator.name() + ": " + e.getMessage())
-                        );
-                        return;
+                        throw e;
                     } else {
                         errorMsg.append(validator.name()).append(": ").append(e.getMessage()).append('\n');
                     }
@@ -129,10 +121,7 @@ public class SecurityCodeVerifyFilter extends OncePerRequestFilter {
 
             // 一个也没有通过
             if (!ok) {
-                SecurityCodeException exception = new SecurityCodeException(errorMsg.toString());
-                exception.printStackTrace();
-                failureHandler.onFailure(request, response, exception);
-                return;
+                throw new SecurityCodeException(errorMsg.toString());
             }
 
             break;

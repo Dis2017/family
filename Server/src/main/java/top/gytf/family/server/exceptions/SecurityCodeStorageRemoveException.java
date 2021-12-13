@@ -1,5 +1,8 @@
 package top.gytf.family.server.exceptions;
 
+import top.gytf.family.server.response.StateCode;
+import top.gytf.family.server.response.StatusCarrier;
+
 /**
  * Project:     IntelliJ IDEA<br>
  * Description: 验证码移除错误<br>
@@ -9,7 +12,8 @@ package top.gytf.family.server.exceptions;
  * @author user
  * @version V1.0
  */
-public class SecurityCodeStorageRemoveException extends SecurityCodeSendException {
+@StatusCarrier(code = StateCode.STORAGE_REMOVE_SECURITY_CODE)
+public class SecurityCodeStorageRemoveException extends SecurityCodeStorageException {
     private final static String TAG = SecurityCodeStorageRemoveException.class.getName();
 
     /**

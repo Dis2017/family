@@ -1,6 +1,5 @@
 package top.gytf.family.server.search;
 
-import com.baomidou.mybatisplus.core.conditions.AbstractWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.Getter;
 import top.gytf.family.server.utils.SearchUtil;

@@ -108,5 +108,15 @@ public class PathConstant {
          */
         public static final String PATH_UNBIND_EMAIL = "/email";
 
+        /**
+         * 下载头像
+         */
+        public static final String PATH_DOWNLOAD_AVATAR = "/avatar";
+
+        /**
+         * 上传头像
+         */
+        public static final String PATH_UPLOAD_AVATAR = "/avatar";
+
     }
 }

@@ -13,8 +13,8 @@ import top.gytf.family.server.security.code.image.ImageSecurityCodeHandler;
 import top.gytf.family.server.security.code.image.ImageSecurityCodeRequestValidator;
 import top.gytf.family.server.utils.SecurityUtil;
 
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 
@@ -81,7 +81,7 @@ public class AuthenticationController {
      */
     @GetMapping(PathConstant.Auth.PATH_SECURITY_CODE_IMAGE)
     @IgnoreResultAdvice
-    public void generateImageSecurityCode(HttpSession session, ServletResponse response)
+    public void generateImageSecurityCode(HttpSession session, HttpServletResponse response)
             throws SecurityCodeException  {
         imageSecurityCodeHandler.getStorage().remove(session, response);
         imageSecurityCodeHandler.generate(session, response);
