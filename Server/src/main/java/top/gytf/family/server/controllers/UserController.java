@@ -20,7 +20,7 @@ import top.gytf.family.server.utils.SecurityUtil;
 
 import javax.annotation.security.PermitAll;
 import javax.imageio.ImageIO;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.ServletResponse;
 import javax.validation.constraints.Email;
 import java.io.IOException;
 import java.util.Objects;
@@ -145,7 +145,7 @@ public class UserController {
      */
     @GetMapping(PathConstant.User.PATH_DOWNLOAD_AVATAR)
     @IgnoreResultAdvice
-    public void downloadAvatar(HttpServletResponse response) {
+    public void downloadAvatar(ServletResponse response) {
         User user = SecurityUtil.current();
         assert user != null : "当前用户不存在";
         try {

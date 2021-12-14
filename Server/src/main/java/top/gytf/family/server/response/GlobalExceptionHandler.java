@@ -1,19 +1,18 @@
 package top.gytf.family.server.response;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.AuthenticationEntryPoint;
-import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.validation.BindException;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.filter.GenericFilterBean;
 import top.gytf.family.server.utils.ResponseUtil;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -30,7 +29,7 @@ import java.util.List;
  */
 
 @RestControllerAdvice
-public class GlobalExceptionHandler implements AccessDeniedHandler, AuthenticationEntryPoint {
+public class GlobalExceptionHandler extends GenericFilterBean {
     private final static String TAG = GlobalExceptionHandler.class.getName();
 
     private final ObjectMapper objectMapper;
@@ -70,35 +69,41 @@ public class GlobalExceptionHandler implements AccessDeniedHandler, Authenticati
     }
 
     /**
-     * Commences an authentication scheme.
+     * The <code>doFilter</code> method of the Filter is called by the container
+     * each time a request/response pair is passed through the chain due to a
+     * client request for a resource at the end of the chain. The FilterChain
+     * passed in to this method allows the Filter to pass on the request and
+     * response to the next entity in the chain.
      * <p>
-     * <code>ExceptionTranslationFilter</code> will populate the <code>HttpSession</code>
-     * attribute named
-     * <code>AbstractAuthenticationProcessingFilter.SPRING_SECURITY_SAVED_REQUEST_KEY</code>
-     * with the requested target URL before calling this method.
-     * <p>
-     * Implementations should modify the headers on the <code>ServletResponse</code> as
-     * necessary to commence the authentication process.
+     * A typical implementation of this method would follow the following
+     * pattern:- <br>
+     * 1. Examine the request<br>
+     * 2. Optionally wrap the request object with a custom implementation to
+     * filter content or headers for input filtering <br>
+     * 3. Optionally wrap the response object with a custom implementation to
+     * filter content or headers for output filtering <br>
+     * 4. a) <strong>Either</strong> invoke the next entity in the chain using
+     * the FilterChain object (<code>chain.doFilter()</code>), <br>
+     * 4. b) <strong>or</strong> not pass on the request/response pair to the
+     * next entity in the filter chain to block the request processing<br>
+     * 5. Directly set headers on the response after invocation of the next
+     * entity in the filter chain.
      *
-     * @param request       that resulted in an <code>AuthenticationException</code>
-     * @param response      so that the user agent can begin authentication
-     * @param authException that caused the invocation
+     * @param request  The request to process
+     * @param response The response associated with the request
+     * @param chain    Provides access to the next filter in the chain for this
+     *                 filter to pass the request and response to for further
+     *                 processing
+     * @throws IOException      if an I/O error occurs during this filter's
+     *                          processing of the request
      */
     @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
-        ResponseUtil.setToJson(response, objectMapper.writeValueAsString(exceptionHandler(authException)));
-    }
-
-    /**
-     * Handles an access denied failure.
-     *
-     * @param request               that resulted in an <code>AccessDeniedException</code>
-     * @param response              so that the user agent can be advised of the failure
-     * @param accessDeniedException that caused the invocation
-     * @throws IOException      in the event of an IOException
-     */
-    @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException {
-        ResponseUtil.setToJson(response, objectMapper.writeValueAsString(exceptionHandler(accessDeniedException)));
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException {
+        try {
+            chain.doFilter(request, response);
+        } catch (Exception e) {
+            ResponseUtil.setToJson(response, objectMapper.writeValueAsString(exceptionHandler(e)));
+        }
     }
 }

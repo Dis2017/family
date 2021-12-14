@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
+import org.springframework.security.web.access.ExceptionTranslationFilter;
 import top.gytf.family.server.response.GlobalExceptionHandler;
 
 /**
@@ -63,9 +64,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         //异常处理
         http
-                .exceptionHandling()
-                    .accessDeniedHandler(globalExceptionHandler)
-                    .authenticationEntryPoint(globalExceptionHandler);
+                .addFilterAfter(globalExceptionHandler, ExceptionTranslationFilter.class);
 
         //禁用csrf
         http

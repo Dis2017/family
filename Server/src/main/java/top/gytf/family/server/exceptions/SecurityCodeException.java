@@ -1,6 +1,5 @@
 package top.gytf.family.server.exceptions;
 
-import org.springframework.security.authentication.AuthenticationServiceException;
 import top.gytf.family.server.response.StateCode;
 import top.gytf.family.server.response.StatusCarrier;
 
@@ -15,7 +14,7 @@ import top.gytf.family.server.response.StatusCarrier;
  * @version V1.0
  */
 @StatusCarrier(code = StateCode.SECURITY_CODE_EXCEPTION)
-public class SecurityCodeException extends AuthenticationServiceException {
+public class SecurityCodeException extends RuntimeException {
     private final static String TAG = SecurityCodeException.class.getName();
 
     /**

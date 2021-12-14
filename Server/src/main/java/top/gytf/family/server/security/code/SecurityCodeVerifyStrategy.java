@@ -1,5 +1,7 @@
 package top.gytf.family.server.security.code;
 
+import org.springframework.web.bind.annotation.RequestMethod;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -33,4 +35,9 @@ public @interface SecurityCodeVerifyStrategy {
      * 仅当注解在类上时才使用，指定绑定的url
      */
     String[] patterns() default {};
+
+    /**
+     * 仅当注解在类上时才使用，指定绑定的请求方式
+     */
+    RequestMethod[] methods() default {};
 }

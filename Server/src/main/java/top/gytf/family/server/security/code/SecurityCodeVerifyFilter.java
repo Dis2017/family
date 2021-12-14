@@ -4,11 +4,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import top.gytf.family.server.exceptions.SecurityCodeException;
+import top.gytf.family.server.utils.Pair;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -19,6 +21,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Project:     IntelliJ IDEA<br>
@@ -34,13 +38,18 @@ import java.util.Set;
 public class SecurityCodeVerifyFilter extends OncePerRequestFilter {
     private final static String TAG = SecurityCodeVerifyFilter.class.getName();
 
+    /**
+     * 匹配器<br>
+     * 用于匹配url
+     */
     private final AntPathMatcher matcher = new AntPathMatcher();
     private final Map<Class<? extends SecurityCodeRequestValidator>, SecurityCodeRequestValidator> validators;
-    private final Map<String, SecurityCodeVerifyStrategy> urlVerifyStrategyMap;
+    private final Map<Pair<String, String>, Pair<Boolean, Set<SecurityCodeRequestValidator>>> urlVerifyStrategyMap;
 
     protected SecurityCodeVerifyFilter(ApplicationContext context) {
         validators = new HashMap<>();
-        context.getBeansOfType(SecurityCodeRequestValidator.class).values().forEach((validator) -> validators.put(validator.getClass(), validator));
+        context.getBeansOfType(SecurityCodeRequestValidator.class).values()
+                .forEach((validator) -> validators.put(validator.getClass(), validator));
         urlVerifyStrategyMap = getUrlVerifyStrategyMap(context);
     }
 
@@ -49,8 +58,8 @@ public class SecurityCodeVerifyFilter extends OncePerRequestFilter {
      * @param context 上下文
      * @return 映射
      */
-    private Map<String, SecurityCodeVerifyStrategy> getUrlVerifyStrategyMap(ApplicationContext context) {
-        Map<String, SecurityCodeVerifyStrategy> result = new HashMap<>(32);
+    private Map<Pair<String, String>, Pair<Boolean, Set<SecurityCodeRequestValidator>>> getUrlVerifyStrategyMap(ApplicationContext context) {
+        Map<Pair<String, String>, Pair<Boolean, Set<SecurityCodeRequestValidator>>> result = new HashMap<>(32);
 
         // 接口
         RequestMappingHandlerMapping requestMappingHandlerMapping = context.getBean(RequestMappingHandlerMapping.class);
@@ -60,16 +69,41 @@ public class SecurityCodeVerifyFilter extends OncePerRequestFilter {
             if (strategy == null) {
                 continue;
             }
+
+            // 产生校验策略实体
+            Set<SecurityCodeRequestValidator> validatorSet = Arrays.stream(strategy.value())
+                    .map(validators::get)
+                    .collect(Collectors.toSet());
+            Pair<Boolean, Set<SecurityCodeRequestValidator>> pair = new Pair<>(strategy.only(), validatorSet);
+
+            // 放入
+            RequestMappingInfo key = entry.getKey();
             Set<String> patterns = entry.getKey().getPatternsCondition().getPatterns();
-            patterns.forEach((pattern) -> result.put(pattern, strategy));
+            Set<RequestMethod> methods = key.getMethodsCondition().getMethods();
+            methods.stream()
+                    .map(Enum::name)
+                    .forEach((method) -> patterns
+                            .forEach((pattern) -> result.put(new Pair<>(pattern, method), pair)));
         }
 
         // 类
         Map<String, Object> beans = context.getBeansWithAnnotation(SecurityCodeVerifyStrategy.class);
         for (Map.Entry<String, Object> entry : beans.entrySet()) {
             SecurityCodeVerifyStrategy strategy = entry.getValue().getClass().getAnnotation(SecurityCodeVerifyStrategy.class);
-            String[] patterns = strategy.patterns();
-            Arrays.stream(patterns).forEach((pattern) -> result.put(pattern, strategy));
+
+            // 产生校验策略实体
+            Set<SecurityCodeRequestValidator> validatorSet = Arrays.stream(strategy.value())
+                    .map(validators::get)
+                    .collect(Collectors.toSet());
+            Pair<Boolean, Set<SecurityCodeRequestValidator>> pair = new Pair<>(strategy.only(), validatorSet);
+
+            // 放入
+            Stream<String> patterns = Arrays.stream(strategy.patterns());
+            RequestMethod[] methods = strategy.methods();
+            Arrays.stream(methods)
+                    .map(Enum::name)
+                    .forEach((method) -> patterns
+                                    .forEach((pattern) -> result.put(new Pair<>(pattern, method), pair)));
         }
 
         return result;
@@ -89,19 +123,23 @@ public class SecurityCodeVerifyFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String uri = request.getRequestURI();
+        String method = request.getMethod();
 
-        for (Map.Entry<String, SecurityCodeVerifyStrategy> entry : urlVerifyStrategyMap.entrySet()) {
-            if (!matcher.match(entry.getKey(), uri)) {
+        for (Map.Entry<Pair<String, String>, Pair<Boolean, Set<SecurityCodeRequestValidator>>> entry : urlVerifyStrategyMap.entrySet()) {
+            // url和请求方法匹配
+            Pair<String, String> pair = entry.getKey();
+            if (!matcher.match(pair.getFirst(), uri) || !pair.getSecond().equals(method)) {
                 continue;
             }
 
-            Class<? extends SecurityCodeRequestValidator<?, ?>>[] validatorClasses = entry.getValue().value();
-            boolean only = entry.getValue().only();
+            // 取出所需验证器类型
+            boolean only = entry.getValue().getFirst();
+            Set<SecurityCodeRequestValidator> validators = entry.getValue().getSecond();
+
             boolean ok = false;
             StringBuilder errorMsg = new StringBuilder();
 
-            for (Class<? extends SecurityCodeRequestValidator<?, ?>> validatorClass : validatorClasses) {
-                SecurityCodeRequestValidator validator = validators.get(validatorClass);
+            for (SecurityCodeRequestValidator validator : validators) {
                 try {
                     validator.verifyRequest(request);
                     ok = true;
@@ -127,6 +165,7 @@ public class SecurityCodeVerifyFilter extends OncePerRequestFilter {
             break;
         }
 
+        // 验证通过
         filterChain.doFilter(request, response);
     }
 }

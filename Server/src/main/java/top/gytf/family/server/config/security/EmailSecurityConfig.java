@@ -6,6 +6,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestMethod;
 import top.gytf.family.server.constants.PathConstant;
 import top.gytf.family.server.security.code.SecurityCodeVerifyStrategy;
 import top.gytf.family.server.security.code.email.EmailSecurityCodeRequestValidator;
@@ -26,7 +27,8 @@ import top.gytf.family.server.security.login.email.EmailAuthenticationProvider;
 @Component
 @SecurityCodeVerifyStrategy(  //邮箱验证码验证
         value = {EmailSecurityCodeRequestValidator.class},
-        patterns = {PathConstant.Auth.AUTH_PREFIX + PathConstant.Auth.PATH_EMAIL_LOGIN}
+        patterns = {PathConstant.Auth.AUTH_PREFIX + PathConstant.Auth.PATH_EMAIL_LOGIN},
+        methods = {RequestMethod.POST}
 )
 public class EmailSecurityConfig extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
     private final static String TAG = EmailSecurityConfig.class.getName();

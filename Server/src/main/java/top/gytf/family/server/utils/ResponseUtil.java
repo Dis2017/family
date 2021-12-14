@@ -3,7 +3,7 @@ package top.gytf.family.server.utils;
 import org.springframework.http.MediaType;
 
 import javax.imageio.ImageIO;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.ServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,7 +29,7 @@ public class ResponseUtil {
      * @param json json内容
      * @throws IOException 写入失败
      */
-    public static void setToJson(HttpServletResponse response, String json) throws IOException {
+    public static void setToJson(ServletResponse response, String json) throws IOException {
         //设置响应头
         response.reset();
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
@@ -44,7 +44,7 @@ public class ResponseUtil {
      * @param file 文件
      * @throws IOException 下载失败
      */
-    public static void setToDownload(HttpServletResponse response, File file) throws IOException {
+    public static void setToDownload(ServletResponse response, File file) throws IOException {
         //设置响应头
         response.reset();
         response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
@@ -64,7 +64,7 @@ public class ResponseUtil {
      * @param image 图片
      * @throws IOException 下载失败
      */
-    public static void setToImage(HttpServletResponse response, BufferedImage image) throws IOException {
+    public static void setToImage(ServletResponse response, BufferedImage image) throws IOException {
         //设置响应头
         response.reset();
         response.setContentType(MediaType.IMAGE_JPEG_VALUE);

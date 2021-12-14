@@ -2,7 +2,7 @@ package top.gytf.family.server.security.code.image;
 
 import top.gytf.family.server.security.code.AbstractSecurityCode;
 
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.ServletResponse;
 
 /**
  * Project:     IntelliJ IDEA<br>
@@ -13,12 +13,12 @@ import javax.servlet.http.HttpServletResponse;
  * @author user
  * @version V1.0
  */
-public class ImageSecurityCode extends AbstractSecurityCode<HttpServletResponse> {
+public class ImageSecurityCode extends AbstractSecurityCode<ServletResponse> {
     private final static String TAG = ImageSecurityCode.class.getName();
 
-    private final HttpServletResponse response;
+    private final ServletResponse response;
 
-    public ImageSecurityCode(long survivalTime, String code, HttpServletResponse response) {
+    public ImageSecurityCode(long survivalTime, String code, ServletResponse response) {
         super(survivalTime, code);
         this.response = response;
     }
@@ -29,7 +29,7 @@ public class ImageSecurityCode extends AbstractSecurityCode<HttpServletResponse>
      * @return 描述
      */
     @Override
-    public HttpServletResponse getDesc() {
+    public ServletResponse getDesc() {
         return response;
     }
 }

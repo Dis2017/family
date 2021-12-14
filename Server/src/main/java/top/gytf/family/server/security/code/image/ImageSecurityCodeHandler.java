@@ -5,7 +5,7 @@ import top.gytf.family.server.constants.SessionConstant;
 import top.gytf.family.server.security.code.AbstractSecurityCodeHandler;
 import top.gytf.family.server.security.code.AbstractSessionSecurityCodeStorage;
 
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
@@ -18,7 +18,7 @@ import javax.servlet.http.HttpSession;
  * @version V1.0
  */
 @Component
-public class ImageSecurityCodeHandler extends AbstractSecurityCodeHandler<HttpServletResponse, ImageSecurityCode, HttpSession> {
+public class ImageSecurityCodeHandler extends AbstractSecurityCodeHandler<ServletResponse, ImageSecurityCode, HttpSession> {
     private final static String TAG = ImageSecurityCodeHandler.class.getName();
 
     /**
