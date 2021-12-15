@@ -1,5 +1,6 @@
 package top.gytf.family.server.config.security;
 
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -7,8 +8,11 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
-import org.springframework.security.web.access.ExceptionTranslationFilter;
+import org.springframework.security.web.session.SessionManagementFilter;
 import top.gytf.family.server.response.GlobalExceptionHandler;
+import top.gytf.family.server.security.access.AccessDecisionFilter;
+import top.gytf.family.server.security.code.SecurityCodeVerifyFilter;
+import top.gytf.family.server.security.login.AuthenticationFilter;
 
 /**
  * Project:     IntelliJ IDEA
@@ -22,40 +26,33 @@ import top.gytf.family.server.response.GlobalExceptionHandler;
  */
 @Configuration
 @EnableWebSecurity
+@AllArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final static String TAG = SecurityConfig.class.getName();
 
-    private final SecurityCodeConfig securityCodeConfig;
-    private final EmailSecurityConfig emailSecurityConfig;
-    private final IdPasswordConfig idPasswordConfig;
     private final GlobalExceptionHandler globalExceptionHandler;
-    private final AccessConfig accessConfig;
-
-    public SecurityConfig(SecurityCodeConfig securityCodeConfig, EmailSecurityConfig emailSecurityConfig, IdPasswordConfig idPasswordConfig, GlobalExceptionHandler globalExceptionHandler, AccessConfig accessConfig) {
-        this.securityCodeConfig = securityCodeConfig;
-        this.emailSecurityConfig = emailSecurityConfig;
-        this.idPasswordConfig = idPasswordConfig;
-        this.globalExceptionHandler = globalExceptionHandler;
-        this.accessConfig = accessConfig;
-    }
+    private final AccessDecisionFilter accessDecisionFilter;
+    private final SecurityCodeVerifyFilter securityCodeVerifyFilter;
+//    private final AuthenticationFilter authenticationFilter;
+    private final IdPasswordAuthenticationConfig idPasswordAuthenticationConfig;
+    private final EmailAuthenticationConfig emailAuthenticationConfig;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        //会话管理
+        // 会话管理
         http
                 .sessionManagement()
                     .maximumSessions(1)
                     .sessionRegistry(sessionRegistry());
 
-        //所有都需要权限
+        // 禁用csrf
         http
-                .authorizeRequests()
-                    .anyRequest().permitAll();
+                .csrf().disable();
 
-        //登出
-        http
-                .logout()
-                    .disable();
+        // 禁用logout
+        http.
+                logout().disable();
+
 
         //未登录用户默认授权
         http
@@ -64,24 +61,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         //异常处理
         http
-                .addFilterAfter(globalExceptionHandler, ExceptionTranslationFilter.class);
-
-        //禁用csrf
-        http
-                .csrf().disable();
+                .exceptionHandling().disable()
+                .addFilterAfter(globalExceptionHandler, SessionManagementFilter.class);
 
         //应用其他配置
-        /*
-        AccessDecisionFilter
-        SecurityCodeVerifyFilter
-        IdPasswordAuthenticationFilter
-        EmailAuthenticationFilter
-         */
         http
-                .apply(accessConfig).and()
-                .apply(securityCodeConfig).and()
-                .apply(idPasswordConfig).and()
-                .apply(emailSecurityConfig);
+                //访问控制
+                .addFilterAfter(accessDecisionFilter, GlobalExceptionHandler.class)
+                //验证码校验
+                .addFilterAfter(securityCodeVerifyFilter, AccessDecisionFilter.class)
+                //验证
+//                .addFilterAfter(authenticationFilter, SecurityCodeVerifyFilter.class)
+                .apply(idPasswordAuthenticationConfig).and()
+                .apply(emailAuthenticationConfig);
     }
 
     @Bean

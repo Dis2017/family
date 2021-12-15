@@ -30,13 +30,13 @@ import top.gytf.family.server.security.login.email.EmailAuthenticationProvider;
         patterns = {PathConstant.Auth.AUTH_PREFIX + PathConstant.Auth.PATH_EMAIL_LOGIN},
         methods = {RequestMethod.POST}
 )
-public class EmailSecurityConfig extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
-    private final static String TAG = EmailSecurityConfig.class.getName();
+public class EmailAuthenticationConfig extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
+    private final static String TAG = EmailAuthenticationConfig.class.getName();
 
     private final EmailAuthenticationProvider emailAuthenticationProvider;
     private final LoginHandler loginHandler;
 
-    public EmailSecurityConfig(EmailAuthenticationProvider emailAuthenticationProvider, LoginHandler loginHandler) {
+    public EmailAuthenticationConfig(EmailAuthenticationProvider emailAuthenticationProvider, LoginHandler loginHandler) {
         this.emailAuthenticationProvider = emailAuthenticationProvider;
         this.loginHandler = loginHandler;
     }

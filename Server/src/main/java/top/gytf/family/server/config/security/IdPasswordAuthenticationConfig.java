@@ -20,13 +20,13 @@ import top.gytf.family.server.security.login.id.IdPasswordAuthenticationProvider
  * @version V1.0
  */
 @Component
-public class IdPasswordConfig extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
-    private final static String TAG = IdPasswordConfig.class.getName();
+public class IdPasswordAuthenticationConfig extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
+    private final static String TAG = IdPasswordAuthenticationConfig.class.getName();
 
     private final IdPasswordAuthenticationProvider idPasswordAuthenticationProvider;
     private final LoginHandler loginHandler;
 
-    public IdPasswordConfig(IdPasswordAuthenticationProvider idPasswordAuthenticationProvider, LoginHandler loginHandler) {
+    public IdPasswordAuthenticationConfig(IdPasswordAuthenticationProvider idPasswordAuthenticationProvider, LoginHandler loginHandler) {
         this.idPasswordAuthenticationProvider = idPasswordAuthenticationProvider;
         this.loginHandler = loginHandler;
     }

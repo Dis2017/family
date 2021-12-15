@@ -1,47 +1,41 @@
-package top.gytf.family.server.security.login.email;
+package top.gytf.family.server.security.login;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.security.web.util.matcher.AnyRequestMatcher;
-import org.springframework.security.web.util.matcher.RequestMatcher;
-import top.gytf.family.server.constants.PathConstant;
+import org.springframework.stereotype.Component;
+import top.gytf.family.server.security.login.email.EmailAuthenticationToken;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 /**
- * Project:     IntelliJ IDEA
- * ClassName:   EmailAuthenticationFilter
- * Description: 拦截请求装配为EmailToken
- * CreateDate:  2021/11/25 16:09
+ * Project:     IntelliJ IDEA<br>
+ * Description: 认证过滤器<br>
+ * CreateDate:  2021/12/15 23:34 <br>
  * ------------------------------------------------------------------------------------------
  *
  * @author user
  * @version V1.0
  */
-public class EmailAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
-    private final static String TAG = EmailAuthenticationFilter.class.getName();
+//@Component
+public class AuthenticationFilter extends AbstractAuthenticationProcessingFilter {
+    private final static String TAG = AuthenticationFilter.class.getName();
 
-    public static final String POST_METHOD_NAME = "POST";
+    private final Collection<Authenticator> authenticators;
 
-    /**
-     * 是否只接受Post请求
-     */
-    @Setter
-    @Getter
-    private boolean postOnly = true;
-
-    /**
-     * Creates a new instance
-     */
-    public EmailAuthenticationFilter() {
-        super(new AntPathRequestMatcher(PathConstant.Auth.AUTH_PREFIX + PathConstant.Auth.PATH_EMAIL_LOGIN, "POST"));
+    public AuthenticationFilter(Collection<Authenticator> authenticators) {
+        super(new AnyRequestMatcher(authenticators.stream()
+                .map((authenticator) -> new AntPathRequestMatcher(authenticator.pattern(), authenticator.method().name()))
+                .collect(Collectors.toSet())));
+        this.authenticators = authenticators;
     }
+
 
     /**
      * Performs actual authentication.
@@ -63,18 +57,11 @@ public class EmailAuthenticationFilter extends AbstractAuthenticationProcessingF
      * @throws AuthenticationException if authentication fails.
      */
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
-            throws AuthenticationException {
-        if (isPostOnly() && !POST_METHOD_NAME.equals(request.getMethod())) {
-            throw new AuthenticationServiceException("不接受非POST请求");
-        }
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
 
-        String email = getEmail(request).trim();
-        EmailAuthenticationToken token = new EmailAuthenticationToken(email);
-        copyDetails(token, request);
-
-        return getAuthenticationManager().authenticate(token);
+        return null;
     }
+
 
     /**
      * 复制请求信息到token<br>
@@ -84,14 +71,5 @@ public class EmailAuthenticationFilter extends AbstractAuthenticationProcessingF
      */
     private void copyDetails(EmailAuthenticationToken token, HttpServletRequest request) {
         token.setDetails(authenticationDetailsSource.buildDetails(request));
-    }
-
-    /**
-     * 取出request中的电子邮箱地址
-     * @param request 请求
-     * @return 电子邮箱地址
-     */
-    private String getEmail(HttpServletRequest request) {
-        return request.getParameter("email");
     }
 }
