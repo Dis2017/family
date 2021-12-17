@@ -1,6 +1,7 @@
 package top.gytf.family.server.search;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import top.gytf.family.server.utils.SearchUtil;
 
@@ -15,6 +16,7 @@ import java.util.function.Consumer;
  * @author user
  * @version V1.0
  */
+@AllArgsConstructor
 public class ConditionLeafNode<T> implements ConditionNode<T> {
     private final static String TAG = ConditionLeafNode.class.getName();
 
@@ -33,12 +35,6 @@ public class ConditionLeafNode<T> implements ConditionNode<T> {
      * 字段值
      */
     private final String fieldValue;
-    
-    public ConditionLeafNode(String fieldName, String sign, String fieldValue) {
-        this.fieldName = fieldName;
-        this.sign = sign;
-        this.fieldValue = fieldValue;
-    }
 
     /**
      * 解析出表达式

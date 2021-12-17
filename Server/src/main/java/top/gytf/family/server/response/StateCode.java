@@ -59,7 +59,14 @@ public enum StateCode {
     SEND_SECURITY_CODE(805, "验证码发送失败"),
     STORAGE_TAKE_SECURITY_CODE(806, "验证码取出失败"),
     STORAGE_SAVE_SECURITY_CODE(807, "验证码存储失败"),
-    STORAGE_REMOVE_SECURITY_CODE(808, "验证码移除失败");
+    STORAGE_REMOVE_SECURITY_CODE(808, "验证码移除失败"),
+
+    /**
+     * CURD错误
+     */
+    INSERT_EXCEPTION(900, "插入失败"),
+    UPDATE_EXCEPTION(901, "更新失败"),
+    DELETE_EXCEPTION(902, "删除失败");
 
     /**
      *  代码

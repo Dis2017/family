@@ -1,7 +1,7 @@
 package top.gytf.family.server.constants;
 
 import top.gytf.family.server.security.login.email.EmailAuthenticationFilter;
-import top.gytf.family.server.security.login.id.IdPasswordAuthenticationFilter;
+import top.gytf.family.server.security.login.password.PasswordAuthenticationFilter;
 
 /**
  * Project:     IntelliJ IDEA
@@ -47,10 +47,10 @@ public class PathConstant {
         /**
          * 用户编号密码登录的路径<br>
          * <b><font color="green">不通过Controller提供服务！</font></b><br>
-         * <b><font color="green">在</font>{@link IdPasswordAuthenticationFilter#IdPasswordAuthenticationFilter()}
+         * <b><font color="green">在</font>{@link PasswordAuthenticationFilter#PasswordAuthenticationFilter()}
          * <font color="green">绑定</font></b>
          */
-        public static final String PATH_ID_PASSWORD_LOGIN = "/login/id";
+        public static final String PATH_PASSWORD_LOGIN = "/login/password";
 
         /**
          * 邮箱登录的路径<br>

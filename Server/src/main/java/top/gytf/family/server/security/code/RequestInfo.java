@@ -12,7 +12,13 @@ import java.util.Objects;
  * @version V1.0
  */
 public class RequestInfo {
+    /**
+     * url
+     */
     private final String url;
+    /**
+     * 请求方式
+     */
     private final String method;
 
     public RequestInfo(String url, String method) {

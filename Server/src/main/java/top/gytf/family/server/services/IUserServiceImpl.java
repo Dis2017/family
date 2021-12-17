@@ -2,12 +2,22 @@ package top.gytf.family.server.services;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import top.gytf.family.server.constants.RoleEnum;
+import top.gytf.family.server.entity.Role;
 import top.gytf.family.server.entity.User;
+import top.gytf.family.server.entity.UserRole;
 import top.gytf.family.server.exceptions.AvatarNotFoundException;
 import top.gytf.family.server.exceptions.IllegalArgumentException;
+import top.gytf.family.server.exceptions.curd.InsertException;
+import top.gytf.family.server.exceptions.curd.UpdateException;
 import top.gytf.family.server.file.FileManager;
+import top.gytf.family.server.mapper.RolesMapper;
 import top.gytf.family.server.mapper.UserMapper;
+import top.gytf.family.server.mapper.UserRoleMapper;
 import top.gytf.family.server.utils.UserUtil;
 
 import javax.imageio.ImageIO;
@@ -26,12 +36,25 @@ import java.io.IOException;
  */
 @Service
 public class IUserServiceImpl implements IUserService {
-    private final static String TAG = IUserServiceImpl.class.getName();
+
+    public static final RoleEnum DEFAULT_ROLE = RoleEnum.ROLE_USER;
 
     private final UserMapper userMapper;
+    private final RolesMapper rolesMapper;
+    private final UserRoleMapper userRoleMapper;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-    public IUserServiceImpl(UserMapper userMapper) {
+    /**
+     * 缺省的角色编号
+     */
+    private Long defaultRoleId;
+
+    public IUserServiceImpl(UserMapper userMapper, RolesMapper rolesMapper, UserRoleMapper userRoleMapper) {
         this.userMapper = userMapper;
+        this.rolesMapper = rolesMapper;
+        this.userRoleMapper = userRoleMapper;
+        resetDefaultRoleId();
     }
 
     /**
@@ -100,7 +123,9 @@ public class IUserServiceImpl implements IUserService {
     public void update(Long id, User user) {
         user.setId(id);
         UserUtil.clearProtectedMessage(user, true);
-        userMapper.updateById(user);
+        if (userMapper.updateById(user) != 1) {
+            throw new UpdateException();
+        }
     }
 
     /**
@@ -109,9 +134,17 @@ public class IUserServiceImpl implements IUserService {
      * @param user 用户
      */
     @Override
+    @Transactional(rollbackFor = InsertException.class)
     public void add(User user) {
         UserUtil.clearProtectedMessage(user, false);
-        userMapper.insert(user);
+        // 加密
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        if (userMapper.insert(user) != 1 || userRoleMapper.insert(UserRole.builder()
+                .userId(user.getId())
+                .roleId(defaultRoleId)
+                .build()) != 1) {
+            throw new InsertException();
+        }
     }
 
     /**
@@ -133,10 +166,12 @@ public class IUserServiceImpl implements IUserService {
             throw new IllegalArgumentException("ID为" + id + "的用户已存在一个绑定邮箱。");
         }
 
-        userMapper.updateById(User.builder()
+        if (userMapper.updateById(User.builder()
                         .id(id)
                         .email(email)
-                .build());
+                .build()) != 1) {
+            throw new UpdateException();
+        }
     }
 
     /**
@@ -146,8 +181,10 @@ public class IUserServiceImpl implements IUserService {
      */
     @Override
     public void unbindEmail(Long id) {
-        userMapper.update(User.builder().id(id).build(),
-                new LambdaUpdateWrapper<User>().set(User::getEmail, null));
+        if (userMapper.update(User.builder().id(id).build(),
+                new LambdaUpdateWrapper<User>().set(User::getEmail, null)) != 1) {
+            throw new UpdateException();
+        }
     }
 
     /**
@@ -179,10 +216,14 @@ public class IUserServiceImpl implements IUserService {
      */
     @Override
     public void modifyPassword(Long id, String password) {
-        userMapper.updateById(User.builder()
-                        .id(id)
-                        .password(password)
-                .build());
+        // 加密
+        password = passwordEncoder.encode(password);
+        if (userMapper.updateById(User.builder()
+                .id(id)
+                .password(password)
+                .build()) != 1) {
+            throw new UpdateException();
+        }
     }
 
     /**
@@ -225,5 +266,20 @@ public class IUserServiceImpl implements IUserService {
     @Override
     public void setAvatar(Long id, BufferedImage avatar) throws IOException {
         ImageIO.write(avatar, "jpg", FileManager.current().getUserFileSpace().getAvatar());
+    }
+
+    /**
+     * 重新设置缺省角色编号
+     */
+    private synchronized void resetDefaultRoleId() {
+        Role role = rolesMapper.selectOne(new LambdaQueryWrapper<Role>()
+                .select(Role::getId)
+                .eq(Role::getRole, DEFAULT_ROLE.name()));
+
+        if (role == null) {
+            throw new IllegalArgumentException("默认角色" + DEFAULT_ROLE + "不存在");
+        }
+
+        this.defaultRoleId = role.getId();
     }
 }

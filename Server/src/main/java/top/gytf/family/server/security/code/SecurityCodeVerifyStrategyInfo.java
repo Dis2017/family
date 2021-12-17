@@ -17,7 +17,13 @@ import java.util.Collection;
 public class SecurityCodeVerifyStrategyInfo {
     private final static String TAG = SecurityCodeVerifyStrategyInfo.class.getName();
 
+    /**
+     * 只需要通过一个
+     */
     private final boolean only;
+    /**
+     * 验证器列表
+     */
     private final Collection<? extends SecurityCodeRequestValidator> validators;
 
     public SecurityCodeVerifyStrategyInfo(boolean only, Collection<? extends SecurityCodeRequestValidator> validators) {

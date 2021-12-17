@@ -58,6 +58,7 @@ public class LoginHandler implements AuthenticationSuccessHandler, Authenticatio
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
             throws IOException {
         User user = (User) authentication.getPrincipal();
+        // 清除密码
         user.setPassword(null);
         write(response, globalResponseHandler.process(user));
     }
@@ -68,6 +69,7 @@ public class LoginHandler implements AuthenticationSuccessHandler, Authenticatio
         Object rep;
 
         if (exception instanceof UsernameNotFoundException) {
+            // 用户不存在
             rep = globalExceptionHandler.process(exception, StateCode.USER_NOT_EXISTS);
         } else {
             rep = globalExceptionHandler.exceptionHandler(exception);

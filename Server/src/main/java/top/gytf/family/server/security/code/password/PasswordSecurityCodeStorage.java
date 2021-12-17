@@ -54,9 +54,6 @@ public class PasswordSecurityCodeStorage implements SecurityCodeStorage<Object, 
     @Override
     public PasswordSecurityCode take(Object repos, Object desc) throws SecurityCodeStorageTakeException {
         User user = SecurityUtil.current();
-        if (user == null) {
-            throw new SecurityCodeStorageTakeException("未登录");
-        }
         return new PasswordSecurityCode(Integer.MAX_VALUE, userService.getPassword(user.getId()));
     }
 

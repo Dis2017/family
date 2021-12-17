@@ -1,4 +1,4 @@
-package top.gytf.family.server.search;
+package top.gytf.family.server.aop.search;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -11,6 +11,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import top.gytf.family.server.search.GeneralSearchEntity;
 import top.gytf.family.server.utils.SearchUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -44,7 +45,7 @@ public class GeneralSearchHandler {
     /**
      * 所有标注了统一查询注解的api
      */
-    @Pointcut("@annotation(GeneralSearch)")
+    @Pointcut("@annotation(top.gytf.family.server.aop.search.GeneralSearch)")
     public void allGeneralSearchApi() {}
 
     /**
@@ -69,8 +70,9 @@ public class GeneralSearchHandler {
     public IPage generalSearchPageApi(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         GeneralSearch search = getAnnotation(proceedingJoinPoint);
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        assert attributes != null;
+        assert attributes != null : "请求属性为空";
         HttpServletRequest request = attributes.getRequest();
+        // 取出统一查询实体
         GeneralSearchEntity entity = getGeneralSearchEntity(request);
 
         // 解析请求
@@ -79,6 +81,7 @@ public class GeneralSearchHandler {
                 SearchUtil.parse(search.entityClass(), entity)
         );
 
+        // 调用请求完后的处理逻辑
         proceedingJoinPoint.proceed();
         return result;
     }
@@ -95,12 +98,15 @@ public class GeneralSearchHandler {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         assert attributes != null;
         HttpServletRequest request = attributes.getRequest();
+        // 取出统一查询实体
         GeneralSearchEntity entity = getGeneralSearchEntity(request);
 
+        // 解析请求
         Object[] result = getMapper(search.mapper()).selectList(
                 SearchUtil.parse(search.entityClass(), entity)
         ).toArray();
 
+        // 调用请求完后的处理逻辑
         proceedingJoinPoint.proceed();
         return result;
     }

@@ -49,6 +49,7 @@ public class EmailUserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userService.get(null, null, username);
+
         if (user == null) {
             throw new UsernameNotFoundException("邮箱" + username + "不存在。");
         }

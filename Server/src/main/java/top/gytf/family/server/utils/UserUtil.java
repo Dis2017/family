@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
  * @version V1.0
  */
 public class UserUtil {
-    private final static String TAG = UserUtil.class.getName();
 
     /**
      * 清除保护数据<br>
@@ -49,12 +48,15 @@ public class UserUtil {
      * @return 添加完权限后的用户
      */
     public static User loadAuthorities(User user, UserRoleMapper userRoleMapper, RolesMapper rolesMapper) {
+        // 取出用户的所有角色id
         List<Long> roleIdList = userRoleMapper.selectList(new LambdaQueryWrapper<UserRole>()
                         .select(UserRole::getRoleId)
                         .eq(UserRole::getUserId, user.getId()))
                 .stream()
                 .map(UserRole::getRoleId)
                 .collect(Collectors.toList());
+
+        // 取出角色id对应的角色名称
         user.setAuthorities(rolesMapper.selectBatchIds(roleIdList)
                 .stream()
                 .map(Role::getRole)

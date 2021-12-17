@@ -1,4 +1,4 @@
-package top.gytf.family.server.log;
+package top.gytf.family.server.aop.log;
 
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.annotation.Aspect;

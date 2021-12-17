@@ -2,8 +2,11 @@ package top.gytf.family.server.utils;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import top.gytf.family.server.entity.User;
+import top.gytf.family.server.exceptions.IllegalArgumentException;
+import top.gytf.family.server.exceptions.NotLoginException;
 import top.gytf.family.server.security.login.email.EmailAuthenticationToken;
-import top.gytf.family.server.security.login.id.IdPasswordToken;
+import top.gytf.family.server.security.login.password.PasswordToken;
 
 /**
  * Project:     IntelliJ IDEA<br>
@@ -15,44 +18,51 @@ import top.gytf.family.server.security.login.id.IdPasswordToken;
  * @version V1.0
  */
 public class SecurityUtil {
-    private final static String TAG = SecurityUtil.class.getName();
+
     /**
      * 当前登录用户
      * @return 用户
      */
-    public static top.gytf.family.server.entity.User current() {
+    public static User current() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Object principalObj = null;
         if (authentication != null) {
             principalObj = authentication.getPrincipal();
         }
-        if (!(principalObj instanceof top.gytf.family.server.entity.User)) {
-            return null;
+        if (!(principalObj instanceof User)) {
+            throw new NotLoginException();
         }
-        return (top.gytf.family.server.entity.User) principalObj;
+        return (User) principalObj;
     }
 
     /**
      * 更新当前登录用户
      * @param user 用户
      */
-    public static void update(top.gytf.family.server.entity.User user) {
+    public static void update(User user) {
+        if (!user.getId().equals(current().getId())) {
+            throw new IllegalArgumentException("不能更新为其他用户");
+        }
+
+        // 清除密码
         user.setPassword(null);
 
+        // 更新
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication instanceof EmailAuthenticationToken) {
-            EmailAuthenticationToken newToken = new EmailAuthenticationToken(
+            // 邮箱令牌
+            authentication = new EmailAuthenticationToken(
                     user,
-                    authentication.getAuthorities()
+                    user.getAuthorities()
             );
-            SecurityContextHolder.getContext().setAuthentication(newToken);
-        } else if (authentication instanceof IdPasswordToken) {
-            IdPasswordToken newToken = new IdPasswordToken(
+        } else if (authentication instanceof PasswordToken) {
+            // 账号密码令牌
+            authentication = new PasswordToken(
                     user,
                     authentication.getCredentials(),
-                    authentication.getAuthorities()
+                    user.getAuthorities()
             );
-            SecurityContextHolder.getContext().setAuthentication(newToken);
         }
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 }

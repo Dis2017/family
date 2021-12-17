@@ -33,7 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final GlobalExceptionHandler globalExceptionHandler;
     private final AccessDecisionFilter accessDecisionFilter;
     private final SecurityCodeVerifyFilter securityCodeVerifyFilter;
-    private final IdPasswordAuthenticationConfig idPasswordAuthenticationConfig;
+    private final PasswordAuthenticationConfig passwordAuthenticationConfig;
     private final EmailAuthenticationConfig emailAuthenticationConfig;
 
     @Override
@@ -71,7 +71,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 //验证码校验
                 .addFilterAfter(securityCodeVerifyFilter, AccessDecisionFilter.class)
                 //验证
-                .apply(idPasswordAuthenticationConfig).and()
+                .apply(passwordAuthenticationConfig).and()
                 .apply(emailAuthenticationConfig);
     }
 

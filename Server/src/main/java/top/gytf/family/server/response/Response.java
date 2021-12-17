@@ -15,8 +15,17 @@ import lombok.Data;
 public class Response<T> {
     private final static String TAG = Response.class.getName();
 
+    /**
+     * 状态码
+     */
     private final int code;
+    /**
+     * 消息
+     */
     private final String msg;
+    /**
+     * 数据
+     */
     private final T data;
 
     public Response(StateCode stateCode, T data) {

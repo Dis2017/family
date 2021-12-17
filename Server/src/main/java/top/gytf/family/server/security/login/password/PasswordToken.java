@@ -1,4 +1,4 @@
-package top.gytf.family.server.security.login.id;
+package top.gytf.family.server.security.login.password;
 
 import lombok.Setter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
@@ -16,8 +16,8 @@ import java.util.Collection;
  * @author user
  * @version V1.0
  */
-public class IdPasswordToken extends AbstractAuthenticationToken {
-    private final static String TAG = IdPasswordToken.class.getName();
+public class PasswordToken extends AbstractAuthenticationToken {
+    private final static String TAG = PasswordToken.class.getName();
 
     @Setter
     private Object principal;
@@ -33,14 +33,14 @@ public class IdPasswordToken extends AbstractAuthenticationToken {
      * @param id   编号
      * @param password 密码
      */
-    public IdPasswordToken(Object id, Object password, Collection<? extends GrantedAuthority> authorities) {
+    public PasswordToken(Object id, Object password, Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
         this.principal = id;
         this.credentials = password;
         super.setAuthenticated(true);
     }
 
-    public IdPasswordToken(Long id, String password) {
+    public PasswordToken(String id, String password) {
         this(id, password, null);
         setAuthenticated(false);
     }

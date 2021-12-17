@@ -10,25 +10,17 @@ package top.gytf.family.server.constants;
  * @author user
  * @version V1.0
  */
-public class SessionConstant {
-    private final static String TAG = SessionConstant.class.getName();
-
-    /**
-     * Session键值<br>
-     * 认证所用到的电子邮箱地址
-     */
-    public static final String KEY_AUTH_EMAIL = "KEY_AUTH_EMAIL";
-
+public enum SessionConstant {
     /**
      * Session键值<br>
      * 电子邮箱验证码
      */
-    public static final String KEY_EMAIL_SECURITY_CODE = "KEY_EMAIL_SECURITY_CODE";
+    KEY_EMAIL_SECURITY_CODE,
 
     /**
      * Session键值<br>
      * 图片验证码
      */
-    public static final String KEY_IMAGE_SECURITY_CODE = "KEY_IMAGE_SECURITY_CODE";
+    KEY_IMAGE_SECURITY_CODE
 
 }

@@ -1,4 +1,4 @@
-package top.gytf.family.server.search;
+package top.gytf.family.server.aop.search;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import top.gytf.family.server.entity.BaseEntity;
@@ -20,6 +20,15 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface GeneralSearch {
+    /**
+     * 和数据库交互的Mapper DAO
+     * @return mapper的类型
+     */
     Class<? extends BaseMapper> mapper();
+
+    /**
+     * 目标对象的类型
+     * @return 类型
+     */
     Class<? extends BaseEntity> entityClass();
 }

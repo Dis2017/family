@@ -32,7 +32,6 @@ import top.gytf.family.server.security.login.email.EmailAuthenticationProvider;
         methods = {RequestMethod.POST}
 )
 public class EmailAuthenticationConfig extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
-    private final static String TAG = EmailAuthenticationConfig.class.getName();
 
     private final EmailAuthenticationProvider emailAuthenticationProvider;
     private final LoginHandler loginHandler;

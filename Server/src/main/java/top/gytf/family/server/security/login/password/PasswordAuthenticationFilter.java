@@ -1,4 +1,4 @@
-package top.gytf.family.server.security.login.id;
+package top.gytf.family.server.security.login.password;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -22,9 +22,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author user
  * @version V1.0
  */
-public class IdPasswordAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
-    private final static String TAG = IdPasswordAuthenticationFilter.class.getName();
-
+public class PasswordAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
     /**
      * 是否只接受Post请求
      */
@@ -32,8 +30,8 @@ public class IdPasswordAuthenticationFilter extends AbstractAuthenticationProces
     @Getter
     private boolean postOnly = true;
 
-    public IdPasswordAuthenticationFilter() {
-        super(new AntPathRequestMatcher(PathConstant.Auth.AUTH_PREFIX + PathConstant.Auth.PATH_ID_PASSWORD_LOGIN, "POST"));
+    public PasswordAuthenticationFilter() {
+        super(new AntPathRequestMatcher(PathConstant.Auth.AUTH_PREFIX + PathConstant.Auth.PATH_PASSWORD_LOGIN, "POST"));
     }
 
     /**
@@ -61,9 +59,9 @@ public class IdPasswordAuthenticationFilter extends AbstractAuthenticationProces
             throw new AuthenticationServiceException("不接受非POST请求");
         }
 
-        Long id = getId(request);
+        String credential = getCredential(request);
         String password = getPassword(request);
-        IdPasswordToken token = new IdPasswordToken(id, password);
+        PasswordToken token = new PasswordToken(credential, password);
         copyDetails(token, request);
 
         return getAuthenticationManager().authenticate(token);
@@ -74,7 +72,7 @@ public class IdPasswordAuthenticationFilter extends AbstractAuthenticationProces
      * @param token 令牌
      * @param request 请求
      */
-    private void copyDetails(IdPasswordToken token, HttpServletRequest request) {
+    private void copyDetails(PasswordToken token, HttpServletRequest request) {
         token.setDetails(authenticationDetailsSource.buildDetails(request));
     }
 
@@ -88,11 +86,11 @@ public class IdPasswordAuthenticationFilter extends AbstractAuthenticationProces
     }
 
     /**
-     * 从请求中获取id
+     * 从请求中获取凭证
      * @param request 请求
      * @return id
      */
-    private Long getId(HttpServletRequest request) {
-        return Long.parseLong(request.getParameter("id"));
+    private String getCredential(HttpServletRequest request) {
+        return request.getParameter("credential");
     }
 }

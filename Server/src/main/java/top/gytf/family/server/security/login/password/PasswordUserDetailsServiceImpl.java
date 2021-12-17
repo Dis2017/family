@@ -1,4 +1,4 @@
-package top.gytf.family.server.security.login.id;
+package top.gytf.family.server.security.login.password;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -8,12 +8,11 @@ import top.gytf.family.server.entity.User;
 import top.gytf.family.server.mapper.RolesMapper;
 import top.gytf.family.server.mapper.UserRoleMapper;
 import top.gytf.family.server.services.IUserService;
-import top.gytf.family.server.utils.SecurityUtil;
 import top.gytf.family.server.utils.UserUtil;
 
 /**
  * Project:     IntelliJ IDEA<br>
- * Description: 用户编号密码用户信息获取服务<br>
+ * Description: 用户密码用户信息获取服务<br>
  * CreateDate:  2021/12/1 19:31 <br>
  * ------------------------------------------------------------------------------------------
  *
@@ -21,14 +20,14 @@ import top.gytf.family.server.utils.UserUtil;
  * @version V1.0
  */
 @Component
-public class IdPasswordUserDetailsServiceImpl implements UserDetailsService {
-    private final static String TAG = IdPasswordUserDetailsServiceImpl.class.getName();
+public class PasswordUserDetailsServiceImpl implements UserDetailsService {
+    private final static String TAG = PasswordUserDetailsServiceImpl.class.getName();
 
     private final IUserService userService;
     private final UserRoleMapper userRoleMapper;
     private final RolesMapper rolesMapper;
 
-    public IdPasswordUserDetailsServiceImpl(IUserService userService, UserRoleMapper userRoleMapper, RolesMapper rolesMapper) {
+    public PasswordUserDetailsServiceImpl(IUserService userService, UserRoleMapper userRoleMapper, RolesMapper rolesMapper) {
         this.userService = userService;
         this.userRoleMapper = userRoleMapper;
         this.rolesMapper = rolesMapper;
@@ -48,14 +47,15 @@ public class IdPasswordUserDetailsServiceImpl implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        if (SecurityUtil.current() != null) {
-            throw new RuntimeException("当前存在登录用户。");
+        Long id = null;
+        try {
+            id = Long.valueOf(username);
+        } catch (Exception ignored) {
         }
 
-        Long id = Long.parseLong(username);
-        User user = userService.get(id, null, null);
+        User user = userService.get(id, username, username);
         if (user == null) {
-            throw new UsernameNotFoundException("ID为" + id + "的用户不存在。");
+            throw new UsernameNotFoundException("凭证为" + username + "的用户不存在。");
         }
 
         return UserUtil.loadAuthorities(user, userRoleMapper, rolesMapper);

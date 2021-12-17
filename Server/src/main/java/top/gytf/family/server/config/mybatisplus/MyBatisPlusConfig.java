@@ -20,13 +20,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @MapperScan("top.gytf.family.server.mapper")
 public class MyBatisPlusConfig {
-    private final static String TAG = MyBatisPlusConfig.class.getName();
 
-    @Bean
-    public FillBaseFieldHandler fillBaseFieldHandler() {
-        return new FillBaseFieldHandler();
-    }
-
+    /**
+     * 分页
+     * @return 拦截器
+     */
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();

@@ -16,12 +16,27 @@ import top.gytf.family.server.response.StatusCarrier;
 public class AccessDeniedException extends org.springframework.security.access.AccessDeniedException {
     private final static String TAG = AccessDeniedException.class.getName();
 
+    public AccessDeniedException() {
+        this("权限不足");
+    }
+
     /**
-     * Constructs an {@code AuthenticationException} with the specified message and no
+     * Constructs an <code>AccessDeniedException</code> with the specified message.
+     *
+     * @param msg the detail message
+     */
+    public AccessDeniedException(String msg) {
+        super(msg);
+    }
+
+    /**
+     * Constructs an <code>AccessDeniedException</code> with the specified message and
      * root cause.
      *
+     * @param msg the detail message
+     * @param t   root cause
      */
-    public AccessDeniedException() {
-        super("权限不足");
+    public AccessDeniedException(String msg, Throwable t) {
+        super(msg, t);
     }
 }

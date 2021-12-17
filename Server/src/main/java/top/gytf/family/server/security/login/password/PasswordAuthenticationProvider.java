@@ -1,16 +1,20 @@
-package top.gytf.family.server.security.login.id;
+package top.gytf.family.server.security.login.password;
 
+import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import top.gytf.family.server.exceptions.PasswordUnmatchedErrorException;
 
 /**
  * Project:     IntelliJ IDEA<br>
- * Description: 编号密码认证提供器<br>
+ * Description: 密码认证提供器<br>
  * CreateDate:  2021/12/1 19:28 <br>
  * ------------------------------------------------------------------------------------------
  *
@@ -18,16 +22,19 @@ import top.gytf.family.server.exceptions.PasswordUnmatchedErrorException;
  * @version V1.0
  */
 @Component
-public class IdPasswordAuthenticationProvider implements AuthenticationProvider {
-    private final static String TAG = IdPasswordAuthenticationProvider.class.getName();
+public class PasswordAuthenticationProvider implements AuthenticationProvider {
 
     /**
      * 读取用户信息服务
      */
-    private final IdPasswordUserDetailsServiceImpl idPasswordUserDetailsService;
+    private final PasswordUserDetailsServiceImpl passwordUserDetailsService;
+    @Setter
+    @Autowired
+    @Lazy
+    private PasswordEncoder passwordEncoder;
 
-    public IdPasswordAuthenticationProvider(IdPasswordUserDetailsServiceImpl idPasswordUserDetailsService) {
-        this.idPasswordUserDetailsService = idPasswordUserDetailsService;
+    public PasswordAuthenticationProvider(PasswordUserDetailsServiceImpl passwordUserDetailsService) {
+        this.passwordUserDetailsService = passwordUserDetailsService;
     }
 
     /**
@@ -45,14 +52,14 @@ public class IdPasswordAuthenticationProvider implements AuthenticationProvider 
      */
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        IdPasswordToken tokenAuthentication = (IdPasswordToken) authentication;
+        PasswordToken tokenAuthentication = (PasswordToken) authentication;
 
-        UserDetails userDetails = idPasswordUserDetailsService.loadUserByUsername(String.valueOf(tokenAuthentication.getPrincipal()));
-        if (!userDetails.getPassword().equals(tokenAuthentication.getCredentials())) {
+        UserDetails userDetails = passwordUserDetailsService.loadUserByUsername(String.valueOf(tokenAuthentication.getPrincipal()));
+        if (!(tokenAuthentication.getCredentials() instanceof String) || !passwordEncoder.matches((String) tokenAuthentication.getCredentials(), userDetails.getPassword())) {
             throw new PasswordUnmatchedErrorException("密码错误");
         }
 
-        IdPasswordToken token = new IdPasswordToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
+        PasswordToken token = new PasswordToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
         token.setDetails(tokenAuthentication.getDetails());
 
         return token;
@@ -80,6 +87,6 @@ public class IdPasswordAuthenticationProvider implements AuthenticationProvider 
      */
     @Override
     public boolean supports(Class<?> authentication) {
-        return IdPasswordToken.class.isAssignableFrom(authentication);
+        return PasswordToken.class.isAssignableFrom(authentication);
     }
 }

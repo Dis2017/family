@@ -93,6 +93,16 @@ public abstract class AbstractSecurityCodeHandler<D, C extends SecurityCode<D>, 
     }
 
     /**
+     * 是否匹配
+     * @param code 验证码
+     * @param stringCode 被校验的字符串验证码
+     * @return 是否匹配
+     */
+    public boolean isMatch(C code, String stringCode) {
+        return code.getCode().equals(stringCode);
+    }
+
+    /**
      * 验证
      * @param repos 仓库
      * @param stringCode 待验证码
@@ -109,7 +119,7 @@ public abstract class AbstractSecurityCodeHandler<D, C extends SecurityCode<D>, 
         if (code.isExpired()) {
             throw new SecurityCodeExpiredException("验证码已过期");
         }
-        if (code.getCode() == null || !code.getCode().equals(stringCode)) {
+        if (code.getCode() == null || !isMatch(code, stringCode)) {
             throw new SecurityCodeNotMatchException("验证码不匹配");
         }
 

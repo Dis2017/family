@@ -2,6 +2,7 @@ package top.gytf.family.server.security.code.email;
 
 import org.springframework.stereotype.Component;
 import top.gytf.family.server.entity.User;
+import top.gytf.family.server.exceptions.NotLoginException;
 import top.gytf.family.server.security.code.AbstractSecurityCodeHandler;
 import top.gytf.family.server.security.code.SecurityCode;
 import top.gytf.family.server.security.code.SecurityCodeRequestValidator;
@@ -78,9 +79,10 @@ public class EmailSecurityCodeRequestValidator implements SecurityCodeRequestVal
         String desc = null;
 
         //从当前登录用户中获取邮箱描述
-        User user = SecurityUtil.current();
-        if (user != null) {
+        try {
+            User user = SecurityUtil.current();
             desc = user.getEmail();
+        } catch (NotLoginException ignored) {
         }
 
         //从请求中获取

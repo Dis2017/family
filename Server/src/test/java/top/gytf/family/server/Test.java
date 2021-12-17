@@ -1,6 +1,7 @@
 package top.gytf.family.server;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import top.gytf.family.server.constants.FileConstant;
 
 import java.io.File;
@@ -21,9 +22,13 @@ public class Test {
     private final static String TAG = Test.class.getName();
 
     @org.junit.jupiter.api.Test
-    public void test() throws IOException {
-        File file = new File(FileConstant.APPLICATION_ROOT);
-        FileReader reader = new FileReader(file);
-        reader.close();
+    public void test() {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+        final String rawPassword = "123";
+        String encodedPassword = passwordEncoder.encode(rawPassword);
+
+        log.debug(String.valueOf(passwordEncoder.matches(rawPassword, encodedPassword)));
+        log.debug(String.valueOf(passwordEncoder.matches(passwordEncoder.encode(rawPassword), encodedPassword)));
     }
 }

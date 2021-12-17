@@ -1,7 +1,6 @@
 package top.gytf.family.server.file;
 
 import top.gytf.family.server.entity.User;
-import top.gytf.family.server.exceptions.NotLoginException;
 import top.gytf.family.server.utils.SecurityUtil;
 
 import java.util.Map;
@@ -26,9 +25,6 @@ public class FileManager {
 
     public synchronized static FileManager current() {
         final User current = SecurityUtil.current();
-        if (current == null) {
-            throw new NotLoginException();
-        }
         final Long id = current.getId();
         FileManager manager = REGISTRY.get(id);
 

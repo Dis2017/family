@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import top.gytf.family.server.entity.User;
 import top.gytf.family.server.exceptions.AccessDeniedException;
+import top.gytf.family.server.exceptions.NotLoginException;
 import top.gytf.family.server.security.access.provider.AccessProvider;
 import top.gytf.family.server.utils.SecurityUtil;
 
@@ -55,17 +56,18 @@ public class AccessDecisionFilter extends OncePerRequestFilter {
         Collection<? extends GrantedAuthority> needAuthorities = accessProvider.loadAuthorities(uri, method);
 
         // 取出用户具有的权限
-        User user = SecurityUtil.current();
         Collection<? extends GrantedAuthority> authorities;
-        if (user == null) {
-            authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
-        } else {
+        try {
+            User user = SecurityUtil.current();
             authorities = user.getAuthorities();
+        } catch (NotLoginException e) {
+            authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
         }
 
         // 匹配权限
         for (GrantedAuthority needAuthority : needAuthorities) {
             if (authorities.contains(needAuthority)) {
+                // 匹配成功
                 filterChain.doFilter(request, response);
                 return;
             }

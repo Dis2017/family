@@ -1,9 +1,7 @@
 package top.gytf.family.server.security.code.email;
 
 import org.springframework.stereotype.Component;
-import top.gytf.family.server.constants.SessionConstant;
 import top.gytf.family.server.security.code.AbstractSecurityCodeHandler;
-import top.gytf.family.server.security.code.AbstractSessionSecurityCodeStorage;
 import top.gytf.family.server.security.code.SecurityCodeSender;
 
 import javax.servlet.http.HttpSession;
@@ -30,25 +28,7 @@ public class EmailSecurityCodeHandler extends AbstractSecurityCodeHandler<String
         super(
                 new EmailSecurityCodeGenerator(),
                 sender,
-                new AbstractSessionSecurityCodeStorage<>() {
-                    @Override
-                    public boolean isSingle() {
-                        return false;
-                    }
-
-                    @Override
-                    public String getKeyPrefix() {
-                        return SessionConstant.KEY_EMAIL_SECURITY_CODE;
-                    }
-
-                    @Override
-                    public EmailSecurityCode convert(Object obj) {
-                        if (!(obj instanceof EmailSecurityCode)) {
-                            return null;
-                        }
-                        return (EmailSecurityCode) obj;
-                    }
-                }
+                new EmailSecurityCodeStorage()
         );
     }
 }

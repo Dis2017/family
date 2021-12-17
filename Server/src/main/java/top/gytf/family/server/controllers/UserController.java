@@ -1,16 +1,18 @@
 package top.gytf.family.server.controllers;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import top.gytf.family.server.aop.response.IgnoreResultAdvice;
+import top.gytf.family.server.aop.search.GeneralSearch;
+import top.gytf.family.server.aop.user.UpdateCurrentAuthentication;
 import top.gytf.family.server.constants.PathConstant;
 import top.gytf.family.server.entity.User;
 import top.gytf.family.server.mapper.UserMapper;
-import top.gytf.family.server.response.IgnoreResultAdvice;
-import top.gytf.family.server.search.GeneralSearch;
 import top.gytf.family.server.security.code.SecurityCodeVerifyStrategy;
 import top.gytf.family.server.security.code.email.EmailSecurityCodeRequestValidator;
 import top.gytf.family.server.security.code.password.PasswordSecurityCodeRequestValidator;
@@ -18,12 +20,10 @@ import top.gytf.family.server.services.IUserService;
 import top.gytf.family.server.utils.ResponseUtil;
 import top.gytf.family.server.utils.SecurityUtil;
 
-import javax.annotation.security.PermitAll;
 import javax.imageio.ImageIO;
 import javax.servlet.ServletResponse;
 import javax.validation.constraints.Email;
 import java.io.IOException;
-import java.util.Objects;
 
 /**
  * Project:     IntelliJ IDEA<br>
@@ -37,15 +37,11 @@ import java.util.Objects;
 @RestController
 @RequestMapping(PathConstant.User.USER_PREFIX)
 @Validated
+@AllArgsConstructor
 @Slf4j
 public class UserController {
-    private final static String TAG = UserController.class.getName();
 
     private final IUserService userService;
-
-    public UserController(IUserService userService) {
-        this.userService = userService;
-    }
 
     /**
      * 查询用户
@@ -72,7 +68,6 @@ public class UserController {
      * @param userInfo 用户
      */
     @PostMapping(PathConstant.User.PATH_REGISTER)
-    @PermitAll
     public Long register(@Validated(User.GroupRegister.class) User userInfo) {
         userService.add(userInfo);
         return userInfo.getId();
@@ -81,15 +76,11 @@ public class UserController {
     /**
      * 更新用户信息（非保护数据）
      * @param updateInfo 用户信息
-     * @return 新用户信息
      */
     @PatchMapping(PathConstant.User.PATH_MODIFY)
-    public User modifyUser(@Validated(User.GroupModify.class) User updateInfo) {
-        User user = SecurityUtil.current();
-        assert user != null : "当前用户不存在";
-        userService.update(user.getId(), updateInfo);
-        SecurityUtil.update(userService.get(user.getId(), null, null));
-        return SecurityUtil.current();
+    @UpdateCurrentAuthentication
+    public void modifyUser(@Validated(User.GroupModify.class) User updateInfo) {
+        userService.update(SecurityUtil.current().getId(), updateInfo);
     }
 
     /**
@@ -107,7 +98,7 @@ public class UserController {
     )
     public void modifyPassword(@Length(min = 8, max = 32, message = "密码应该在8-32位")
                                @RequestParam("password") String password) {
-        Long id = Objects.requireNonNull(SecurityUtil.current()).getId();
+        Long id = SecurityUtil.current().getId();
         userService.modifyPassword(id, password);
     }
 
@@ -119,11 +110,11 @@ public class UserController {
      */
     @PatchMapping(PathConstant.User.PATH_BIND_EMAIL)
     @SecurityCodeVerifyStrategy(EmailSecurityCodeRequestValidator.class)
+    @UpdateCurrentAuthentication
     public void bindEmail(@Email(message = "邮箱格式不正确")
                           @RequestParam("email") String email) {
-        Long id = Objects.requireNonNull(SecurityUtil.current()).getId();
+        Long id = SecurityUtil.current().getId();
         userService.bindEmail(id, email);
-        SecurityUtil.update(userService.get(id, null, null));
     }
 
     /**
@@ -132,11 +123,10 @@ public class UserController {
      */
     @DeleteMapping(PathConstant.User.PATH_UNBIND_EMAIL)
     @SecurityCodeVerifyStrategy(EmailSecurityCodeRequestValidator.class)
+    @UpdateCurrentAuthentication
     public void unbindEmail() {
         User user = SecurityUtil.current();
-        assert user != null : "当前用户不存在";
         userService.unbindEmail(user.getId());
-        SecurityUtil.update(userService.get(user.getId(), null, null));
     }
 
     /**
@@ -147,7 +137,6 @@ public class UserController {
     @IgnoreResultAdvice
     public void downloadAvatar(ServletResponse response) {
         User user = SecurityUtil.current();
-        assert user != null : "当前用户不存在";
         try {
             ResponseUtil.setToImage(response, userService.getAvatar(user.getId()));
         } catch (IOException e) {
@@ -162,7 +151,6 @@ public class UserController {
     @PostMapping(PathConstant.User.PATH_DOWNLOAD_AVATAR)
     public void uploadAvatar(@RequestParam("avatar") MultipartFile file) {
         User user = SecurityUtil.current();
-        assert user != null : "当前用户不存在";
         try {
             userService.setAvatar(user.getId(), ImageIO.read(file.getInputStream()));
         } catch (IOException e) {

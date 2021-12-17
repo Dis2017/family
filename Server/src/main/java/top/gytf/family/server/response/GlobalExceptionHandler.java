@@ -11,9 +11,12 @@ import top.gytf.family.server.utils.ResponseUtil;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Project:     IntelliJ IDEA
@@ -55,7 +58,15 @@ public class GlobalExceptionHandler extends GenericFilterBean {
                 for (ObjectError objectError : errorList) {
                     errors[idx++] = objectError.getDefaultMessage();
                 }
-                return new Response<>(StateCode.PARAM_IS_INVALID, Arrays.toString(errors));
+                return new Response<>(StateCode.PARAM_IS_INVALID, String.join(";", errors));
+            } else if (e instanceof ConstraintViolationException) {
+                //参数校验错误
+                ConstraintViolationException constraintViolationException = (ConstraintViolationException) e;
+                Set<ConstraintViolation<?>> violations = constraintViolationException.getConstraintViolations();
+                String message = violations.stream()
+                        .map(ConstraintViolation::getMessage)
+                        .collect(Collectors.joining(";"));
+                return new Response<>(StateCode.PARAM_IS_INVALID, message);
             }
         }
 
