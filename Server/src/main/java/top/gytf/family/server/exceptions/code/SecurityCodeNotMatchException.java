@@ -1,4 +1,4 @@
-package top.gytf.family.server.exceptions;
+package top.gytf.family.server.exceptions.code;
 
 import top.gytf.family.server.response.StateCode;
 import top.gytf.family.server.response.StatusCarrier;

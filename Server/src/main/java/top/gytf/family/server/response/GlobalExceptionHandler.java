@@ -1,7 +1,6 @@
 package top.gytf.family.server.response;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -10,7 +9,6 @@ import org.springframework.web.filter.GenericFilterBean;
 import top.gytf.family.server.utils.ResponseUtil;
 
 import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import java.io.IOException;
@@ -38,34 +36,49 @@ public class GlobalExceptionHandler extends GenericFilterBean {
         this.objectMapper = objectMapper;
     }
 
+    /**
+     * 处理成统一响应
+     * @param e 错误
+     * @param code 状态
+     * @return 结果
+     */
+    public Response<String> process(Exception e, StateCode code) {
+        e.printStackTrace();
+
+        if (code == null || code == StateCode.FAIL) {
+            if (e instanceof BindException) {
+                //参数校验错误
+                BindException bindException = (BindException) e;
+                String[] errors = new String[bindException.getErrorCount()];
+                List<ObjectError> errorList = bindException.getAllErrors();
+                int idx = 0;
+                for (ObjectError objectError : errorList) {
+                    errors[idx++] = objectError.getDefaultMessage();
+                }
+                return new Response<>(StateCode.PARAM_IS_INVALID, Arrays.toString(errors));
+            }
+        }
+
+        if (code == null) {
+            code = StateCode.FAIL;
+        }
+
+        return new Response<>(code, e.getMessage());
+    }
+
+    /**
+     * 处理成统一响应
+     * @param e 错误
+     * @param carrier 状态携带器
+     * @return 结果
+     */
+    public Response<String> process(Exception e, StatusCarrier carrier) {
+        return process(e, carrier == null ? StateCode.FAIL : carrier.code());
+    }
+
     @ExceptionHandler(Exception.class)
     public Response<String> exceptionHandler(Exception e) {
-        if (e instanceof InsufficientAuthenticationException) {
-            e = new top.gytf.family.server.exceptions.AccessDeniedException();
-        }
-
-        e.printStackTrace();
-        StatusCarrier statusCarrier;
-        if ((statusCarrier = e.getClass().getAnnotation(StatusCarrier.class)) != null) {
-            return new Response<>(statusCarrier.code(), e.getMessage());
-        }
-
-        if (e instanceof BindException) {
-            //参数校验错误
-            BindException bindException = (BindException) e;
-            String[] errors = new String[bindException.getErrorCount()];
-            List<ObjectError> errorList = bindException.getAllErrors();
-            int idx = 0;
-            for (ObjectError objectError : errorList) {
-                errors[idx++] = objectError.getDefaultMessage();
-            }
-            return new Response<>(StateCode.PARAM_IS_INVALID, Arrays.toString(errors));
-        }  else if (e instanceof IllegalArgumentException) {
-            //也是参数错误
-            return new Response<>(StateCode.PARAM_IS_INVALID, e.getMessage());
-        }
-
-        return new Response<>(StateCode.FAIL, e.getMessage());
+        return process(e, e.getClass().getAnnotation(StatusCarrier.class));
     }
 
     /**

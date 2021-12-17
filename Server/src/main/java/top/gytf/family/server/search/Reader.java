@@ -46,6 +46,19 @@ public class Reader {
     }
 
     /**
+     * 跳过空格
+     */
+    public void skipBlank() {
+        int i = pos;
+        for (; i < right; i++) {
+            if (content[i] != ' ') {
+                break;
+            }
+        }
+        pos = i;
+    }
+
+    /**
      * 标记当前指针位置
      */
     private void mark() {
@@ -121,5 +134,10 @@ public class Reader {
         reset();
 
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(content, pos, right - pos);
     }
 }

@@ -4,7 +4,8 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.web.bind.annotation.*;
 import top.gytf.family.server.constants.PathConstant;
 import top.gytf.family.server.entity.User;
-import top.gytf.family.server.exceptions.SecurityCodeException;
+import top.gytf.family.server.exceptions.IllegalArgumentException;
+import top.gytf.family.server.exceptions.code.SecurityCodeException;
 import top.gytf.family.server.response.IgnoreResultAdvice;
 import top.gytf.family.server.security.code.SecurityCodeVerifyStrategy;
 import top.gytf.family.server.security.code.email.EmailSecurityCode;

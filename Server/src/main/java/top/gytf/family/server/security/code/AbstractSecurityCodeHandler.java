@@ -1,9 +1,6 @@
 package top.gytf.family.server.security.code;
 
-import top.gytf.family.server.exceptions.NullSecurityCodeException;
-import top.gytf.family.server.exceptions.SecurityCodeException;
-import top.gytf.family.server.exceptions.SecurityCodeExpiredException;
-import top.gytf.family.server.exceptions.SecurityCodeNotMatchException;
+import top.gytf.family.server.exceptions.code.*;
 
 /**
  * Project:     IntelliJ IDEA<br>
@@ -74,7 +71,7 @@ public abstract class AbstractSecurityCodeHandler<D, C extends SecurityCode<D>, 
     /**
      * 生成验证码<br>
      * 可能错误内容：<br>
-     * <li>{@link top.gytf.family.server.exceptions.SecurityCodeSendException}: 验证码发送错误</li>
+     * <li>{@link SecurityCodeSendException}: 验证码发送错误</li>
      *
      * @param desc 验证码描述
      * @param repos 仓库

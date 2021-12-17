@@ -3,6 +3,7 @@ package top.gytf.family.server.security.login.email;
 import lombok.Setter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
+import top.gytf.family.server.exceptions.IllegalArgumentException;
 
 import java.util.Collection;
 

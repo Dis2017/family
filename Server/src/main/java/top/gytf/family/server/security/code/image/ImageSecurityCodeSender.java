@@ -2,7 +2,7 @@ package top.gytf.family.server.security.code.image;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import top.gytf.family.server.exceptions.SecurityCodeSendException;
+import top.gytf.family.server.exceptions.code.SecurityCodeSendException;
 import top.gytf.family.server.security.code.AbstractSecurityCodeHandler;
 import top.gytf.family.server.security.code.SecurityCodeSender;
 import top.gytf.family.server.utils.ResponseUtil;

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import org.springframework.stereotype.Service;
 import top.gytf.family.server.entity.User;
 import top.gytf.family.server.exceptions.AvatarNotFoundException;
+import top.gytf.family.server.exceptions.IllegalArgumentException;
 import top.gytf.family.server.file.FileManager;
 import top.gytf.family.server.mapper.UserMapper;
 import top.gytf.family.server.utils.UserUtil;

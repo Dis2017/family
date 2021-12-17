@@ -5,7 +5,7 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
-import top.gytf.family.server.exceptions.SecurityCodeSendException;
+import top.gytf.family.server.exceptions.code.SecurityCodeSendException;
 import top.gytf.family.server.security.code.AbstractSecurityCodeHandler;
 import top.gytf.family.server.security.code.SecurityCodeSender;
 

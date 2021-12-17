@@ -2,9 +2,9 @@ package top.gytf.family.server.security.code.password;
 
 import org.springframework.stereotype.Component;
 import top.gytf.family.server.entity.User;
-import top.gytf.family.server.exceptions.SecurityCodeStorageRemoveException;
-import top.gytf.family.server.exceptions.SecurityCodeStorageSaveException;
-import top.gytf.family.server.exceptions.SecurityCodeStorageTakeException;
+import top.gytf.family.server.exceptions.code.SecurityCodeStorageRemoveException;
+import top.gytf.family.server.exceptions.code.SecurityCodeStorageSaveException;
+import top.gytf.family.server.exceptions.code.SecurityCodeStorageTakeException;
 import top.gytf.family.server.security.code.AbstractSecurityCodeHandler;
 import top.gytf.family.server.security.code.SecurityCodeStorage;
 import top.gytf.family.server.services.IUserService;

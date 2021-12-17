@@ -1,16 +1,20 @@
-package top.gytf.family.server.exceptions;
+package top.gytf.family.server.exceptions.code;
+
+import top.gytf.family.server.response.StateCode;
+import top.gytf.family.server.response.StatusCarrier;
 
 /**
  * Project:     IntelliJ IDEA<br>
- * Description: 验证码存储错误<br>
- * CreateDate:  2021/11/27 23:03 <br>
+ * Description: 验证码发送错误<br>
+ * CreateDate:  2021/11/27 22:55 <br>
  * ------------------------------------------------------------------------------------------
  *
  * @author user
  * @version V1.0
  */
-public class SecurityCodeStorageException extends SecurityCodeException {
-    private final static String TAG = SecurityCodeStorageException.class.getName();
+@StatusCarrier(code = StateCode.SEND_SECURITY_CODE)
+public class SecurityCodeSendException extends SecurityCodeException {
+    private final static String TAG = SecurityCodeSendException.class.getName();
 
     /**
      * Constructs a new exception with the specified detail message.  The
@@ -20,7 +24,7 @@ public class SecurityCodeStorageException extends SecurityCodeException {
      * @param message the detail message. The detail message is saved for
      *                later retrieval by the {@link #getMessage()} method.
      */
-    public SecurityCodeStorageException(String message) {
+    public SecurityCodeSendException(String message) {
         super(message);
     }
 }

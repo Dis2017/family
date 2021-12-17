@@ -9,6 +9,7 @@ import top.gytf.family.server.entity.Role;
 import top.gytf.family.server.entity.Url;
 import top.gytf.family.server.entity.UrlRole;
 import top.gytf.family.server.events.RefreshAuthorityCacheEvent;
+import top.gytf.family.server.exceptions.NouFoundException;
 import top.gytf.family.server.mapper.RolesMapper;
 import top.gytf.family.server.mapper.UrlRoleMapper;
 import top.gytf.family.server.mapper.UrlsMapper;
@@ -71,7 +72,7 @@ public class AccessProviderImpl implements AccessProvider {
                     .eq(Url::getUrl, uri)
                     .eq(Url::getMethod, method));
             if (url == null) {
-                throw new IllegalArgumentException(uri + ':' + method + "无对应记录。");
+                throw new NouFoundException(uri + ':' + method + "无对应记录。");
             }
             Long id = url.getId();
 

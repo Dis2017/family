@@ -3,7 +3,7 @@ package top.gytf.family.server.security.code.image;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
-import top.gytf.family.server.exceptions.SecurityCodeGenerateException;
+import top.gytf.family.server.exceptions.code.SecurityCodeGenerateException;
 import top.gytf.family.server.security.code.AbstractSecurityCodeHandler;
 import top.gytf.family.server.security.code.SecurityCodeGenerator;
 

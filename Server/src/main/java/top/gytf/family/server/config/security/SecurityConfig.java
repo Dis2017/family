@@ -6,13 +6,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.web.session.SessionManagementFilter;
 import top.gytf.family.server.response.GlobalExceptionHandler;
 import top.gytf.family.server.security.access.AccessDecisionFilter;
 import top.gytf.family.server.security.code.SecurityCodeVerifyFilter;
-import top.gytf.family.server.security.login.AuthenticationFilter;
 
 /**
  * Project:     IntelliJ IDEA
@@ -33,7 +33,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final GlobalExceptionHandler globalExceptionHandler;
     private final AccessDecisionFilter accessDecisionFilter;
     private final SecurityCodeVerifyFilter securityCodeVerifyFilter;
-//    private final AuthenticationFilter authenticationFilter;
     private final IdPasswordAuthenticationConfig idPasswordAuthenticationConfig;
     private final EmailAuthenticationConfig emailAuthenticationConfig;
 
@@ -42,8 +41,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // 会话管理
         http
                 .sessionManagement()
-                    .maximumSessions(1)
-                    .sessionRegistry(sessionRegistry());
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                .maximumSessions(1)
+                .sessionRegistry(sessionRegistry());
 
         // 禁用csrf
         http
@@ -71,7 +71,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 //验证码校验
                 .addFilterAfter(securityCodeVerifyFilter, AccessDecisionFilter.class)
                 //验证
-//                .addFilterAfter(authenticationFilter, SecurityCodeVerifyFilter.class)
                 .apply(idPasswordAuthenticationConfig).and()
                 .apply(emailAuthenticationConfig);
     }

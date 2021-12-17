@@ -106,24 +106,50 @@ public class GlobalResponseHandler implements ResponseBodyAdvice<Object> {
     public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType,
                                   Class<? extends HttpMessageConverter<?>> selectedConverterType,
                                   ServerHttpRequest request, ServerHttpResponse response) {
+        return process(body, returnType.getMethodAnnotation(StatusCarrier.class));
+    }
+
+    /**
+     * 处理成统一格式
+     * @param body 对象
+     * @param code 状态码
+     * @return 结果
+     */
+    public Object process(Object body, StateCode code) {
         // 判断是ResponseData子类或其本身就返回Object o本身，因为有可能是接口返回时创建了ResponseData,这里避免再次封装
         if (body instanceof Response) {
             return body;
         }
-        StatusCarrier statusCarrier;
-        if ((statusCarrier = returnType.getMethodAnnotation(StatusCarrier.class)) != null) {
-            return new Response<>(statusCarrier.code(), body);
-        }
+
         // String特殊处理，否则会抛异常
         if (body instanceof String) {
             try {
-                return mapper.writeValueAsString(new Response<>(StateCode.SUCCESS, body));
+                return mapper.writeValueAsString(new Response<>(code, body));
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
                 return new Response<>(StateCode.FAIL, e.getMessage());
             }
         }
 
-        return new Response<>(StateCode.SUCCESS, body);
+        return new Response<>(code, body);
+    }
+
+    /**
+     * 处理成统一格式
+     * @param body 对象
+     * @param carrier 状态码携带器
+     * @return 结果
+     */
+    public Object process(Object body, StatusCarrier carrier) {
+        return process(body, carrier == null ? StateCode.SUCCESS : carrier.code());
+    }
+
+    /**
+     * 处理成统一格式
+     * @param body 对象
+     * @return 结果
+     */
+    public Object process(Object body) {
+        return process(body, StateCode.SUCCESS);
     }
 }

@@ -33,6 +33,7 @@ spring:
 
 logging:
   level:
+    org.springframework.boot.autoconfigure: error
     top.gytf.family.server.*: debug
 
   pattern:

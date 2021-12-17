@@ -20,6 +20,11 @@ public enum StateCode {
     FAIL(500,"失败"),
 
     /**
+     * 未找到访问资源
+     */
+    NOT_FOUND(404,"未找到访问资源"),
+
+    /**
      *  错误参数
      */
     PARAM_IS_INVALID(501,"参数无效"),

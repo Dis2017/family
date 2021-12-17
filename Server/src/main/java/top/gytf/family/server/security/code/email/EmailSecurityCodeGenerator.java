@@ -2,7 +2,7 @@ package top.gytf.family.server.security.code.email;
 
 import lombok.Getter;
 import lombok.Setter;
-import top.gytf.family.server.exceptions.SecurityCodeGenerateException;
+import top.gytf.family.server.exceptions.code.SecurityCodeGenerateException;
 import top.gytf.family.server.security.code.AbstractSecurityCodeHandler;
 import top.gytf.family.server.security.code.SecurityCodeGenerator;
 

@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
-import top.gytf.family.server.exceptions.GeneralSearchConditionFormatException;
+import top.gytf.family.server.exceptions.IllegalArgumentException;
 import top.gytf.family.server.search.*;
 
 import java.lang.annotation.Annotation;
@@ -44,12 +44,7 @@ public class SearchUtil {
     /**
      * like符号
      */
-    public static final String SIGN_LIKE = " like ";
-
-    /**
-     * 正则表达式：匹配like模式
-     */
-    public static final String REGEX_LIKE = "(" + SIGN_LIKE.toLowerCase() + ").+|(" +  SIGN_LIKE.toUpperCase() + ").+";
+    public static final String SIGN_LIKE = "like";
 
     /**
      * 等于符号
@@ -57,19 +52,9 @@ public class SearchUtil {
     public static final String SIGN_EQ = "=";
 
     /**
-     * 正则表达式：匹配等于
-     */
-    public static final String REGEX_EQ = SIGN_EQ + ".+";
-
-    /**
      * 不等于符号
      */
     public static final String SIGN_NE = "!=";
-
-    /**
-     * 正则表达式：匹配不等于
-     */
-    public static final String REGEX_NE = SIGN_NE + ".+";
 
     /**
      * 大于符号
@@ -77,19 +62,9 @@ public class SearchUtil {
     public static final String SIGN_GT = ">";
 
     /**
-     * 正则表达式：匹配大于
-     */
-    public static final String REGEX_GT = SIGN_GT + ".+";
-
-    /**
      * 大于等于符号
      */
     public static final String SIGN_GE = ">=";
-
-    /**
-     * 正则表达式：匹配大于等于
-     */
-    public static final String REGEX_GE = SIGN_GE + ".+";
 
     /**
      * 小于符号
@@ -97,28 +72,25 @@ public class SearchUtil {
     public static final String SIGN_LT = "<";
 
     /**
-     * 正则表达式：匹配小于
-     */
-    public static final String REGEX_LT = SIGN_LT + ".+";
-
-    /**
      * 小于等于符号
      */
     public static final String SIGN_LE = "<=";
 
-    /**
-     * 正则表达式：匹配小于等于
-     */
-    public static final String REGEX_LE = SIGN_LE + ".+";
+    public static final String AND = "AND";
+    public static final String OR = "OR";
+    public static final char LEFT_BRACKET = '(';
+    public static final char RIGHT_BRACKET = ')';
+    public static final char LINK_CHAR = ',';
+    public static final char REFERENCE = '\"';
 
-    public static final String[][] SING_AND_REGEX_PAIRS = {
-            {SIGN_EQ, REGEX_EQ},
-            {SIGN_NE, REGEX_NE},
-            {SIGN_GE, REGEX_GE},
-            {SIGN_LE, REGEX_LE},
-            {SIGN_GT, REGEX_GT},
-            {SIGN_LT, REGEX_LT},
-            {SIGN_LIKE, REGEX_LIKE}
+    public static final String[] SIGNS = {
+            SIGN_EQ,
+            SIGN_NE,
+            SIGN_GE,
+            SIGN_LE,
+            SIGN_GT,
+            SIGN_LT,
+            SIGN_LIKE
     };
 
     private static final Map<Class, Map<String, Set<Class<? extends Annotation>>>> CACHE = new ConcurrentHashMap<>();
@@ -194,11 +166,9 @@ public class SearchUtil {
         QueryWrapper<T> queryWrapper = new QueryWrapper<>();
         setRequests(queryWrapper, clazz, requests);
 //        setConditions(queryWrapper, clazz, conditions);
-        if (conditions != null) {
+        if (conditions != null && !conditions.isBlank()) {
             final ConditionNode conditionNode = parseCondition(clazz, new Reader(conditions));
-            if (conditionNode != null) {
-                queryWrapper.and(conditionNode.parse());
-            }
+            queryWrapper.and(conditionNode.parse());
         }
         setSort(queryWrapper, clazz, sorts);
         return queryWrapper;
@@ -230,35 +200,47 @@ public class SearchUtil {
     private static <T> ConditionNode<T> parseCondition(Class<T> clazz, Reader reader) {
         ConditionGroupNode<T> node;
 
+        //跳过空格
+        reader.skipBlank();
+
         // 取出前缀，确定连接方式
-        if (reader.startsWith("AND(")) {
-            reader.skips(4);
-            node = new ConditionGroupNode();
-        } else if (reader.startsWith("OR(")) {
+        if (reader.startsWith(AND)) {
             reader.skips(3);
+            node = new ConditionGroupNode();
+        } else if (reader.startsWith(OR)) {
+            reader.skips(2);
             node = new ConditionGroupNode(false);
         } else {
             // 是叶子表达式
             ConditionLeafNode<T> conditionLeafNode = parseLeftCondition(reader);
             final String fieldName = conditionLeafNode.getFieldName();
             final Set<Class<? extends Annotation>> classes = getClassInfo(clazz).get(fieldName);
+            // 使用了不安全的字段作为条件
             if (classes == null || !classes.contains(ConditionField.class)) {
-                return null;
+                throw new IllegalArgumentException("使用不受允许的字段：" + fieldName);
             }
             return conditionLeafNode;
+        }
+
+        reader.skipBlank();
+        if (reader.readable() <= 0 || reader.read() != LEFT_BRACKET) {
+            throw new IllegalArgumentException("逻辑连接符后没有添加括号。");
         }
 
         // 取出里面所有表达式（包括嵌套）
         while (reader.readable() > 0) {
             ConditionNode children = parseCondition(clazz, reader);
-            if (children != null) {
-                node.addChild(children);
-            }
+            //跳过空格
+            reader.skipBlank();
+
+            //添加子条件
+            node.addChild(children);
+
             char ch = reader.read();
-            if (ch == ')') {
+            if (ch == RIGHT_BRACKET) {
                 break;
-            } else if (ch != ',') {
-                throw new RuntimeException("格式错误");
+            } else if (ch != LINK_CHAR) {
+                throw new IllegalArgumentException("未添加连接符");
             }
         }
 
@@ -271,52 +253,70 @@ public class SearchUtil {
      * @return 叶子条件节点
      */
     private static <T> ConditionLeafNode<T> parseLeftCondition(Reader reader) {
-        StringBuilder name = new StringBuilder();
-        StringBuilder value = new StringBuilder();
-        String sign = null;
-        boolean flag = true;
+        String name;
+        String value;
+        int signIdx;
 
         // 取出名称
-        do {
-            name.append(reader.read());
-            if (reader.readable() > 0) {
-                for (String[] pair : SearchUtil.SING_AND_REGEX_PAIRS) {
-                    if (reader.startsWith(pair[0])) {
-                        flag = false;
-                        sign = pair[0];
-                        reader.skips(sign.length());
-                        break;
-                    }
-                }
+        name = readReference(reader);
+
+        // 跳过空格
+        reader.skipBlank();
+        // 匹配运算符
+        signIdx = 0;
+        for (String sign : SIGNS) {
+            if (reader.startsWith(sign)) {
+                break;
             }
-        } while (reader.readable() > 0 && flag);
+            signIdx++;
+        }
+        if (signIdx == SIGNS.length) {
+            throw new IllegalArgumentException("运算符不匹配");
+        }
+        reader.skips(SIGNS[signIdx].length());
+
+        // 跳过空格
+        reader.skipBlank();
+        // 读取值
+        value = readReference(reader);
+
+        return new ConditionLeafNode<>(name, SIGNS[signIdx], value);
+    }
+
+    /**
+     * 读取一个引用（"括起来的）
+     * @param reader 阅读器
+     * @return 内容
+     */
+    private static String readReference(Reader reader) {
+        StringBuilder builder = new StringBuilder();
 
         // 读取完成后可以读取内容为空 或者 下一个字符不为" 代表并不是一个正确格式的表达式
-        if (reader.readable() <= 0 || reader.read() != '\"') {
-            throw new GeneralSearchConditionFormatException();
+        if (reader.readable() <= 0 || reader.read() != REFERENCE) {
+            throw new IllegalArgumentException("字段名称或值未使用" + REFERENCE + "引用");
         }
 
         // 读取值
-        flag = true;
+        boolean flag = true;
         while (reader.readable() > 0) {
             char ch = reader.read();
             if (ch == '\\') {
                 // 是\则跳过到下个字符，并且不处理
                 ch = reader.read();
-            } else if (ch == '\"') {
+            } else if (ch == REFERENCE) {
                 // 读取到了"代表值结束
                 flag = false;
                 break;
             }
-            value.append(ch);
+            builder.append(ch);
         }
 
-        // 从未读到过" 代表格式错误
+        // 从未读到过"代表格式错误
         if (flag) {
-            throw new GeneralSearchConditionFormatException();
+            throw new IllegalArgumentException("字段名称或值未使用" + REFERENCE + "结尾");
         }
 
-        return new ConditionLeafNode<>(name.toString(), sign, value.toString());
+        return builder.toString();
     }
 
     /**
@@ -330,21 +330,35 @@ public class SearchUtil {
         final Map<String, Set<Class<? extends Annotation>>> classInfo = getClassInfo(clazz);
 
         if (requests == null || requests.isBlank()) {
+            // 未指定请求内容 返回全部允许请求的内容
             final String[] strings = classInfo.entrySet().stream()
                     .filter((entry) -> entry.getValue().contains(RequestField.class))
                     .map(Map.Entry::getKey)
                     .toArray(String[]::new);
-            log.debug(Arrays.toString(strings));
+
             queryWrapper.select(strings);
         } else {
-            queryWrapper.select(
-                    Arrays.stream(requests.split(","))
-                            .filter((request) -> {
-                                final Set<Class<? extends Annotation>> classes = classInfo.get(request);
-                                return classes != null && classes.contains(RequestField.class);
-                            })
-                            .toArray(String[]::new)
-            );
+            // 过滤请求内容
+            StringBuilder e = new StringBuilder();
+
+            final String[] requestArray = Arrays.stream(requests.split(","))
+                    .filter((request) -> {
+                        final Set<Class<? extends Annotation>> classes = classInfo.get(request);
+
+                        if (classes == null || !classes.contains(RequestField.class)) {
+                            e.append("请求不允许的字段：").append(request).append(' ');
+                            return false;
+                        }
+
+                        return true;
+                    })
+                    .toArray(String[]::new);
+
+            if (!e.isEmpty()) {
+                throw new IllegalArgumentException(e.toString());
+            }
+
+            queryWrapper.select(requestArray);
         }
     }
 
@@ -361,18 +375,36 @@ public class SearchUtil {
         }
 
         final Map<String, Set<Class<? extends Annotation>>> classInfo = getClassInfo(clazz);
-        Arrays.stream(sorts.split(","))
+        StringBuilder e = new StringBuilder();
+
+        // 过滤排序
+        String[] sortArray = Arrays.stream(sorts.split(","))
                 .filter((sort) -> {
                     if (sort.isBlank()) {
                         return false;
                     }
                     char sign = sort.charAt(0);
-                    final Set<Class<? extends Annotation>> classes = classInfo.get(sort);
+                    String name = sort;
+                    Set<Class<? extends Annotation>> classes;
                     if (sign == CHAR_SORT_SIGN_DESC || sign == CHAR_SORT_SIGN_ASC) {
-                        return classes != null && classes.contains(SortField.class);
+                        name = name.substring(1);
                     }
-                    return classes != null && classes.contains(SortField.class);
+                    classes = classInfo.get(name);
+
+                    if (classes == null || !classes.contains(SortField.class)) {
+                        e.append("使用不允许的排序字段：").append(name).append(' ');
+                        return false;
+                    }
+
+                    return true;
                 })
+                .toArray(String[]::new);
+
+        if (!e.isEmpty()) {
+            throw new IllegalArgumentException(e.toString());
+        }
+
+        Arrays.stream(sortArray)
                 .forEach((sort) -> {
                     char sign = sort.charAt(0);
                     boolean desc = sign == CHAR_SORT_SIGN_DESC;

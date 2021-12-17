@@ -1,6 +1,6 @@
 package top.gytf.family.server.security.code;
 
-import top.gytf.family.server.exceptions.SecurityCodeSendException;
+import top.gytf.family.server.exceptions.code.SecurityCodeSendException;
 
 /**
  * Project:     IntelliJ IDEA<br>

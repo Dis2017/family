@@ -31,7 +31,6 @@ public class ResponseUtil {
      */
     public static void setToJson(ServletResponse response, String json) throws IOException {
         //设置响应头
-        response.reset();
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         //设置JSON
@@ -46,7 +45,6 @@ public class ResponseUtil {
      */
     public static void setToDownload(ServletResponse response, File file) throws IOException {
         //设置响应头
-        response.reset();
         response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
         //设置文件
         try (FileInputStream inputStream = new FileInputStream(file)) {
@@ -66,7 +64,6 @@ public class ResponseUtil {
      */
     public static void setToImage(ServletResponse response, BufferedImage image) throws IOException {
         //设置响应头
-        response.reset();
         response.setContentType(MediaType.IMAGE_JPEG_VALUE);
         //设置文件
         ImageIO.write(image, "jpeg", response.getOutputStream());

@@ -1,8 +1,8 @@
 package top.gytf.family.server.security.code;
 
-import top.gytf.family.server.exceptions.SecurityCodeStorageRemoveException;
-import top.gytf.family.server.exceptions.SecurityCodeStorageSaveException;
-import top.gytf.family.server.exceptions.SecurityCodeStorageTakeException;
+import top.gytf.family.server.exceptions.code.SecurityCodeStorageRemoveException;
+import top.gytf.family.server.exceptions.code.SecurityCodeStorageSaveException;
+import top.gytf.family.server.exceptions.code.SecurityCodeStorageTakeException;
 
 /**
  * Project:     IntelliJ IDEA<br>
