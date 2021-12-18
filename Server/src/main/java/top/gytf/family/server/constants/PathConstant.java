@@ -2,6 +2,7 @@ package top.gytf.family.server.constants;
 
 import top.gytf.family.server.security.login.email.EmailAuthenticationFilter;
 import top.gytf.family.server.security.login.password.PasswordAuthenticationFilter;
+import top.gytf.family.server.security.login.password.PasswordAuthenticationParamGetter;
 
 /**
  * Project:     IntelliJ IDEA
@@ -47,7 +48,7 @@ public class PathConstant {
         /**
          * 用户编号密码登录的路径<br>
          * <b><font color="green">不通过Controller提供服务！</font></b><br>
-         * <b><font color="green">在</font>{@link PasswordAuthenticationFilter#PasswordAuthenticationFilter()}
+         * <b><font color="green">在</font>{@link PasswordAuthenticationFilter#PasswordAuthenticationFilter(PasswordAuthenticationParamGetter)}
          * <font color="green">绑定</font></b>
          */
         public static final String PATH_PASSWORD_LOGIN = "/login/password";
@@ -69,6 +70,11 @@ public class PathConstant {
          * 图片验证码生成路径
          */
         public static final String PATH_SECURITY_CODE_IMAGE = "/security-code/image";
+
+        /**
+         * 获取公钥地址
+         */
+        public static final String PATH_PUBLIC_KEY = "/public-key";
     }
 
     /**

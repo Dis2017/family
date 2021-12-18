@@ -1,12 +1,15 @@
 package top.gytf.family.server.aop.log;
 
 import lombok.extern.slf4j.Slf4j;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
+
+import java.util.Arrays;
 
 /**
  * Project:     IntelliJ IDEA<br>
@@ -33,11 +36,12 @@ public class LogHandler {
      * 所有api执行前调用
      */
     @Before("allApi()")
-    public void handler() {
+    public void handler(JoinPoint joinPoint) {
         final RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
         if (requestAttributes == null) {
             return;
         }
         log.debug(requestAttributes.getSessionId());
+        log.debug(Arrays.toString(joinPoint.getArgs()));
     }
 }

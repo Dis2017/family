@@ -70,6 +70,9 @@ public class SecurityCodeVerifyFilter extends OncePerRequestFilter {
             Set<SecurityCodeRequestValidator> validatorSet = Arrays.stream(strategy.value())
                     .map(validators::get)
                     .collect(Collectors.toSet());
+            if (validatorSet.contains(null)) {
+                throw new RuntimeException(entry.getKey().toString() + "验证器不齐全");
+            }
             SecurityCodeVerifyStrategyInfo strategyInfo = new SecurityCodeVerifyStrategyInfo(strategy.only(), validatorSet);
 
             // 放入
@@ -91,6 +94,12 @@ public class SecurityCodeVerifyFilter extends OncePerRequestFilter {
             Set<SecurityCodeRequestValidator> validatorSet = Arrays.stream(strategy.value())
                     .map(validators::get)
                     .collect(Collectors.toSet());
+            if (validatorSet.contains(null)) {
+                throw new RuntimeException(
+                        '[' + Arrays.toString(strategy.patterns()) + ','
+                                + Arrays.toString(strategy.methods()) + ']'
+                                + "验证器不齐全");
+            }
             SecurityCodeVerifyStrategyInfo strategyInfo = new SecurityCodeVerifyStrategyInfo(strategy.only(), validatorSet);
 
             // 放入
@@ -140,10 +149,13 @@ public class SecurityCodeVerifyFilter extends OncePerRequestFilter {
                     if (only) {
                         break;
                     }
-                } catch (SecurityCodeException e) {
+                } catch (Exception e) {
                     //有一个没有通过验证并且要求所有都通过验证，无法满足
                     if (!only) {
-                        throw e;
+                        if (e instanceof SecurityCodeException) {
+                            throw e;
+                        }
+                        throw new SecurityCodeException(e.getMessage());
                     } else {
                         errorMsg.append(validator.name()).append(": ").append(e.getMessage()).append('\n');
                     }

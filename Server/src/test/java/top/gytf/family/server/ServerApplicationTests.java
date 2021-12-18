@@ -7,9 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import top.gytf.family.server.entity.User;
-import top.gytf.family.server.security.code.SecurityCodeVerifyFilter;
-
-import java.util.Map;
 
 @SpringBootTest
 @Slf4j

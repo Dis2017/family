@@ -15,7 +15,16 @@ import top.gytf.family.server.response.StatusCarrier;
  */
 @StatusCarrier(code = StateCode.USER_LOGIN_ERROR)
 public class PasswordUnmatchedErrorException extends AuthenticationException {
-    private final static String TAG = PasswordUnmatchedErrorException.class.getName();
+    /**
+     * Constructs an {@code AuthenticationException} with the specified message and root
+     * cause.
+     *
+     * @param msg the detail message
+     * @param t   the root cause
+     */
+    public PasswordUnmatchedErrorException(String msg, Throwable t) {
+        super(msg, t);
+    }
 
     /**
      * Constructs an {@code AuthenticationException} with the specified message and no

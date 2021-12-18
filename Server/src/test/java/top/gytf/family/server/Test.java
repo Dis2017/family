@@ -1,13 +1,7 @@
 package top.gytf.family.server;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import top.gytf.family.server.constants.FileConstant;
-
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import top.gytf.family.server.utils.RsaUtil;
 
 /**
  * Project:     IntelliJ IDEA<br>
@@ -22,13 +16,13 @@ public class Test {
     private final static String TAG = Test.class.getName();
 
     @org.junit.jupiter.api.Test
-    public void test() {
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    public void test() throws Exception {
+        RsaUtil rsaUtil = RsaUtil.getInstance();
+        log.debug(rsaUtil.getPublicKey());
 
-        final String rawPassword = "123";
-        String encodedPassword = passwordEncoder.encode(rawPassword);
-
-        log.debug(String.valueOf(passwordEncoder.matches(rawPassword, encodedPassword)));
-        log.debug(String.valueOf(passwordEncoder.matches(passwordEncoder.encode(rawPassword), encodedPassword)));
+        String raw = "10010422Ytf";
+        String encrypted = rsaUtil.encrypted(raw);
+        log.debug(encrypted);
+        log.debug(rsaUtil.decrypted(encrypted));
     }
 }

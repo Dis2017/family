@@ -3,17 +3,18 @@ package top.gytf.family.server.controllers;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import top.gytf.family.server.aop.response.IgnoreResultAdvice;
 import top.gytf.family.server.constants.PathConstant;
 import top.gytf.family.server.entity.User;
 import top.gytf.family.server.exceptions.IllegalArgumentException;
 import top.gytf.family.server.exceptions.NotLoginException;
 import top.gytf.family.server.exceptions.code.SecurityCodeException;
+import top.gytf.family.server.response.IgnoreResultAdvice;
 import top.gytf.family.server.security.code.SecurityCodeVerifyStrategy;
 import top.gytf.family.server.security.code.email.EmailSecurityCode;
 import top.gytf.family.server.security.code.email.EmailSecurityCodeHandler;
 import top.gytf.family.server.security.code.image.ImageSecurityCodeHandler;
 import top.gytf.family.server.security.code.image.ImageSecurityCodeRequestValidator;
+import top.gytf.family.server.utils.RsaUtil;
 import top.gytf.family.server.utils.SecurityUtil;
 
 import javax.servlet.ServletResponse;
@@ -122,5 +123,15 @@ public class AuthenticationController {
     @PostMapping(PathConstant.Auth.PATH_LOGOUT)
     public void logout(HttpServletRequest request) {
         securityContextLogoutHandler.logout(request, null, null);
+    }
+
+    /**
+     * 获取公钥
+     * @return 公钥
+     * @throws Exception 获取失败
+     */
+    @GetMapping(PathConstant.Auth.PATH_PUBLIC_KEY)
+    public String getPublicKey() throws Exception {
+        return RsaUtil.getInstance().getPublicKey();
     }
 }

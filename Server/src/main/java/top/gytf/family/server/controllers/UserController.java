@@ -7,12 +7,13 @@ import org.hibernate.validator.constraints.Length;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import top.gytf.family.server.aop.response.IgnoreResultAdvice;
+import top.gytf.family.server.aop.crypt.Decrypt;
 import top.gytf.family.server.aop.search.GeneralSearch;
 import top.gytf.family.server.aop.user.UpdateCurrentAuthentication;
 import top.gytf.family.server.constants.PathConstant;
 import top.gytf.family.server.entity.User;
 import top.gytf.family.server.mapper.UserMapper;
+import top.gytf.family.server.response.IgnoreResultAdvice;
 import top.gytf.family.server.security.code.SecurityCodeVerifyStrategy;
 import top.gytf.family.server.security.code.email.EmailSecurityCodeRequestValidator;
 import top.gytf.family.server.security.code.password.PasswordSecurityCodeRequestValidator;
@@ -96,6 +97,7 @@ public class UserController {
             },
             only = true
     )
+    @Decrypt(args = {0})
     public void modifyPassword(@Length(min = 8, max = 32, message = "密码应该在8-32位")
                                @RequestParam("password") String password) {
         Long id = SecurityUtil.current().getId();

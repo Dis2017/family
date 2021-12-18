@@ -11,7 +11,12 @@ import org.springframework.security.web.access.intercept.FilterSecurityIntercept
 import org.springframework.stereotype.Component;
 import top.gytf.family.server.security.login.LoginHandler;
 import top.gytf.family.server.security.login.password.PasswordAuthenticationFilter;
+import top.gytf.family.server.security.login.password.PasswordAuthenticationParamGetter;
 import top.gytf.family.server.security.login.password.PasswordAuthenticationProvider;
+
+import javax.crypto.NoSuchPaddingException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * Project:     IntelliJ IDEA<br>
@@ -28,10 +33,12 @@ public class PasswordAuthenticationConfig extends SecurityConfigurerAdapter<Defa
 
     private final PasswordAuthenticationProvider passwordAuthenticationProvider;
     private final LoginHandler loginHandler;
+    private final PasswordAuthenticationParamGetter getter;
 
-    public PasswordAuthenticationConfig(PasswordAuthenticationProvider passwordAuthenticationProvider, LoginHandler loginHandler) {
+    public PasswordAuthenticationConfig(PasswordAuthenticationProvider passwordAuthenticationProvider, LoginHandler loginHandler, PasswordAuthenticationParamGetter getter) {
         this.passwordAuthenticationProvider = passwordAuthenticationProvider;
         this.loginHandler = loginHandler;
+        this.getter = getter;
     }
 
     @Override
@@ -47,9 +54,10 @@ public class PasswordAuthenticationConfig extends SecurityConfigurerAdapter<Defa
         return new BCryptPasswordEncoder();
     }
 
-    public PasswordAuthenticationFilter getIdPasswordAuthenticationFilter(HttpSecurity httpSecurity) {
-        PasswordAuthenticationFilter passwordAuthenticationFilter = new PasswordAuthenticationFilter();
-        passwordAuthenticationFilter.setAuthenticationManager(httpSecurity.getSharedObject(AuthenticationManager.class));
+    public PasswordAuthenticationFilter getIdPasswordAuthenticationFilter(HttpSecurity security)
+            throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
+        PasswordAuthenticationFilter passwordAuthenticationFilter = new PasswordAuthenticationFilter(getter);
+        passwordAuthenticationFilter.setAuthenticationManager(security.getSharedObject(AuthenticationManager.class));
         passwordAuthenticationFilter.setAuthenticationSuccessHandler(loginHandler);
         passwordAuthenticationFilter.setAuthenticationFailureHandler(loginHandler);
         return passwordAuthenticationFilter;

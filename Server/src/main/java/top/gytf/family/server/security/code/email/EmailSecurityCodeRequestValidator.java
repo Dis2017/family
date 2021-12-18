@@ -2,6 +2,7 @@ package top.gytf.family.server.security.code.email;
 
 import org.springframework.stereotype.Component;
 import top.gytf.family.server.entity.User;
+import top.gytf.family.server.exceptions.EmptyParamException;
 import top.gytf.family.server.exceptions.NotLoginException;
 import top.gytf.family.server.security.code.AbstractSecurityCodeHandler;
 import top.gytf.family.server.security.code.SecurityCode;
@@ -94,6 +95,10 @@ public class EmailSecurityCodeRequestValidator implements SecurityCodeRequestVal
             if (desc == null) {
                 desc = request.getParameter("email");
             }
+        }
+
+        if (desc == null) {
+            throw new EmptyParamException("邮箱地址为空。");
         }
 
         return desc;

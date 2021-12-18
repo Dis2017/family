@@ -9,7 +9,6 @@ import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
-import top.gytf.family.server.aop.response.IgnoreResultAdvice;
 
 import java.util.Objects;
 
@@ -22,7 +21,7 @@ import java.util.Objects;
  * @author user
  * @version V1.0
  */
-@RestControllerAdvice(basePackages = {"top.gytf.family.server.controller"})
+@RestControllerAdvice(basePackages = {"top.gytf.family.server.controllers"})
 public class GlobalResponseHandler implements ResponseBodyAdvice<Object> {
 
     private final ObjectMapper mapper;

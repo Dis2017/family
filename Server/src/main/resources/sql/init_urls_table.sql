@@ -1,6 +1,6 @@
 INSERT INTO family.urls (id, url, method, description, create_time, modify_time, delete_flag) VALUES (1, '/auth/current', 'GET', '获取当前登录的用户', '2021-12-11 17:27:22', '2021-12-11 17:27:26', 0);
 INSERT INTO family.urls (id, url, method, description, create_time, modify_time, delete_flag) VALUES (2, '/auth/logout', 'POST', '登出', '2021-12-11 17:29:01', '2021-12-11 17:29:05', 0);
-INSERT INTO family.urls (id, url, method, description, create_time, modify_time, delete_flag) VALUES (3, '/auth/login/id', 'POST', '编号密码登录', '2021-12-11 17:29:55', '2021-12-11 17:30:02', 0);
+INSERT INTO family.urls (id, url, method, description, create_time, modify_time, delete_flag) VALUES (3, '/auth/login/password', 'POST', '密码登录', '2021-12-11 17:29:55', '2021-12-11 17:30:02', 0);
 INSERT INTO family.urls (id, url, method, description, create_time, modify_time, delete_flag) VALUES (4, '/auth/login/email', 'POST', '邮箱登录', '2021-12-11 17:30:25', '2021-12-11 17:30:28', 0);
 INSERT INTO family.urls (id, url, method, description, create_time, modify_time, delete_flag) VALUES (5, '/auth/security-code/image', 'GET', '获取图片验证码', '2021-12-11 17:31:00', '2021-12-11 17:31:02', 0);
 INSERT INTO family.urls (id, url, method, description, create_time, modify_time, delete_flag) VALUES (6, '/auth/security-code/email', 'GET', '获取邮箱验证码', '2021-12-11 17:31:00', '2021-12-11 17:31:02', 0);
@@ -10,5 +10,8 @@ INSERT INTO family.urls (id, url, method, description, create_time, modify_time,
 INSERT INTO family.urls (id, url, method, description, create_time, modify_time, delete_flag) VALUES (10, '/user/page', 'GET', '分页查询用户', '2021-12-11 17:31:00', '2021-12-11 17:31:02', 0);
 INSERT INTO family.urls (id, url, method, description, create_time, modify_time, delete_flag) VALUES (11, '/user/email', 'POST', '绑定邮箱', '2021-12-11 17:31:00', '2021-12-11 17:31:02', 0);
 INSERT INTO family.urls (id, url, method, description, create_time, modify_time, delete_flag) VALUES (12, '/user/email', 'DELETE', '解绑邮箱', '2021-12-11 17:31:00', '2021-12-11 17:31:02', 0);
-INSERT INTO family.urls (id, url, method, description, create_time, modify_time, delete_flag) VALUES (13, '/user/password', 'POST', '更改密码', '2021-12-11 17:31:00', '2021-12-11 17:31:02', 0);
+INSERT INTO family.urls (id, url, method, description, create_time, modify_time, delete_flag) VALUES (13, '/user/password', 'PATCH', '更改密码', '2021-12-11 17:31:00', '2021-12-11 17:31:02', 0);
 INSERT INTO family.urls (id, url, method, description, create_time, modify_time, delete_flag) VALUES (14, '/test/hello', 'GET', '测试', '2021-12-11 17:31:00', '2021-12-11 17:31:02', 0);
+INSERT INTO family.urls (id, url, method, description, create_time, modify_time, delete_flag) VALUES (15, '/user/avatar', 'GET', '下载头像', '2021-12-13 22:34:44', '2021-12-13 22:34:51', 0);
+INSERT INTO family.urls (id, url, method, description, create_time, modify_time, delete_flag) VALUES (16, '/user/avatar', 'POST', '上传头像', '2021-12-13 22:35:09', '2021-12-13 22:35:11', 0);
+INSERT INTO family.urls (id, url, method, description, create_time, modify_time, delete_flag) VALUES (17, '/auth/public-key', 'GET', '获取公钥', '2021-12-18 23:35:06', '2021-12-18 23:35:10', 0);

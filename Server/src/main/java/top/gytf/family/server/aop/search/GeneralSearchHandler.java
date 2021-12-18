@@ -6,6 +6,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -13,9 +14,10 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import top.gytf.family.server.search.GeneralSearchEntity;
 import top.gytf.family.server.utils.SearchUtil;
+import top.gytf.family.server.utils.reflect.MethodInfo;
+import top.gytf.family.server.utils.reflect.ReflectUtil;
 
 import javax.servlet.http.HttpServletRequest;
-import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -68,12 +70,11 @@ public class GeneralSearchHandler {
      */
     @Around("allGeneralSearchApi() && allPageReturnTypeApi()")
     public IPage generalSearchPageApi(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
+        // 获取注解
         GeneralSearch search = getAnnotation(proceedingJoinPoint);
-        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        assert attributes != null : "请求属性为空";
-        HttpServletRequest request = attributes.getRequest();
+
         // 取出统一查询实体
-        GeneralSearchEntity entity = getGeneralSearchEntity(request);
+        GeneralSearchEntity entity = parseRequest();
 
         // 解析请求
         IPage result = getMapper(search.mapper()).selectPage(
@@ -94,12 +95,11 @@ public class GeneralSearchHandler {
      */
     @Around("allGeneralSearchApi() && allArrayReturnTypeApi()")
     public Object[] generalSearchArrayApi(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
+        // 获取注解
         GeneralSearch search = getAnnotation(proceedingJoinPoint);
-        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        assert attributes != null;
-        HttpServletRequest request = attributes.getRequest();
+
         // 取出统一查询实体
-        GeneralSearchEntity entity = getGeneralSearchEntity(request);
+        GeneralSearchEntity entity = parseRequest();
 
         // 解析请求
         Object[] result = getMapper(search.mapper()).selectList(
@@ -111,12 +111,15 @@ public class GeneralSearchHandler {
         return result;
     }
 
+
     /**
-     * 获取统一查询实体
-     * @param request 请求
-     * @return 实体
+     * 从请求中解析统一查询实体
+     * @return 统一查询实体
      */
-    private GeneralSearchEntity getGeneralSearchEntity(HttpServletRequest request) {
+    private GeneralSearchEntity parseRequest() {
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        assert attributes != null : "请求属性为空";
+        HttpServletRequest request = attributes.getRequest();
         GeneralSearchEntity entity = new GeneralSearchEntity();
 
         entity.setRequests(request.getParameter("requests"));
@@ -149,18 +152,19 @@ public class GeneralSearchHandler {
      * @return 统一查询注解
      */
     private synchronized GeneralSearch getAnnotation(ProceedingJoinPoint proceedingJoinPoint) {
-        Class clazz = proceedingJoinPoint.getSignature().getDeclaringType();
+        MethodSignature signature = (MethodSignature) proceedingJoinPoint.getSignature();
+        Class clazz = signature.getDeclaringType();
         GeneralSearch generalSearch = GENERAL_SEARCH_CACHE.get(clazz);
 
         if (generalSearch == null) {
             try {
-                Method method = clazz.getDeclaredMethod(proceedingJoinPoint.getSignature().getName());
-                method.setAccessible(true);
-                generalSearch = method.getAnnotation(GeneralSearch.class);
+                generalSearch = ReflectUtil.getAnnotation(GeneralSearch.class, new MethodInfo(signature));
             } catch (NoSuchMethodException e) {
-                e.printStackTrace();
+                throw new RuntimeException("无法获取注解。");
             }
-            GENERAL_SEARCH_CACHE.put(clazz, generalSearch);
+            if (generalSearch != null) {
+                GENERAL_SEARCH_CACHE.put(clazz, generalSearch);
+            }
         }
 
         return generalSearch;

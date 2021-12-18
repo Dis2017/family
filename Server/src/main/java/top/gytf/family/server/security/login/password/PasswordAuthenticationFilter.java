@@ -9,9 +9,13 @@ import org.springframework.security.web.authentication.AbstractAuthenticationPro
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import top.gytf.family.server.constants.PathConstant;
 import top.gytf.family.server.security.login.email.EmailAuthenticationFilter;
+import top.gytf.family.server.utils.RsaUtil;
 
+import javax.crypto.NoSuchPaddingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * Project:     IntelliJ IDEA<br>
@@ -29,9 +33,13 @@ public class PasswordAuthenticationFilter extends AbstractAuthenticationProcessi
     @Setter
     @Getter
     private boolean postOnly = true;
+    private final RsaUtil rsaUtil;
+    private final PasswordAuthenticationParamGetter getter;
 
-    public PasswordAuthenticationFilter() {
+    public PasswordAuthenticationFilter(PasswordAuthenticationParamGetter getter) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
         super(new AntPathRequestMatcher(PathConstant.Auth.AUTH_PREFIX + PathConstant.Auth.PATH_PASSWORD_LOGIN, "POST"));
+        this.getter = getter;
+        rsaUtil = RsaUtil.getInstance();
     }
 
     /**
@@ -59,8 +67,8 @@ public class PasswordAuthenticationFilter extends AbstractAuthenticationProcessi
             throw new AuthenticationServiceException("不接受非POST请求");
         }
 
-        String credential = getCredential(request);
-        String password = getPassword(request);
+        String credential = getter.getCredential(request);
+        String password = getter.getPassword(request);
         PasswordToken token = new PasswordToken(credential, password);
         copyDetails(token, request);
 
@@ -74,23 +82,5 @@ public class PasswordAuthenticationFilter extends AbstractAuthenticationProcessi
      */
     private void copyDetails(PasswordToken token, HttpServletRequest request) {
         token.setDetails(authenticationDetailsSource.buildDetails(request));
-    }
-
-    /**
-     * 从请求中获取密码
-     * @param request 请求
-     * @return 密码
-     */
-    private String getPassword(HttpServletRequest request) {
-        return request.getParameter("password");
-    }
-
-    /**
-     * 从请求中获取凭证
-     * @param request 请求
-     * @return id
-     */
-    private String getCredential(HttpServletRequest request) {
-        return request.getParameter("credential");
     }
 }

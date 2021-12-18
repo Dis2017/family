@@ -1,5 +1,6 @@
 package top.gytf.family.server.security.code;
 
+import top.gytf.family.server.exceptions.EmptyParamException;
 import top.gytf.family.server.exceptions.code.SecurityCodeException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -66,6 +67,10 @@ public interface SecurityCodeRequestValidator<D, R> {
      * @throws SecurityCodeException 验证码错误
      */
     default void verifyRequest(HttpServletRequest request) throws SecurityCodeException {
-        getSecurityCodeHandler().verify(getRepository(request), getDesc(request), getCode(request));
+        String code = getCode(request);
+        if (code == null) {
+            throw new EmptyParamException("验证码为空");
+        }
+        getSecurityCodeHandler().verify(getRepository(request), getDesc(request), code);
     }
 }

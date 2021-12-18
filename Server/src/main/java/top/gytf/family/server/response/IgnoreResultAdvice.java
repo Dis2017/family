@@ -1,4 +1,4 @@
-package top.gytf.family.server.aop.response;
+package top.gytf.family.server.response;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

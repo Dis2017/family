@@ -18,13 +18,13 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Component
 public class PasswordSecurityCodeRequestValidator implements SecurityCodeRequestValidator<Object, Object> {
-    private final static String TAG = PasswordSecurityCodeRequestValidator.class.getName();
-    private static final String SECURITY_CODE_KEY = "password_code";
 
     private final PasswordSecurityCodeHandler securityCodeHandler;
+    private final PasswordSecurityCodeRequestValidatorParamGetter getter;
 
-    public PasswordSecurityCodeRequestValidator(PasswordSecurityCodeHandler securityCodeHandler) {
+    public PasswordSecurityCodeRequestValidator(PasswordSecurityCodeHandler securityCodeHandler, PasswordSecurityCodeRequestValidatorParamGetter getter) {
         this.securityCodeHandler = securityCodeHandler;
+        this.getter = getter;
     }
 
     /**
@@ -78,7 +78,8 @@ public class PasswordSecurityCodeRequestValidator implements SecurityCodeRequest
 
     /**
      * 验证码<br>
-     * 作为调用{@link AbstractSecurityCodeHandler#verify}时的验证码参数
+     * 作为调用{@link AbstractSecurityCodeHandler#verify}时的验证码参数<br>
+     * 返回值使用aop进行后置解密<br>
      *
      * @param request 请求
      * @return 验证码
@@ -86,14 +87,6 @@ public class PasswordSecurityCodeRequestValidator implements SecurityCodeRequest
      */
     @Override
     public String getCode(HttpServletRequest request) {
-        String code = null;
-        Object obj = request.getAttribute(SECURITY_CODE_KEY);
-        if (obj instanceof String) {
-            code = (String) obj;
-        }
-        if (code == null) {
-            code = request.getParameter(SECURITY_CODE_KEY);
-        }
-        return code;
+        return getter.getCode(request);
     }
 }

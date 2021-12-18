@@ -66,7 +66,13 @@ public enum StateCode {
      */
     INSERT_EXCEPTION(900, "插入失败"),
     UPDATE_EXCEPTION(901, "更新失败"),
-    DELETE_EXCEPTION(902, "删除失败");
+    DELETE_EXCEPTION(902, "删除失败"),
+
+    /**
+     * 加解密错误
+     */
+    ENCRYPTED_EXCEPTION(1000, "加密错误"),
+    DECRYPTED_EXCEPTION(1001, "解密错误");
 
     /**
      *  代码

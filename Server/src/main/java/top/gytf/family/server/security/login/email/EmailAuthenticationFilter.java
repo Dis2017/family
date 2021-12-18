@@ -8,6 +8,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import top.gytf.family.server.constants.PathConstant;
+import top.gytf.family.server.exceptions.EmptyParamException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -90,6 +91,10 @@ public class EmailAuthenticationFilter extends AbstractAuthenticationProcessingF
      * @return 电子邮箱地址
      */
     private String getEmail(HttpServletRequest request) {
-        return request.getParameter("email");
+        final String email = request.getParameter("email");
+        if (email == null) {
+            throw new EmptyParamException("邮箱地址为空。");
+        }
+        return email;
     }
 }

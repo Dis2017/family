@@ -1,6 +1,7 @@
 package top.gytf.family.server.config.security;
 
-import lombok.AllArgsConstructor;
+import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -26,15 +27,21 @@ import top.gytf.family.server.security.code.SecurityCodeVerifyFilter;
  */
 @Configuration
 @EnableWebSecurity
-@AllArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    private final static String TAG = SecurityConfig.class.getName();
-
     private final GlobalExceptionHandler globalExceptionHandler;
     private final AccessDecisionFilter accessDecisionFilter;
     private final SecurityCodeVerifyFilter securityCodeVerifyFilter;
-    private final PasswordAuthenticationConfig passwordAuthenticationConfig;
     private final EmailAuthenticationConfig emailAuthenticationConfig;
+    @Autowired
+    @Setter
+    private PasswordAuthenticationConfig passwordAuthenticationConfig;
+
+    public SecurityConfig(GlobalExceptionHandler globalExceptionHandler, AccessDecisionFilter accessDecisionFilter, SecurityCodeVerifyFilter securityCodeVerifyFilter, EmailAuthenticationConfig emailAuthenticationConfig) {
+        this.globalExceptionHandler = globalExceptionHandler;
+        this.accessDecisionFilter = accessDecisionFilter;
+        this.securityCodeVerifyFilter = securityCodeVerifyFilter;
+        this.emailAuthenticationConfig = emailAuthenticationConfig;
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
